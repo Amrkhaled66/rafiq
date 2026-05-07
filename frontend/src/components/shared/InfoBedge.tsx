@@ -30,7 +30,7 @@ export default function InfoBadge({
       <span className="text-sm font-bold leading-none">{text}</span>
       <Icon
         icon={icon}
-        className={clsx("h-8 w-8 text-(--brand-primary)", iconClassName)}
+        className={clsx("size-8 text-(--brand-primary)", iconClassName)}
       />
     </div>
   );
