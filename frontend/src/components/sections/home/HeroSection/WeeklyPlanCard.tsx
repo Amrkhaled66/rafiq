@@ -14,7 +14,7 @@ export default function WeeklyPlanCard() {
 
         <Icon
           icon="solar:calendar-linear"
-          className="size-4 sm:size-5 text-[var(--brand-primary)]"
+          className="size-4 sm:size-5 text-brand-primary"
         />
       </div>
 
@@ -24,8 +24,7 @@ export default function WeeklyPlanCard() {
             key={day}
             className={clsx(
               "rounded-full px-1 sm:px-2 py-1.5 sm:py-2",
-              index === 2 &&
-                "bg-[var(--brand-primary-soft)] text-[var(--brand-primary)]",
+              index === 2 && "bg-brand-primary-soft text-brand-primary",
             )}
           >
             {day}
@@ -39,8 +38,7 @@ export default function WeeklyPlanCard() {
             key={subject}
             className={clsx(
               "rounded-full px-2.5 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-sm md:text-base font-semibold",
-              index % 2 === 0 &&
-                "bg-[var(--brand-primary-soft)] text-[var(--brand-primary)]",
+              index % 2 === 0 && "bg-brand-primary-soft text-brand-primary",
               index % 2 !== 0 && "bg-black/[0.04] text-black/70",
             )}
           >

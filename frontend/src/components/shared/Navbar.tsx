@@ -32,7 +32,7 @@ const Navbar = () => {
               <Link
                 key={link.label}
                 href={link.href}
-                className="relative text-sm font-bold text-gray-600 transition-colors duration-200 hover:text-(--brand-primary) group"
+                className="relative text-sm font-bold text-gray-600 transition-colors duration-200 hover:text-brand-primary group"
               >
                 {link.label}
                 <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-(--brand-primary) rounded-full transition-all duration-300 group-hover:w-full" />
@@ -43,7 +43,10 @@ const Navbar = () => {
           {/* Right side: CTA + Burger */}
           <div className="flex justify-end flex-1 items-center gap-3">
             {/* CTA Button */}
-            <Button variant="primary" className="!rounded-full sm:block hidden px-6 py-3">
+            <Button
+              variant="primary"
+              className="!rounded-full sm:block hidden px-6 py-3"
+            >
               احجز جلسة البداية
             </Button>
 

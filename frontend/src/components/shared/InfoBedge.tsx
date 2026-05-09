@@ -22,7 +22,7 @@ export default function InfoBadge({
         "inline-flex items-center gap-3 rounded-full border px-3 py-2",
         "bg-(--brand-primary-soft)/20",
         "border-(--brand-primary-soft)",
-        "text-(--brand-primary)",
+        "text-brand-primary",
         "shadow-[0_4px_20px_rgba(208,5,7,0.06)]",
         className,
       )}
@@ -30,7 +30,7 @@ export default function InfoBadge({
       <span className="text-sm font-bold leading-none">{text}</span>
       <Icon
         icon={icon}
-        className={clsx("size-8 text-(--brand-primary)", iconClassName)}
+        className={clsx("size-8 text-brand-primary", iconClassName)}
       />
     </div>
   );

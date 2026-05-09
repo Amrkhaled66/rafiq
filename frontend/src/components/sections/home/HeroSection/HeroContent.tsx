@@ -39,7 +39,7 @@ export default function HeroContent() {
           className={clsx(
             "pointer-events-none absolute -inset-e-20 -bottom-10 -z-10",
             "size-50 rounded-full",
-            "bg-[var(--brand-primary)]",
+            "bg-brand-primary",
             "blur-3xl opacity-40",
           )}
         />

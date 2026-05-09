@@ -17,7 +17,7 @@ export default function HeroHeader() {
         <AnimatedWord />
 
         <span className="mt-1 block">
-          إلى <span className="text-(--brand-primary)">تنظيم</span> مذاكرتك
+          إلى <span className="text-brand-primary">تنظيم</span> مذاكرتك
         </span>
       </h1>
 

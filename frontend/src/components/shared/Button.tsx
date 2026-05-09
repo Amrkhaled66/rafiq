@@ -19,16 +19,16 @@ interface ButtonProps {
 
 const variantClasses: Record<ButtonVariant, string> = {
   primary:
-    "bg-[var(--brand-primary)] border-[var(--brand-primary)] text-white hover:bg-transparent hover:text-[var(--brand-primary)]",
+    "bg-brand-primary border-brand-primary text-white hover:bg-transparent hover:text-brand-primary",
 
   outline:
-    "bg-transparent border-[var(--brand-primary)] text-[var(--brand-primary)] hover:bg-[var(--brand-primary)] hover:text-white",
+    "bg-transparent border-brand-primary text-brand-primary hover:bg-brand-primary hover:text-white",
 
   danger:
     "bg-red-600 border-red-600 text-white hover:bg-transparent hover:text-red-600",
 
   ghost:
-    "bg-transparent border-transparent text-[var(--brand-primary)] hover:bg-[var(--brand-primary)]/10",
+    "bg-transparent border-transparent text-brand-primary hover:bg-brand-primary/10",
 
   warning:
     "bg-amber-500 border-amber-500 text-white hover:bg-transparent hover:text-amber-500",

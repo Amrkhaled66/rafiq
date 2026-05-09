@@ -11,7 +11,7 @@ const problemCards = [
     description: "كل يوم فيه حاجات كتير ومفيش أولويات واضحة",
     icon: targetIcon,
     iconType: "image",
-    accentClassName: "bg-[rgba(208,5,7,0.08)] text-(--brand-primary)",
+    accentClassName: "bg-[rgba(208,5,7,0.08)] text-brand-primary",
     positionClassName: "mr-0",
   },
   {
@@ -42,7 +42,7 @@ const problemCards = [
 
 export default function ProblemVisual() {
   return (
-    <div className="flex lg:block flex-col-reverse overflow-hidden sm:drop-shadow-sm rounded-3xl px-8 bg-[linear-gradient(180deg,#fffdfd_0%,#fff6f6_56%,#ffffff_100%)] py-12 w-full sm:grid-cols-2 ">
+    <div className="flex lg:block flex-col-reverse overflow-hidden sm:drop-shadow-sm rounded-3xl px-3 lg:px-8  bg-[linear-gradient(180deg,#fffdfd_0%,#fff6f6_56%,#ffffff_100%)] py-12 w-full sm:grid-cols-2 ">
       <div className="grid  sm:grid-cols-2 gap-6 lg:gap-8">
         {problemCards.map((card, i) => (
           <ProblemCard

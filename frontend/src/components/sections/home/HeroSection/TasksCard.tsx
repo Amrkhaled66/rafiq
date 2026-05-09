@@ -14,7 +14,7 @@ export default function TasksCard() {
         <h3 className="sm:text-base md:text-lg font-bold text-black">
           مهام اليوم
         </h3>
-        <span className="rounded-full bg-(--brand-primary-soft) px-3 py-1  sm:text-xs font-semibold text-(--brand-primary)">
+        <span className="rounded-full bg-(--brand-primary-soft) px-3 py-1  sm:text-xs font-semibold text-brand-primary">
           3 مهام
         </span>
       </div>
@@ -31,7 +31,7 @@ export default function TasksCard() {
             <span
               className={clsx(
                 "flex shrink-0 items-center justify-center rounded-full",
-                task.done && "text-(--brand-primary)",
+                task.done && "text-brand-primary",
                 !task.done && " border size-5 border-(--brand-primary)",
               )}
             >

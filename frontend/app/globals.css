@@ -3,20 +3,45 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+
+  --brand-primary: #d00507;
+  --brand-primary-soft: #f6dcdd;
+  --brand-primary-muted: #efa9ab;
+  --brand-primary-hover: #8f0d10;
+  --brand-primary-active: #6e090b;
+
+  --subTitle: #6b6b6b;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
 
-  --brand-primary: #D00507;
-  --brand-primary-soft: #f6dcdd;
-  --brand-primary-muted: #efa9ab;
-  --brand-primary-hover: #8f0d10;
-  --brand-primary-active: #6e090b;
+  --color-brand-primary: var(--brand-primary);
+  --color-brand-primary-soft: var(--brand-primary-soft);
+  --color-brand-primary-muted: var(--brand-primary-muted);
+  --color-brand-primary-hover: var(--brand-primary-hover);
+  --color-brand-primary-active: var(--brand-primary-active);
+  --color-subTitle: var(--subTitle);
 
   --font-main: var(--font-ibm-plex-sans-arabic);
   --font-cairo: var(--font-cairo);
+
+  --padding-section-pad: 48px; 
+}
+
+@layer components {
+  .section {
+    @apply pt-8 lg:pt-12 container mx-auto px-3;
+  }
+
+  .section-title{
+    @apply text-[2.2rem] font-bold leading-[1.45] tracking-[-0.03em] text-slate-950 sm:text-5xl;
+  }
+
+  .section-subTitle {
+    @apply mx-auto max-w-2xl text-base leading-8 text-subTitle sm:text-lg;
+  }
 }
 
 /* @media (prefers-color-scheme: dark) {
@@ -25,6 +50,7 @@
     --foreground: #ededed;
   }
 } */
+
 
 body {
   background: var(--background);
