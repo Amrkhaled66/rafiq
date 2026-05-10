@@ -1,4 +1,5 @@
 import CTASection from "@/src/components/sections/home/CTASection";
+import Footer from "@/src/components/layout/Footer";
 import HeroSection from "@/src/components/sections/home/HeroSection";
 import ProblemSection from "@/src/components/sections/home/ProblemSection";
 import SolveSection from "@/src/components/sections/home/SolveSection";
@@ -10,6 +11,7 @@ export default function Home() {
       <ProblemSection />
       <SolveSection />
       <CTASection />
+      <Footer />
     </main>
   );
 }

@@ -1,8 +1,12 @@
-Create the CTA section of an Arabic landing page in a clean modern style, matching the uploaded reference image.
+Create the CTA section of an Arabic landing page in a clean, modern style that closely matches the uploaded reference image.
 
-Review `globals.css` and `src/components/sections/home/ProblemSection` to understand the existing design system, spacing, typography, colors, rounded corners, shadows, RTL layout, and responsive behavior.
+Before implementing, review the existing project files:
+- `globals.css`
+- `src/components/sections/home/ProblemSection`
 
-Create a new component called:
+Use them to understand the current design system, including spacing, typography, colors, rounded corners, shadows, RTL layout, responsive behavior, and component conventions.
+
+Create a new component named:
 
 `CTASection`
 
@@ -10,34 +14,70 @@ Place it at:
 
 `src/components/sections/home/CTASection.tsx`
 
-The avatar image is already inside the assets folder:
+The avatar image already exists in the assets folder:
 
 `assets/cta-avatar.png`
 
-Use this image above the CTA card, centered horizontally, with the avatar slightly overlapping the top edge of the red card.
+Use this image above the CTA card, centered horizontally. The avatar should slightly overlap the top edge of the CTA card.
 
----
+The section must be RTL.
 
-## Section Layout
+## Visual Direction
 
-The section should be RTL.
+Match the uploaded reference image as closely as possible:
 
-Use a white or very soft off-white page background.
-
-The main layout:
-
+- Soft white / off-white page background.
 - A large red CTA card centered inside a max-width container.
-- The avatar should sit above the card, centered.
-- The avatar should overlap the card by around `40px` to `60px`.
-- Add a few small decorative sparkles/dots around the avatar, similar to the reference.
-- Keep the whole section compact and polished.
+- Rounded card corners.
+- Soft shadow under the card.
+- Compact, polished spacing.
+- Avatar centered above the card.
+- Avatar overlaps the card by around `40px` to `60px`.
+- Small decorative sparkles and dots around the avatar using Iconify icons.
+- Add subtle white translucent circle decorations inside the CTA card:
+  - One large circle near the top-right area.
+  - One large circle near the bottom-left area.
+- Keep all decorations subtle and behind the main text content.
 
-Suggested structure:
+## CTA Content
+
+Use the exact Arabic content below:
+
+Badge:
+`جاهز تبدأ؟`
+
+Main heading:
+`جاهز تبدأ بخطة واضحة؟`
+
+Description:
+`احجز جلسة البداية، ونفهم وضعك ونجهز لك خطة مناسبة مع كوتش يتابعك خطوة بخطوة.`
+
+Primary button:
+Create a large centered white pill-shaped CTA button with the text:
+
+`احجز جلسة البداية`
+
+Inside the button, include a red calendar icon using Iconify:
+
+`solar:calendar-linear`
+
+Because the page is RTL, place the calendar icon on the right side of the text. The text should also be red, matching the main CTA color. Keep the button spacious, rounded, modern, and visually similar to the reference image.
+
+
+Feature bullets:
+`خطة واضحة`
+`متابعة مع كوتش`
+`متابعة من الأبليكشن`
+
+## Suggested Structure
+
+Use a structure similar to:
 
 ```tsx
 <section>
-  <div>
-    <div>{/* avatar and decorations */}</div>
-    <div>{/* red CTA card */}</div>
-  </div>
+  <div>{/* max-width container */}</div>
+
+  <div>{/* avatar and decorative icons */}</div>
+
+  <div>{/* red CTA card */}</div>
 </section>
