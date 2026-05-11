@@ -51,7 +51,7 @@ const Navbar = () => {
           <div className="flex flex-1 items-center justify-end gap-3">
             <Button
               variant="primary"
-              className="hidden rounded-full! px-6 py-3 lg:block"
+              className="hidden rounded-full! px-6 py-3 md:block"
             >
               احجز جلسة البداية
             </Button>
