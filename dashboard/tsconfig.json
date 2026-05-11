@@ -5,11 +5,12 @@
     { "path": "./tsconfig.node.json" }
   ],
   "compilerOptions": {
+    "ignoreDeprecations": "6.0",
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"],
       "@features": ["./src/features/*"],
-      "@shared": ["./src/shared/*"]
+      "@shared": ["./src/shared/*"],   
     }
   }
 }

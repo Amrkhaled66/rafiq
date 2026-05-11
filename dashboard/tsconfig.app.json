@@ -21,12 +21,17 @@
     // "erasableSyntaxOnly": true,
     "noFallthroughCasesInSwitch": true,
 
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "moduleResolution": "bundler",
+    "ignoreDeprecations": "6.0",
+
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"],
       "@features": ["./src/features/*"],
       "@shared": ["./src/shared/*"]
-    }
+    },
   },
   "include": ["src"]
 }
