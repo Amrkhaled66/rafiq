@@ -2,9 +2,10 @@ import {  Module } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { JwtModule } from '@nestjs/jwt';
-import { DbModule } from 'src/db/db.module';
+import { DbModule } from '../db/db.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
+import { UsersRepository } from '../users/users.repository';
 
 @Module({
   imports: [
@@ -19,7 +20,7 @@ import { JwtAuthGuard } from './guards/jwt-auth.guard';
     DbModule,
   ],
   controllers: [AuthController],
-  providers: [AuthService, JwtAuthGuard],
+  providers: [AuthService, JwtAuthGuard, UsersRepository],
   exports: [AuthService, JwtAuthGuard, JwtModule],
 })
 export class AuthModule {}

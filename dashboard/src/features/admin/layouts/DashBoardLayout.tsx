@@ -15,32 +15,32 @@ const sidebarItems: SidebarMenuItem[] = [
   {
     icon: "material-symbols:analytics-outline",
     label: "التحليلات",
-    path: "/analytics",
+    path: "analytics",
   },
   {
     icon: "mdi:school-outline",
     label: "الطلاب",
-    path: "/students",
+    path: "students",
   },
   {
     icon: "fluent:people-team-24-regular",
     label: "المدربين",
-    path: "/trainers",
+    path: "trainers",
   },
   {
     icon: "material-symbols:subscriptions-outline",
     label: "الاشتراكات",
-    path: "/subscriptions",
+    path: "subscriptions",
   },
   {
     icon: "material-symbols:event-busy-outline",
     label: "المهام الفائتة",
-    path: "/missed-tasks",
+    path: "missed-tasks",
   },
   {
     icon: "material-symbols:timer-outline",
     label: "الجلسات النشطة",
-    path: "/active-sessions",
+    path: "active-sessions",
   },
 ];
 

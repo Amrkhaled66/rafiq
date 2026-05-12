@@ -97,7 +97,7 @@ export default function SolveVisual() {
         className={clsx(
           "grid grid-cols-1 gap-6",
           "md:grid-cols-2",
-          "lg:hidden",
+          "xl:hidden",
         )}
       >
         {cards.map((card, index) => (
@@ -107,13 +107,13 @@ export default function SolveVisual() {
             cardClassName={clsx(
               "min-h-[210px]",
               card.cardClassName,
-              index === 4 && "md:col-span-2",
+              index === 4 && "md:col-span-2!",
             )}
           />
         ))}
       </div>
 
-      <div className="hidden space-y-7 lg:block">
+      <div className="hidden space-y-7 xl:block">
         <div className="relative">
           <div className="grid grid-cols-3 gap-12">
             {cards.slice(0, 3).map((card) => (

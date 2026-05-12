@@ -1,9 +1,12 @@
 import { type ReactElement } from "react";
 import { createBrowserRouter, Outlet } from "react-router-dom";
 import { studentsRoutes } from "@/features/admin/students/routes";
-import DashBoardLayout from "@/layouts/DashBoardLayout";
+import DashBoardLayout from "@/features/admin/layouts/DashBoardLayout";
 import { AppProviders } from "@/app/providers";
+import { authRoutes } from "@/features/admin/auth/routes";
 import useScrollToTop from "@/shared/hooks/useScrollToTop";
+import { urls } from "@/shared/const/urls";
+
 function RouterProvidersLayout(): ReactElement {
   useScrollToTop();
   return (
@@ -46,14 +49,19 @@ export const router = createBrowserRouter([
     children: [
       // -- Dashboard Routes --
       {
-        path: "/",
-        element: <DashBoardLayout />,
+        path: urls.dashBoardUrl,
         children: [
+          authRoutes,
           {
-            index: true,
-            element: dashboardPage,
+            element: <DashBoardLayout />,
+            children: [
+              {
+                index: true,
+                element: dashboardPage,
+              },
+              studentsRoutes,
+            ],
           },
-          studentsRoutes,
         ],
       },
     ],
