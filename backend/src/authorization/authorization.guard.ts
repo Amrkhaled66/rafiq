@@ -8,7 +8,6 @@ import { Reflector } from '@nestjs/core';
 import { AuthorizationService } from './authorization.service';
 import { AUTHORIZATION_REQUIREMENT_KEY } from './decorators/authorize.decorator';
 import { AuthenticatedUser } from './types/authenticated-user.type';
-import { AuthorizationRequirement } from './types/authorization.types';
 
 @Injectable()
 export class AuthorizationGuard implements CanActivate {

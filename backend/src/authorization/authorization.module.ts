@@ -1,18 +1,12 @@
 import { Module } from '@nestjs/common';
 import { DbModule } from '../db/db.module';
-import { AbilityFactory } from './ability.factory';
 import { AuthorizationGuard } from './authorization.guard';
-import { AuthorizationScopeService } from './authorization-scope.service';
+import { AuthorizationPolicyService } from './authorization-policy.service';
 import { AuthorizationService } from './authorization.service';
 
 @Module({
   imports: [DbModule],
-  providers: [
-    AbilityFactory,
-    AuthorizationGuard,
-    AuthorizationScopeService,
-    AuthorizationService,
-  ],
-  exports: [AuthorizationGuard, AuthorizationService, AbilityFactory],
+  providers: [AuthorizationGuard, AuthorizationPolicyService, AuthorizationService],
+  exports: [AuthorizationGuard, AuthorizationPolicyService, AuthorizationService],
 })
 export class AuthorizationModule {}

@@ -1,31 +1,31 @@
 import { Test } from '@nestjs/testing';
-import { AbilityFactory } from './ability.factory';
-import { AuthorizationScopeService } from './authorization-scope.service';
+import { AuthorizationPolicyService } from './authorization-policy.service';
 import { AuthorizationService } from './authorization.service';
 
 describe('AuthorizationService', () => {
   let authorizationService: AuthorizationService;
-  const authorizationScopeService = {
-    isAllowed: jest.fn(),
+  const authorizationPolicyService = {
+    authorize: jest.fn(),
   };
 
   beforeEach(async () => {
     const moduleRef = await Test.createTestingModule({
       providers: [
-        AbilityFactory,
         AuthorizationService,
         {
-          provide: AuthorizationScopeService,
-          useValue: authorizationScopeService,
+          provide: AuthorizationPolicyService,
+          useValue: authorizationPolicyService,
         },
       ],
     }).compile();
 
     authorizationService = moduleRef.get(AuthorizationService);
-    authorizationScopeService.isAllowed.mockReset();
+    authorizationPolicyService.authorize.mockReset();
   });
 
   it('allows super admin on any resource in the matrix', async () => {
+    authorizationPolicyService.authorize.mockResolvedValue('allowed');
+
     await expect(
       authorizationService.assertAuthorized(
         { sub: 1, role: 'super_admin' },
@@ -35,6 +35,8 @@ describe('AuthorizationService', () => {
   });
 
   it('denies a student from updating a plan before scope checks', async () => {
+    authorizationPolicyService.authorize.mockResolvedValue('action_denied');
+
     await expect(
       authorizationService.assertAuthorized(
         { sub: 10, role: 'student' },
@@ -47,11 +49,11 @@ describe('AuthorizationService', () => {
       ),
     ).rejects.toThrow('You are not allowed to perform this action');
 
-    expect(authorizationScopeService.isAllowed).not.toHaveBeenCalled();
+    expect(authorizationPolicyService.authorize).toHaveBeenCalled();
   });
 
   it('allows a student to update their own task session when scope passes', async () => {
-    authorizationScopeService.isAllowed.mockResolvedValue(true);
+    authorizationPolicyService.authorize.mockResolvedValue('allowed');
 
     await expect(
       authorizationService.assertAuthorized(
@@ -67,7 +69,7 @@ describe('AuthorizationService', () => {
   });
 
   it('denies a coach access to unassigned student resources', async () => {
-    authorizationScopeService.isAllowed.mockResolvedValue(false);
+    authorizationPolicyService.authorize.mockResolvedValue('scope_denied');
 
     await expect(
       authorizationService.assertAuthorized(
@@ -83,7 +85,7 @@ describe('AuthorizationService', () => {
   });
 
   it('allows a coach to create lessons for an assigned student', async () => {
-    authorizationScopeService.isAllowed.mockResolvedValue(true);
+    authorizationPolicyService.authorize.mockResolvedValue('allowed');
 
     await expect(
       authorizationService.assertAuthorized(
@@ -99,6 +101,8 @@ describe('AuthorizationService', () => {
   });
 
   it('denies a coach from mutating task sessions in v1', async () => {
+    authorizationPolicyService.authorize.mockResolvedValue('action_denied');
+
     await expect(
       authorizationService.assertAuthorized(
         { sub: 22, role: 'coach' },
