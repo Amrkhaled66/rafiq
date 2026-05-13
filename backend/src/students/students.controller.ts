@@ -43,6 +43,16 @@ export class StudentsController {
     return this.studentsService.listStudents(user, query);
   }
 
+  @Get(':id/overview')
+  @Authorize({
+    action: 'read',
+    resource,
+    lookup: { key: 'id', kind: 'resourceId', source: 'params' },
+  })
+  getStudentOverview(@Param('id', ParseIntPipe) id: number) {
+    return this.studentsService.getStudentOverview(id);
+  }
+
   @Get(':id')
   @Authorize({
     action: 'read',

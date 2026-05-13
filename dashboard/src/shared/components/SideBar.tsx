@@ -34,10 +34,12 @@ const Sidebar: React.FC<SidebarProps> = ({
 }) => {
   return (
     <>
-      {isOpen && <Overlay onClick={onClose} />}
+      <div className="lg:hidden">
+        <Overlay isOpen={isOpen} onClick={onClose} />
+      </div>
 
       <aside
-        className={`fixed top-0 right-0 z-50 flex min-h-screen flex-col border-l border-black/5 bg-white px-4 py-6 transition-all duration-300 lg:relative lg:shadow-none ${
+        className={`fixed top-0 right-0 z-100 flex min-h-screen flex-col border-l border-black/5 bg-white px-4 py-6 transition-all duration-300 lg:relative lg:z-50 lg:shadow-none ${
           isOpen
             ? "w-65 translate-x-0"
             : "translate-x-full lg:w-22 lg:translate-x-0"

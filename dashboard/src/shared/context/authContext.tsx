@@ -1,11 +1,11 @@
 import { createContext, useContext, useState, type ReactNode } from "react";
 import {
-  setAdminToken,
-  clearAdminToken,
-  getAdminToken,
-  setAdmin,
-  clearAdmin,
-  getAdmin,
+  clearToken,
+  getToken,
+  setUser,
+  clearUser,
+  getUser,
+  setToken,
 } from "@/shared/utils/authStorage";
 import type { IUser } from "@/shared/interfaces/User";
 
@@ -32,8 +32,8 @@ export const AuthContext = createContext<AuthContextType>({
 
 export default function AuthProvider({ children }: { children: ReactNode }) {
   const [authData, setAuthData] = useState(() => {
-    const token = getAdminToken();
-    const user = getAdmin() as IUser | null;
+    const token = getToken();
+    const user = getUser() as IUser | null;
     return {
       user,
       token,
@@ -41,18 +41,19 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
   });
   const updateUser = (user: IUser) => {
     setAuthData((prev) => ({ ...prev, user }));
-    setAdmin(user);
+    setUser(user);
   };
 
   const login = (user: IUser, token: string) => {
+    console.log("logging")
     setAuthData({ user, token });
-    setAdminToken(token);
-    setAdmin(user);
+    setToken(token);
+    setUser(user);
   };
   const logout = () => {
     setAuthData({ user: null, token: null });
-    clearAdminToken();
-    clearAdmin();
+    clearToken();
+    clearUser();
   };
   const isAuthenticated = !!authData.token && !!authData.user;
 

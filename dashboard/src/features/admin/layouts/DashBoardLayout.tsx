@@ -48,7 +48,7 @@ export default function DashBoardLayout() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
   return (
-    <div dir="rtl" className="bg-background text-foreground flex">
+    <div  className="bg-background text-foreground flex">
       <ReusableSidebar
         isOpen={isSidebarOpen}
         onOpen={() => setIsSidebarOpen(true)}

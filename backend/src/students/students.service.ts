@@ -11,6 +11,35 @@ import { ListStudentsQueryDto } from './dto/list-students-query.dto';
 import { UpdateStudentDto } from './dto/update-student.dto';
 import { StudentAggregate, StudentsRepository } from './students.repository';
 
+export interface StudentOverviewStats {
+  totalTasks: number;
+  completedTasks: number;
+  remainingTasks: number;
+  missedTasks: number;
+  completionRate: number;
+}
+
+export interface StudentOverviewTask {
+  id: number;
+  title: string;
+  subject: string;
+  status: string;
+  sessionsCount: number;
+}
+
+export interface StudentOverviewLesson {
+  id: number;
+  subject: string;
+  scheduledAt: string;
+}
+
+export interface StudentOverview {
+  student: StudentAggregate;
+  stats: StudentOverviewStats;
+  todayTasks: StudentOverviewTask[];
+  todayLessons: StudentOverviewLesson[];
+}
+
 @Injectable()
 export class StudentsService {
   constructor(
@@ -24,6 +53,23 @@ export class StudentsService {
 
   async getStudentById(id: number): Promise<StudentAggregate> {
     return this.findStudentByIdOrThrow(id);
+  }
+
+  async getStudentOverview(id: number): Promise<StudentOverview> {
+    const student = await this.findStudentByIdOrThrow(id);
+
+    return {
+      student,
+      stats: {
+        totalTasks: 0,
+        completedTasks: 0,
+        remainingTasks: 0,
+        missedTasks: 0,
+        completionRate: 0,
+      },
+      todayTasks: [],
+      todayLessons: [],
+    };
   }
 
   async listStudents(actor: AuthenticatedUser, query: ListStudentsQueryDto) {

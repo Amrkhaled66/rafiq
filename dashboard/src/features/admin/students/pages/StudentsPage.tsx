@@ -1,34 +1,54 @@
 import { Icon } from "@iconify/react";
 import PageHeader from "@/features/admin/shared/components/PageHeader";
 import StatCard from "@/features/admin/shared/components/StatCard";
+import Button from "@/shared/components/Button";
+import AddStudentModal from "../components/StudentsPage/AddStudentModal";
 import StudentsTable from "../components/StudentsPage/StudentsTable";
+import { useStudentsQuery } from "../queries/studentQueries";
 
 export default function StudentsPage() {
+  const studentsQuery = useStudentsQuery({
+    page: 1,
+    limit: 100,
+  });
+
+  const students = studentsQuery.data?.items ?? [];
+  const studentsCount = studentsQuery.data?.total ?? 0;
+
   return (
     <div className="space-y">
       <PageHeader
         title="الطلاب"
         subtitle="ادارة بيانات الطلاب المسجلين"
-        actionLabel="اضافة طالب جديد"
-        actionIcon={<Icon icon="material-symbols:add-rounded" className="size-5" />}
+        action={
+          <AddStudentModal>
+            <Button className="inline-flex items-center gap-2 text-sm">
+              <Icon icon="material-symbols:add-rounded" className="size-5" />
+              <span>اضافة طالب جديد</span>
+            </Button>
+          </AddStudentModal>
+        }
       />
 
       <section className="flex flex-wrap gap-4 md:gap-6 lg:gap-8">
         <StatCard
           title="اجمالي الطلاب"
-          value={248}
+          value={studentsCount}
           color="#d00507"
           icon={<Icon icon="mdi:account-group-outline" className="size-7" />}
         />
         <StatCard
           title="طلاب نشطون"
-          value={212}
+          value={studentsCount}
           color="#1f7a5a"
           icon={<Icon icon="mdi:account-check-outline" className="size-7" />}
         />
       </section>
 
-      <StudentsTable />
+      <StudentsTable
+        students={students}
+        isLoading={studentsQuery.isLoading}
+      />
     </div>
   );
 }

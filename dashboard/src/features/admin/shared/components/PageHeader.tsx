@@ -7,6 +7,7 @@ type PageHeaderProps = {
   actionLabel?: string;
   onAction?: () => void;
   actionIcon?: ReactNode;
+  action?: ReactNode;
 };
 
 export default function PageHeader({
@@ -15,6 +16,7 @@ export default function PageHeader({
   actionLabel,
   onAction,
   actionIcon,
+  action,
 }: PageHeaderProps) {
   return (
     <section className="flex flex-row items-start justify-between gap-4">
@@ -27,7 +29,9 @@ export default function PageHeader({
         ) : null}
       </div>
 
-      {actionLabel ? (
+      {action ? (
+        <div className="flex h-fit justify-start md:justify-end">{action}</div>
+      ) : actionLabel ? (
         <div className="flex h-fit justify-start md:justify-end">
           <Button
             onClick={onAction}

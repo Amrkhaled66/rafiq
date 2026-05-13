@@ -1,10 +1,10 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { isAxiosError } from "axios";
 import { useNavigate } from "react-router-dom";
 import AuthLayout from "@/features/admin/layouts/AuthLayout";
 import FormInput from "@/shared/components/FormInput";
-import { useAuth } from "@/features/admin/auth/context/authContext";
+import { useAuth } from "@/shared/context/authContext";
+import { getErrorMessage } from "@/shared/utils/getErrorMessage";
 import {
   signinSchema,
   type SigninFormValues,
@@ -38,15 +38,9 @@ const SigninPage = () => {
         navigate(`/${urls.dashBoardUrl}`, { replace: true });
       },
       onError: (error) => {
-        const message =
-          isAxiosError<{ message?: string }>(error) &&
-          typeof error.response?.data?.message === "string"
-            ? error.response.data.message
-            : "رقم الهاتف أو كلمة المرور غير صحيحة";
-
         setError("phone", {
           type: "server",
-          message,
+          message: getErrorMessage(error, "رقم الهاتف أو كلمة المرور غير صحيحة"),
         });
       },
     });

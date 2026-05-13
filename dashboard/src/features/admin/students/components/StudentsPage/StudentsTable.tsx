@@ -6,37 +6,17 @@ import Button from "@/shared/components/Button";
 import FormInput from "@/shared/components/FormInput";
 import GradeBadge from "@/shared/components/GradeBadge";
 import Table from "@/shared/components/Table";
-import { type StudentGrade } from "@/shared/const/grades";
+import type { Student } from "@/features/admin/students/services/studentService";
 
-type StudentRow = {
-  id: number;
-  name: string;
-  phone: string;
-  grade: StudentGrade;
+type StudentsTableProps = {
+  students: Student[];
+  isLoading?: boolean;
 };
 
-const students: StudentRow[] = [
-  {
-    id: 1,
-    name: "أحمد علي",
-    phone: "01001234567",
-    grade: "first_secondary",
-  },
-  {
-    id: 2,
-    name: "سارة محمد",
-    phone: "01007654321",
-    grade: "second_secondary",
-  },
-  {
-    id: 3,
-    name: "يوسف خالد",
-    phone: "01122334455",
-    grade: "third_secondary",
-  },
-];
-
-export default function StudentsTable() {
+export default function StudentsTable({
+  students,
+  isLoading = false,
+}: StudentsTableProps) {
   const navigate = useNavigate();
   const [search, setSearch] = useState("");
 
@@ -48,17 +28,17 @@ export default function StudentsTable() {
     }
 
     return students.filter((student) =>
-      [student.name, student.phone].some((value) =>
+      [student.fullName, student.phone].some((value) =>
         value.toLowerCase().includes(normalizedSearch),
       ),
     );
-  }, [search]);
+  }, [search, students]);
 
-  const columns = useMemo<TableColumn<StudentRow>[]>(
+  const columns = useMemo<TableColumn<Student>[]>(
     () => [
       {
         name: "اسم الطالب",
-        selector: (row) => row.name,
+        selector: (row) => row.fullName,
         sortable: true,
         grow: 1.4,
       },
@@ -68,7 +48,7 @@ export default function StudentsTable() {
       },
       {
         name: "الصف",
-        cell: (row) => <GradeBadge grade={row.grade} />,
+        cell: (row) => <GradeBadge grade={row.gradeLevel} />,
       },
       {
         name: "",
@@ -76,7 +56,7 @@ export default function StudentsTable() {
           <Button
             variant="ghost"
             className="inline-flex items-center gap-2 px-3 py-1.5 text-sm"
-            onClick={() => navigate(`/students/${row.id}`)}
+            onClick={() => navigate(`${row.id}`)}
           >
             <Icon icon="solar:eye-linear" className="size-4" />
             <span>شوفني</span>
@@ -115,6 +95,13 @@ export default function StudentsTable() {
       <Table
         columns={columns}
         data={filteredStudents}
+        progressPending={isLoading}
+        progressComponent={
+          <div className="py-6 text-sm text-subTitle">جاري تحميل الطلاب...</div>
+        }
+        noDataComponent={
+          <div className="py-6 text-sm text-subTitle">لا يوجد طلاب لعرضهم</div>
+        }
         pagination
         responsive
         highlightOnHover

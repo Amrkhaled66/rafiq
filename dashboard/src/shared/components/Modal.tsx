@@ -77,7 +77,7 @@ const Model = ({
         {children}
       </div>
 
-      {isOpen && <Overlay onClick={onClose} />}
+      <Overlay isOpen={isOpen} onClick={onClose} />
     </>,
     document.body,
   );

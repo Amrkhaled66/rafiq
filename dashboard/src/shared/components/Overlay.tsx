@@ -1,8 +1,11 @@
 
-const Overlay = ({ onClick }: { onClick: () => void }) => {
+import clsx from 'clsx';
+const Overlay = ({ onClick, isOpen }: { onClick: () => void; isOpen: boolean }) => {
+
+  if (!isOpen) return null;
   return (
     <div
-      className="fixed inset-0 z-40 bg-black/50 lg:pointer-events-none lg:hidden"
+      className={clsx("fixed inset-0 z-80 bg-black/50")}
       onClick={onClick}
     />
   );

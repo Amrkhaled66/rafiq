@@ -6,9 +6,10 @@ import { AppProviders } from "@/app/providers";
 import { authRoutes } from "@/features/admin/auth/routes";
 import useScrollToTop from "@/shared/hooks/useScrollToTop";
 import { urls } from "@/shared/const/urls";
-
+import { useAxiosInterceptor } from "@/shared/hooks/useAxiosInterceptor";
 function RouterProvidersLayout(): ReactElement {
   useScrollToTop();
+  useAxiosInterceptor();
   return (
     <AppProviders>
       <Outlet />

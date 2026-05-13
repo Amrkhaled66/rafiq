@@ -76,6 +76,7 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--main-font), sans-serif;
+  direction: rtl;
 }
 
 html {
