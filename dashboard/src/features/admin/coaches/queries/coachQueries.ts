@@ -8,9 +8,11 @@ import {
   getCoachOverview,
   listCoaches,
   listCoachPlans,
+  updateCoach,
   type ListCoachPlansParams,
   type ListCoachesParams,
 } from "@/features/admin/coaches/services/coachService";
+import type { UpdateCoachFormValues } from "@/features/admin/coaches/schema/updateCoachSchema";
 
 export const coachesQueryKey = ["admin-coaches"] as const;
 export const coachOverviewQueryKey = ["admin-coach-overview"] as const;
@@ -51,6 +53,24 @@ export function useCreateCoachMutation() {
       await queryClient.invalidateQueries({
         queryKey: coachesQueryKey,
       });
+    },
+  });
+}
+
+export function useUpdateCoachMutation(id: number) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (values: UpdateCoachFormValues) => updateCoach(id, values),
+    onSuccess: async () => {
+      await Promise.all([
+        queryClient.invalidateQueries({
+          queryKey: coachesQueryKey,
+        }),
+        queryClient.invalidateQueries({
+          queryKey: [...coachOverviewQueryKey, id],
+        }),
+      ]);
     },
   });
 }

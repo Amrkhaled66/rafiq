@@ -1,5 +1,7 @@
 import { Icon } from "@iconify/react";
 import type { CoachProfile } from "@/features/admin/coaches/services/coachService";
+import UpdateCoachInfoModal from "@/features/admin/coaches/components/CoachPage/UpdateCoachInfoModal";
+import Button from "@/shared/components/Button";
 import { formatProfileDate, getUserInitials } from "@/shared/utils/profile";
 
 export default function CoachHeader({ coach }: { coach: CoachProfile }) {
@@ -35,9 +37,20 @@ export default function CoachHeader({ coach }: { coach: CoachProfile }) {
                 icon="solar:calendar-mark-linear"
                 className="text-brand-primary size-4"
               />
-              <span>تاريخ إنشاء الحساب: {formatProfileDate(coach.createdAt ?? "")}</span>
+              <span>
+                تاريخ إنشاء الحساب: {formatProfileDate(coach.createdAt ?? "")}
+              </span>
             </div>
           </div>
+        </div>
+
+        <div className="flex justify-end">
+          <UpdateCoachInfoModal coach={coach}>
+            <Button variant="outline" className="inline-flex items-center gap-2">
+              <Icon icon="solar:pen-2-linear" className="size-4" />
+              <span>تعديل البيانات</span>
+            </Button>
+          </UpdateCoachInfoModal>
         </div>
       </div>
     </section>

@@ -1,5 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { ListCoachPlansQueryDto } from './dto/list-coach-plans-query.dto';
+import { UpdateCoachDto } from './dto/update-coach.dto';
 import { ListCoachesQueryDto } from './dto/list-coaches-query.dto';
 import {
   CoachesRepository,
@@ -7,6 +8,8 @@ import {
   type CoachPlanRow,
   type CoachRow,
 } from './coaches.repository';
+import { UsersService } from '../users/users.service';
+import type { AuthenticatedUser } from '../authorization/types/authenticated-user.type';
 
 type PublicCoach = Omit<CoachRow, 'password'>;
 type PublicCoachOverview = {
@@ -23,7 +26,10 @@ type PublicCoachOverview = {
 
 @Injectable()
 export class CoachesService {
-  constructor(private readonly coachesRepository: CoachesRepository) {}
+  constructor(
+    private readonly coachesRepository: CoachesRepository,
+    private readonly usersService: UsersService,
+  ) {}
 
   async listCoaches(query: ListCoachesQueryDto) {
     const result = await this.coachesRepository.list(query);
@@ -86,6 +92,30 @@ export class CoachesService {
       page: result.page,
       total: result.total,
     };
+  }
+
+  async updateCoach(
+    id: number,
+    dto: UpdateCoachDto,
+    actor: AuthenticatedUser,
+  ): Promise<PublicCoach> {
+    const coach = await this.coachesRepository.findById(id);
+
+    if (!coach) {
+      throw new NotFoundException('Coach not found');
+    }
+
+    const updatedCoach = await this.usersService.updateUser(
+      id,
+      {
+        fullName: dto.fullName,
+        password: dto.password,
+        phone: dto.phone,
+      },
+      actor,
+    );
+
+    return updatedCoach as PublicCoach;
   }
 
   private toPublicCoach(coach: CoachRow): PublicCoach {

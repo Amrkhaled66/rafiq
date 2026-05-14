@@ -3,7 +3,7 @@ import CoachPage from "./pages/CoachPage";
 import CoachesPage from "./pages/CoachesPage";
 
 export const coachesRoutes: RouteObject = {
-  path: "trainers",
+  path: "coaches",
   children: [
     {
       index: true,

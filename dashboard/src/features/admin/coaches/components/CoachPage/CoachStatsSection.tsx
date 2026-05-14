@@ -14,19 +14,23 @@ export default function CoachStatsSection({
           title="إجمالي الطلاب"
           value={stats.totalAssignedStudents}
           color="#d00507"
-          icon={<Icon icon="solar:users-group-rounded-linear" className="size-7" />}
+          icon={
+            <Icon icon="solar:users-group-rounded-linear" className="size-7" />
+          }
         />
-        <StatCard
+        {/* <StatCard
           title="المهام الفائتة"
           value={stats.missedTasks}
           color="#be123c"
           icon={<Icon icon="solar:danger-triangle-linear" className="size-7" />}
-        />
+        /> */}
         <StatCard
           title="الخطط المنشأة"
           value={stats.createdPlans}
           color="#1f7a5a"
-          icon={<Icon icon="solar:notebook-bookmark-linear" className="size-7" />}
+          icon={
+            <Icon icon="solar:notebook-bookmark-linear" className="size-7" />
+          }
         />
       </div>
     </section>

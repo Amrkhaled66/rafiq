@@ -1,4 +1,5 @@
 import type { AddCoachFormValues } from "@/features/admin/coaches/schema/addCoachSchema";
+import type { UpdateCoachFormValues } from "@/features/admin/coaches/schema/updateCoachSchema";
 import { api } from "@/lib/api";
 import { USER_ROLES, type IUser } from "@/shared/interfaces/User";
 
@@ -74,6 +75,24 @@ export async function createCoach(payload: AddCoachFormValues): Promise<IUser> {
 
 export async function getCoach(id: number): Promise<Coach> {
   const { data } = await api.get<Coach>(`/coaches/${id}`);
+  return data;
+}
+
+export async function updateCoach(
+  id: number,
+  payload: UpdateCoachFormValues,
+): Promise<CoachProfile> {
+  const normalizedPayload = {
+    fullName: payload.fullName,
+    phone: payload.phone,
+    ...(payload.password.trim() ? { password: payload.password } : {}),
+  };
+
+  const { data } = await api.patch<CoachProfile>(
+    `/coaches/${id}`,
+    normalizedPayload,
+  );
+
   return data;
 }
 

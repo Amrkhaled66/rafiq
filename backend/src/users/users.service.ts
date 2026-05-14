@@ -76,6 +76,12 @@ export class UsersService {
       updatePayload.phone = dto.phone.trim();
     }
 
+    if (dto.password !== undefined) {
+      updatePayload.password = await this.authService.hashPassword(
+        dto.password.trim(),
+      );
+    }
+
     if (dto.role !== undefined) {
       updatePayload.role = dto.role;
     }

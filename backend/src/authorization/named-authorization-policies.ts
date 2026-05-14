@@ -23,6 +23,10 @@ export const namedAuthorizationPolicies: NamedAuthorizationPolicy[] = [
     requirements: [requireRole('super_admin')],
   },
   {
+    name: 'coaches.update',
+    requirements: [requireRole('super_admin')],
+  },
+  {
     name: 'students.read',
     lookup: { key: 'id', kind: 'resourceId', source: 'params' },
     requirements: [

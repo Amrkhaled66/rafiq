@@ -94,20 +94,7 @@ export class CoachesRepository {
         assignedStudentsCount: sql<number>`count(${coachAssignments.studentId})`,
       })
       .from(users)
-      .leftJoin(coachAssignments, eq(users.id, coachAssignments.coachId))
-      .where(and(eq(users.id, id), eq(users.role, 'coach')))
-      .groupBy(
-        users.id,
-        users.fullName,
-        users.phone,
-        users.password,
-        users.role,
-        users.createdAt,
-        users.updatedAt,
-        users.deletedAt,
-      )
-      .limit(1);
-
+      .where(and(eq(users.id, id), eq(users.role, 'coach')));
     return coach as CoachRow | undefined;
   }
 

@@ -1,17 +1,22 @@
 import {
+  Body,
   Controller,
   Get,
   Param,
   ParseIntPipe,
+  Patch,
   Query,
   UseGuards,
 } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { AuthorizationGuard } from '../authorization/authorization.guard';
+import { CurrentUser } from '../authorization/decorators/current-user.decorator';
 import { RequirePolicy } from '../authorization/decorators/require-policy.decorator';
+import type { AuthenticatedUser } from '../authorization/types/authenticated-user.type';
 import { ListCoachPlansQueryDto } from './dto/list-coach-plans-query.dto';
 import { CoachesService } from './coaches.service';
 import { ListCoachesQueryDto } from './dto/list-coaches-query.dto';
+import { UpdateCoachDto } from './dto/update-coach.dto';
 
 @Controller('coaches')
 @UseGuards(JwtAuthGuard, AuthorizationGuard)
@@ -43,5 +48,15 @@ export class CoachesController {
     @Query() query: ListCoachPlansQueryDto,
   ) {
     return this.coachesService.listCoachPlans(id, query);
+  }
+
+  @Patch(':id')
+  @RequirePolicy('coaches.update')
+  updateCoach(
+    @Param('id', ParseIntPipe) id: number,
+    @CurrentUser() user: AuthenticatedUser,
+    @Body() dto: UpdateCoachDto,
+  ) {
+    return this.coachesService.updateCoach(id, dto, user);
   }
 }

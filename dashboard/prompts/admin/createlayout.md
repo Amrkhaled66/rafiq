@@ -52,33 +52,33 @@ Requirements:
 
 10. Sidebar pages should include these items:
 
-   - الرئيسية
-     icon: material-symbols:grid-view-rounded
-     link: /
+- الرئيسية
+  icon: material-symbols:grid-view-rounded
+  link: /
 
-   - التحليلات
-     icon: material-symbols:analytics-outline
-     link: /analytics
+- التحليلات
+  icon: material-symbols:analytics-outline
+  link: /analytics
 
-   - الطلاب
-     icon: mdi:school-outline
-     link: /students
+- الطلاب
+  icon: mdi:school-outline
+  link: /students
 
-   - المدربين
-     icon: fluent:people-team-24-regular
-     link: /trainers
+- المدربين
+  icon: fluent:people-team-24-regular
+  link: /coaches
 
-   - الاشتراكات
-     icon: material-symbols:subscriptions-outline
-     link: /subscriptions
+- الاشتراكات
+  icon: material-symbols:subscriptions-outline
+  link: /subscriptions
 
-   - المهام الفائتة
-     icon: material-symbols:event-busy-outline
-     link: /missed-tasks
+- المهام الفائتة
+  icon: material-symbols:event-busy-outline
+  link: /missed-tasks
 
-   - الجلسات النشطة
-     icon: material-symbols:timer-outline
-     link: /active-sessions
+- الجلسات النشطة
+  icon: material-symbols:timer-outline
+  link: /active-sessions
 
 11. Main content area should take the remaining width beside the sidebar.
     The sidebar should have a fixed width similar to the screenshot.
@@ -86,5 +86,6 @@ Requirements:
 12. Make the code clean, typed, reusable, and suitable for a React + TypeScript + Tailwind project.
 
 Expected output:
+
 - src/layouts/MainLayout.tsx
 - Updated src/app/routes.ts

@@ -25,7 +25,7 @@ const sidebarItems: SidebarMenuItem[] = [
   {
     icon: "fluent:people-team-24-regular",
     label: "المدربين",
-    path: "trainers",
+    path: "coaches",
   },
   {
     icon: "material-symbols:subscriptions-outline",
@@ -58,7 +58,7 @@ export default function DashBoardLayout() {
         logoSrc={logo}
       />
 
-      <main className="bg-background relative space-y min-w-0 flex-1 p-4 md:p-6 lg:p-8">
+      <main className="bg-background space-y relative min-w-0 flex-1 p-4 md:p-6 lg:p-8">
         {/* <div className="min-h-18  drop-shadow-md bg-white">
         </div> */}
         <div className="mb-4 flex lg:hidden">
