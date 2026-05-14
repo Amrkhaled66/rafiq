@@ -1,7 +1,6 @@
 import { ForbiddenException, Injectable } from '@nestjs/common';
 import { AuthorizationPolicyService } from './authorization-policy.service';
 import { AuthenticatedUser } from './types/authenticated-user.type';
-import { AuthorizationRequirement } from './types/authorization.types';
 
 @Injectable()
 export class AuthorizationService {
@@ -9,19 +8,19 @@ export class AuthorizationService {
     private readonly authorizationPolicyService: AuthorizationPolicyService,
   ) {}
 
-  async assertAuthorized(
+  async assertNamedPolicyAuthorized(
     user: AuthenticatedUser | undefined,
-    requirement: AuthorizationRequirement,
-    lookupValue?: unknown,
+    policyName: string,
+    request: Record<string, unknown>,
   ): Promise<void> {
     if (!user) {
       throw new ForbiddenException('Authenticated user context is missing');
     }
 
-    const decision = await this.authorizationPolicyService.authorize(
+    const decision = await this.authorizationPolicyService.authorizeNamedPolicy(
       user,
-      requirement,
-      lookupValue,
+      policyName,
+      request,
     );
 
     if (decision === 'action_denied') {

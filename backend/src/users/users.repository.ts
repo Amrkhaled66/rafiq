@@ -10,13 +10,16 @@ import {
   sql,
 } from 'drizzle-orm';
 import type { SQL } from 'drizzle-orm';
-import { users } from '../db';
+import { coachAssignments, users } from '../db';
 import { db } from '../db/db.module';
 import type { Database } from '../db/db.module';
 import { ListUsersQueryDto } from './dto/list-users-query.dto';
 
 export type UserRow = typeof users.$inferSelect;
 export type UserInsert = typeof users.$inferInsert;
+export type ListUsersScope =
+  | { type: 'all' }
+  | { coachId: number; type: 'assigned_students' };
 
 @Injectable()
 export class UsersRepository {
@@ -55,27 +58,41 @@ export class UsersRepository {
     });
   }
 
-  async list(query: ListUsersQueryDto) {
+  async list(query: ListUsersQueryDto, scope: ListUsersScope) {
     const page = query.page ?? 1;
     const limit = query.limit ?? 20;
     const offset = (page - 1) * limit;
-    const whereClause = this.buildListWhereClause(query);
+    const whereClause = this.buildListWhereClause(query, scope);
 
-    const items = await this.database
-      .select()
+    const itemsQuery = this.database
+      .select({ user: users })
       .from(users)
       .where(whereClause)
       .orderBy(desc(users.createdAt))
       .limit(limit)
       .offset(offset);
 
-    const [{ count }] = await this.database
+    const countQuery = this.database
       .select({ count: sql<number>`count(*)` })
       .from(users)
       .where(whereClause);
 
+    if (scope.type === 'assigned_students') {
+      itemsQuery.innerJoin(
+        coachAssignments,
+        eq(users.id, coachAssignments.studentId),
+      );
+      countQuery.innerJoin(
+        coachAssignments,
+        eq(users.id, coachAssignments.studentId),
+      );
+    }
+
+    const items = await itemsQuery;
+    const [{ count }] = await countQuery;
+
     return {
-      items,
+      items: items.map((item) => item.user),
       page,
       limit,
       total: Number(count),
@@ -107,8 +124,16 @@ export class UsersRepository {
       .where(eq(users.id, id));
   }
 
-  private buildListWhereClause(query: ListUsersQueryDto): SQL | undefined {
+  private buildListWhereClause(
+    query: ListUsersQueryDto,
+    scope: ListUsersScope,
+  ): SQL | undefined {
     const conditions: SQL[] = [];
+
+    if (scope.type === 'assigned_students') {
+      conditions.push(eq(coachAssignments.coachId, scope.coachId));
+      conditions.push(eq(users.role, 'student'));
+    }
 
     if (query.role) {
       conditions.push(eq(users.role, query.role));

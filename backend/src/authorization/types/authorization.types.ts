@@ -38,9 +38,3 @@ export interface AuthorizationLookup {
   kind: AuthorizationLookupKind;
   source: RequestLookupSource;
 }
-
-export interface AuthorizationRequirement {
-  action: AuthorizationAction;
-  resource: AuthorizationResource;
-  lookup?: AuthorizationLookup;
-}

@@ -1,91 +1,58 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { db } from '../db/db.module';
 import type { Database } from '../db/db.module';
-import { authorizationPolicies } from './authorization-policies';
+import { namedAuthorizationPolicies } from './named-authorization-policies';
 import {
   AuthorizationDecision,
-  AuthorizationPolicy,
+  NamedAuthorizationPolicy,
 } from './authorization-policy.types';
-import { AuthenticatedUser, AppRole } from './types/authenticated-user.type';
-import {
-  AuthorizationAction,
-  AuthorizationLookup,
-  AuthorizationRequirement,
-  AuthorizationResource,
-} from './types/authorization.types';
+import { AuthenticatedUser } from './types/authenticated-user.type';
 
 @Injectable()
 export class AuthorizationPolicyService {
   constructor(@Inject(db) private readonly database: Database) {}
 
-  async authorize(
+  async authorizeNamedPolicy(
     user: AuthenticatedUser,
-    requirement: AuthorizationRequirement,
-    rawValue?: unknown,
+    policyName: string,
+    request: Record<string, unknown>,
   ): Promise<AuthorizationDecision> {
-    const actionPolicy = this.findPolicy(
-      user.role,
-      requirement.resource,
-      requirement.action,
-    );
+    const policy = this.findNamedPolicy(policyName);
 
-    if (!actionPolicy) {
+    if (!policy) {
       return 'action_denied';
     }
 
-    if (!requirement.lookup) {
-      return actionPolicy.lookupKind ? 'scope_denied' : 'allowed';
-    }
+    const value = policy.lookup
+      ? this.parseLookupValue(
+          (request[policy.lookup.source] as Record<string, unknown> | undefined)?.[
+            policy.lookup.key
+          ],
+        )
+      : undefined;
 
-    if (actionPolicy.action === 'manage' && !actionPolicy.lookupKind) {
-      return 'allowed';
-    }
-
-    const scopedPolicy = this.findPolicy(
-      user.role,
-      requirement.resource,
-      requirement.action,
-      requirement.lookup,
-    );
-
-    if (!scopedPolicy) {
+    if (policy.lookup && value === null) {
       return 'scope_denied';
     }
 
-    const value = this.parseLookupValue(rawValue);
+    for (const requirement of policy.requirements) {
+      const allowed = await requirement.evaluate({
+        database: this.database,
+        request,
+        user,
+        value: value ?? undefined,
+      });
 
-    if (value === null) {
-      return 'scope_denied';
+      if (!allowed) {
+        return requirement.failure;
+      }
     }
 
-    if (!scopedPolicy.evaluate) {
-      return 'allowed';
-    }
-
-    const allowed = await scopedPolicy.evaluate({
-      database: this.database,
-      user,
-      value,
-    });
-
-    return allowed ? 'allowed' : 'scope_denied';
+    return 'allowed';
   }
 
-  private findPolicy(
-    role: AppRole,
-    resource: AuthorizationResource,
-    action: AuthorizationAction,
-    lookup?: AuthorizationLookup,
-  ): AuthorizationPolicy | undefined {
-    return authorizationPolicies.find(
-      (policy) =>
-        policy.role === role &&
-        policy.resource === resource &&
-        (policy.action === 'manage' || policy.action === action) &&
-        (lookup
-          ? policy.lookupKind === lookup.kind
-          : policy.lookupKind === undefined),
-    );
+  private findNamedPolicy(policyName: string): NamedAuthorizationPolicy | undefined {
+    return namedAuthorizationPolicies.find((policy) => policy.name === policyName);
   }
 
   private parseLookupValue(value: unknown): number | null {

@@ -9,7 +9,12 @@ import type { AuthenticatedUser } from '../authorization/types/authenticated-use
 import { ListUsersQueryDto } from './dto/list-users-query.dto';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { UserInsert, UserRow, UsersRepository } from './users.repository';
+import {
+  ListUsersScope,
+  UserInsert,
+  UserRow,
+  UsersRepository,
+} from './users.repository';
 
 type PublicUser = Omit<UserRow, 'password'>;
 
@@ -50,8 +55,9 @@ export class UsersService {
     return this.toPublicUser(user);
   }
 
-  async listUsers(query: ListUsersQueryDto) {
-    const result = await this.usersRepository.list(query);
+  async listUsers(user: AuthenticatedUser, query: ListUsersQueryDto) {
+    const scope = this.resolveListUsersScope(user);
+    const result = await this.usersRepository.list(query, scope);
 
     return {
       data: result.items.map((item) => this.toPublicUser(item)),
@@ -156,5 +162,20 @@ export class UsersService {
   private toPublicUser(user: UserRow): PublicUser {
     const { password, ...publicUser } = user;
     return publicUser;
+  }
+
+  private resolveListUsersScope(user: AuthenticatedUser): ListUsersScope {
+    if (user.role === 'super_admin') {
+      return { type: 'all' };
+    }
+
+    if (user.role === 'coach') {
+      return {
+        coachId: user.sub,
+        type: 'assigned_students',
+      };
+    }
+
+    throw new ForbiddenException('You are not allowed to list users');
   }
 }
