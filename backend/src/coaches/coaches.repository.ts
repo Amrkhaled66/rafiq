@@ -84,14 +84,6 @@ export class CoachesRepository {
     const [coach] = await this.database
       .select({
         id: users.id,
-        fullName: users.fullName,
-        phone: users.phone,
-        password: users.password,
-        role: users.role,
-        createdAt: users.createdAt,
-        updatedAt: users.updatedAt,
-        deletedAt: users.deletedAt,
-        assignedStudentsCount: sql<number>`count(${coachAssignments.studentId})`,
       })
       .from(users)
       .where(and(eq(users.id, id), eq(users.role, 'coach')));

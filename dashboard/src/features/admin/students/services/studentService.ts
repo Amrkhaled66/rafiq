@@ -3,6 +3,7 @@ import type { EgyptCityKey } from "@/shared/const/cities";
 import type { StudentGrade } from "@/shared/const/grades";
 import type { UserRole } from "@/shared/interfaces/User";
 import type { AddStudentFormValues } from "@/features/admin/students/schema/addStudentSchema";
+import type { UpdateStudentFormValues } from "@/features/admin/students/schema/updateStudentSchema";
 
 export type Student = {
   id: number;
@@ -79,5 +80,13 @@ export async function createStudent(
 
 export async function getStudentOverview(id: number): Promise<StudentOverview> {
   const { data } = await api.get<StudentOverview>(`/students/${id}/overview`);
+  return data;
+}
+
+export async function updateStudent(
+  id: number,
+  payload: UpdateStudentFormValues,
+): Promise<Student> {
+  const { data } = await api.patch<Student>(`/students/${id}`, payload);
   return data;
 }

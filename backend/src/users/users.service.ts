@@ -34,11 +34,11 @@ export class UsersService {
     const hashedPassword = await this.authService.hashPassword(dto.password);
 
     const createdUser = await this.usersRepository.create({
-        fullName: dto.fullName.trim(),
-        phone: dto.phone.trim(),
-        password: hashedPassword,
-        role: dto.role,
-      });
+      fullName: dto.fullName.trim(),
+      phone: dto.phone.trim(),
+      password: hashedPassword,
+      role: dto.role,
+    });
 
     return this.toPublicUser(createdUser);
   }
@@ -86,7 +86,10 @@ export class UsersService {
       updatePayload.role = dto.role;
     }
 
-    const updatedUser = await this.usersRepository.updateById(id, updatePayload);
+    const updatedUser = await this.usersRepository.updateById(
+      id,
+      updatePayload,
+    );
 
     return this.toPublicUser(updatedUser);
   }

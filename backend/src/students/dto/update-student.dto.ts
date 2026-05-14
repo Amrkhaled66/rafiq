@@ -1,4 +1,4 @@
-import { IsEnum, IsOptional, IsString, MaxLength } from 'class-validator';
+import { IsEnum, IsOptional, IsString, MaxLength, MinLength } from 'class-validator';
 import { EGYPT_CITY_ENUM_VALUES } from '../../common/constants';
 import { gradeLevelEnum } from '../../db';
 
@@ -25,4 +25,10 @@ export class UpdateStudentDto {
   @IsOptional()
   @IsEnum(gradeLevelEnum.enumValues)
   gradeLevel?: (typeof gradeLevelEnum.enumValues)[number];
+
+  @IsOptional()
+  @IsString()
+  @MinLength(6)
+  @MaxLength(255)
+  password?: string;
 }

@@ -1,7 +1,4 @@
-import {
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import type { AuthenticatedUser } from '../authorization/types/authenticated-user.type';
 import { UsersService } from '../users/users.service';
 import { CreateUserDto } from '../users/dto/create-user.dto';
@@ -100,7 +97,7 @@ export class StudentsService {
   ): Promise<StudentAggregate> {
     await this.findStudentByIdOrThrow(id);
 
-    const userUpdate: Partial<Pick<UpdateStudentDto, 'fullName' | 'phone'>> =
+    const userUpdate: Partial<Pick<UpdateStudentDto, 'fullName' | 'phone' | 'password'>> =
       {};
 
     if (dto.fullName !== undefined) {
@@ -109,6 +106,10 @@ export class StudentsService {
 
     if (dto.phone !== undefined) {
       userUpdate.phone = dto.phone;
+    }
+
+    if (dto.password !== undefined) {
+      userUpdate.password = dto.password;
     }
 
     if (Object.keys(userUpdate).length > 0) {

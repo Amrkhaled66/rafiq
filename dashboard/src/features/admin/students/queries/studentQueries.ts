@@ -7,8 +7,10 @@ import {
   createStudent,
   getStudentOverview,
   listStudents,
+  updateStudent,
   type ListStudentsParams,
 } from "@/features/admin/students/services/studentService";
+import type { UpdateStudentFormValues } from "@/features/admin/students/schema/updateStudentSchema";
 
 export const studentsQueryKey = ["admin-students"] as const;
 export const studentOverviewQueryKey = ["admin-student-overview"] as const;
@@ -37,6 +39,24 @@ export function useCreateStudentMutation() {
       await queryClient.invalidateQueries({
         queryKey: studentsQueryKey,
       });
+    },
+  });
+}
+
+export function useUpdateStudentMutation(id: number) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (values: UpdateStudentFormValues) => updateStudent(id, values),
+    onSuccess: async () => {
+      await Promise.all([
+        queryClient.invalidateQueries({
+          queryKey: studentsQueryKey,
+        }),
+        queryClient.invalidateQueries({
+          queryKey: [...studentOverviewQueryKey, id],
+        }),
+      ]);
     },
   });
 }

@@ -1,4 +1,6 @@
 import { Icon } from "@iconify/react";
+import { useNavigate } from "react-router-dom";
+import UpdateStudentModal from "@/features/admin/students/components/StudentPage/UpdateStudentModal";
 import type { Student } from "@/features/admin/students/services/studentService";
 import Button from "@/shared/components/Button";
 import GradeBadge from "@/shared/components/GradeBadge";
@@ -7,7 +9,6 @@ import {
   getStudentInitials,
   normalizePhoneForWhatsapp,
 } from "./studentPageUtils";
-import { useNavigate } from "react-router-dom";
 
 export default function StudentHeader({ student }: { student: Student }) {
   const initials = getStudentInitials(student.fullName);
@@ -68,20 +69,18 @@ export default function StudentHeader({ student }: { student: Student }) {
             }}
             className="w-full text-sm"
           >
-            عرض الخطط{" "}
+            عرض الخطط
           </Button>
 
           <Button disabled variant="outline" className="w-full text-sm">
             عرض الدروس
           </Button>
 
-          <Button
-            disabled
-            variant="outline"
-            className="col-span-2 w-full text-sm"
-          >
-            تعديل البيانات
-          </Button>
+          <UpdateStudentModal student={student}>
+            <Button variant="outline" className="col-span-2 w-full text-sm">
+              تعديل البيانات
+            </Button>
+          </UpdateStudentModal>
 
           <a
             href={`https://wa.me/${whatsappPhone}`}
