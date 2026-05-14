@@ -5,13 +5,16 @@ import {
 } from "@tanstack/react-query";
 import {
   createCoach,
-  getCoach,
+  getCoachOverview,
   listCoaches,
+  listCoachPlans,
+  type ListCoachPlansParams,
   type ListCoachesParams,
 } from "@/features/admin/coaches/services/coachService";
 
 export const coachesQueryKey = ["admin-coaches"] as const;
-export const coachProfileQueryKey = ["admin-coach-profile"] as const;
+export const coachOverviewQueryKey = ["admin-coach-overview"] as const;
+export const coachPlansQueryKey = ["admin-coach-plans"] as const;
 
 export function useCoachesQuery(params: ListCoachesParams = {}) {
   return useQuery({
@@ -20,10 +23,21 @@ export function useCoachesQuery(params: ListCoachesParams = {}) {
   });
 }
 
-export function useCoachProfileQuery(id: number) {
+export function useCoachOverviewQuery(id: number) {
   return useQuery({
-    queryKey: [...coachProfileQueryKey, id],
-    queryFn: () => getCoach(id),
+    queryKey: [...coachOverviewQueryKey, id],
+    queryFn: () => getCoachOverview(id),
+    enabled: Number.isFinite(id) && id > 0,
+  });
+}
+
+export function useCoachPlansQuery(
+  id: number,
+  params: ListCoachPlansParams = {},
+) {
+  return useQuery({
+    queryKey: [...coachPlansQueryKey, id, params],
+    queryFn: () => listCoachPlans(id, params),
     enabled: Number.isFinite(id) && id > 0,
   });
 }

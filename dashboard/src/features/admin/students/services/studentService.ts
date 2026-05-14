@@ -25,6 +25,7 @@ export type StudentsListResponse = {
 };
 
 export type ListStudentsParams = {
+  coachId?: number;
   page?: number;
   limit?: number;
   search?: string;

@@ -24,11 +24,6 @@ import { StudentsService } from './students.service';
 export class StudentsController {
   constructor(private readonly studentsService: StudentsService) {}
 
-  @Get('me')
-  getMe(@CurrentUser() user: AuthenticatedUser) {
-    return this.studentsService.getMe(user);
-  }
-
   @Get()
   @RequirePolicy('students.list')
   listStudents(
@@ -42,12 +37,6 @@ export class StudentsController {
   @RequirePolicy('students.read')
   getStudentOverview(@Param('id', ParseIntPipe) id: number) {
     return this.studentsService.getStudentOverview(id);
-  }
-
-  @Get(':id')
-  @RequirePolicy('students.read')
-  getStudentById(@Param('id', ParseIntPipe) id: number) {
-    return this.studentsService.getStudentById(id);
   }
 
   @Post()

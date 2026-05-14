@@ -53,6 +53,7 @@ export default function CoachesTable({
         name: "إجمالي الطلاب",
         selector: (row) => row.assignedStudentsCount,
         center: true,
+        sortable:true
       },
       {
         name: "",
@@ -63,15 +64,13 @@ export default function CoachesTable({
             onClick={() => navigate(`${row.id}`)}
           >
             <Icon icon="solar:eye-linear" className="size-4" />
-            <span>الملف الشخصي</span>
+            <span>شوفني</span>
           </Button>
         ),
-        ignoreRowClick: true,
-        allowOverflow: true,
         button: true,
       },
     ],
-    [navigate],
+    [],
   );
 
   return (

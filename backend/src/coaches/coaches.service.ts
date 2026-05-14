@@ -1,0 +1,99 @@
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { ListCoachPlansQueryDto } from './dto/list-coach-plans-query.dto';
+import { ListCoachesQueryDto } from './dto/list-coaches-query.dto';
+import {
+  CoachesRepository,
+  type CoachOverviewRow,
+  type CoachPlanRow,
+  type CoachRow,
+} from './coaches.repository';
+
+type PublicCoach = Omit<CoachRow, 'password'>;
+type PublicCoachOverview = {
+  coach: Omit<
+    CoachOverviewRow,
+    'password' | 'createdPlans' | 'missedTasks' | 'totalAssignedStudents'
+  >;
+  stats: {
+    createdPlans: number;
+    missedTasks: number;
+    totalAssignedStudents: number;
+  };
+};
+
+@Injectable()
+export class CoachesService {
+  constructor(private readonly coachesRepository: CoachesRepository) {}
+
+  async listCoaches(query: ListCoachesQueryDto) {
+    const result = await this.coachesRepository.list(query);
+
+    return {
+      data: result.items.map((item) => this.toPublicCoach(item)),
+      page: result.page,
+      limit: result.limit,
+      total: result.total,
+    };
+  }
+
+  async getCoachById(id: number): Promise<PublicCoach> {
+    const coach = await this.coachesRepository.findById(id);
+
+    if (!coach) {
+      throw new NotFoundException('Coach not found');
+    }
+
+    return this.toPublicCoach(coach);
+  }
+
+  async getCoachOverview(id: number): Promise<PublicCoachOverview> {
+    const coach = await this.coachesRepository.findOverviewById(id);
+
+    if (!coach) {
+      throw new NotFoundException('Coach not found');
+    }
+
+    const {
+      password,
+      createdPlans,
+      missedTasks,
+      totalAssignedStudents,
+      ...publicCoach
+    } = coach;
+
+    return {
+      coach: publicCoach,
+      stats: {
+        createdPlans,
+        missedTasks,
+        totalAssignedStudents,
+      },
+    };
+  }
+
+  async listCoachPlans(id: number, query: ListCoachPlansQueryDto) {
+    const coach = await this.coachesRepository.findById(id);
+
+    if (!coach) {
+      throw new NotFoundException('Coach not found');
+    }
+
+    const result = await this.coachesRepository.listCoachPlans(id, query);
+
+    return {
+      items: result.items.map((item) => this.toPublicCoachPlan(item)),
+      limit: result.limit,
+      page: result.page,
+      total: result.total,
+    };
+  }
+
+  private toPublicCoach(coach: CoachRow): PublicCoach {
+    const { password, ...publicCoach } = coach;
+    return publicCoach;
+  }
+
+  private toPublicCoachPlan(plan: CoachPlanRow): CoachPlanRow {
+    return plan;
+  }
+}

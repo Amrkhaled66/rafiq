@@ -80,7 +80,9 @@ export default function AddCoachModal({ children }: AddCoachModalProps) {
       <Modal isOpen={isOpen} onClose={closeModal}>
         <div className="dashboard-card mx-auto max-w-2xl space-y-6 rounded-3xl p-6 md:p-8">
           <div className="text-start">
-            <h2 className="text-foreground text-2xl font-bold">إضافة مدرب جديد</h2>
+            <h2 className="text-foreground text-2xl font-bold">
+              إضافة مدرب جديد
+            </h2>
           </div>
 
           <form

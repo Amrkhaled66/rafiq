@@ -42,13 +42,13 @@ const Sidebar: React.FC<SidebarProps> = ({
       </div>
 
       <aside
-        className={`fixed top-0 right-0 z-100 flex min-h-screen flex-col border-l border-black/5 bg-white px-4 py-6 transition-all duration-300 lg:relative lg:z-50 lg:shadow-none ${
+        className={`fixed top-0 right-0 z-100 flex min-h-screen lg:max-h-screen flex-col border-l border-black/5 bg-white px-4 py-6 transition-all duration-300 lg:sticky lg:z-50 lg:shadow-none ${
           isOpen
             ? "w-65 translate-x-0"
             : "translate-x-full lg:w-22 lg:translate-x-0"
         }`}
       >
-        <div className="sticky top-3 flex flex-1 flex-col">
+        <div className="sticky top-3 flex flex-1  flex-col">
           <div className="flex items-start justify-between gap-3">
             {isOpen && (
               <div className="flex min-w-0 items-center gap-3 px-2">

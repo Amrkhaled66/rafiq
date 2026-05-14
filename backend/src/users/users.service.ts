@@ -5,20 +5,12 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { AuthService } from '../auth/auth.service';
-import type { AuthenticatedUser } from '../authorization/types/authenticated-user.type';
-import { ListUsersQueryDto } from './dto/list-users-query.dto';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import {
-  ListUsersScope,
-  UserInsert,
-  UserListRow,
-  UserRow,
-  UsersRepository,
-} from './users.repository';
+import type { AuthenticatedUser } from '../authorization/types/authenticated-user.type';
+import { UserInsert, UserRow, UsersRepository } from './users.repository';
 
 type PublicUser = Omit<UserRow, 'password'>;
-type PublicListUser = Omit<UserListRow, 'password'>;
 
 @Injectable()
 export class UsersService {
@@ -26,16 +18,6 @@ export class UsersService {
     private readonly usersRepository: UsersRepository,
     private readonly authService: AuthService,
   ) {}
-
-  async findActiveUserById(id: number): Promise<UserRow> {
-    const user = await this.usersRepository.findActiveById(id);
-
-    if (!user) {
-      throw new NotFoundException('User not found');
-    }
-
-    return user;
-  }
 
   async findActiveUserByPhone(phone: string): Promise<UserRow> {
     const user = await this.usersRepository.findActiveByPhone(phone);
@@ -46,29 +28,6 @@ export class UsersService {
 
     return user;
   }
-
-  async getMe(userId: number): Promise<PublicUser> {
-    const user = await this.findActiveUserById(userId);
-    return this.toPublicUser(user);
-  }
-
-  async getUserById(id: number): Promise<PublicUser> {
-    const user = await this.findUserByIdOrThrow(id);
-    return this.toPublicUser(user);
-  }
-
-  async listUsers(user: AuthenticatedUser, query: ListUsersQueryDto) {
-    const scope = this.resolveListUsersScope(user);
-    const result = await this.usersRepository.list(query, scope);
-
-    return {
-      data: result.items.map((item) => this.toPublicListUser(item)),
-      page: result.page,
-      limit: result.limit,
-      total: result.total,
-    };
-  }
-
   async createUser(dto: CreateUserDto): Promise<PublicUser> {
     await this.ensurePhoneAvailable(dto.phone);
 
@@ -126,16 +85,6 @@ export class UsersService {
     return this.toPublicUser(updatedUser);
   }
 
-  async softDeleteUser(id: number): Promise<void> {
-    const existingUser = await this.findUserByIdOrThrow(id);
-
-    if (existingUser.deletedAt) {
-      return;
-    }
-
-    await this.usersRepository.softDeleteById(id);
-  }
-
   private async findUserByIdOrThrow(id: number): Promise<UserRow> {
     const user = await this.usersRepository.findById(id);
 
@@ -164,25 +113,5 @@ export class UsersService {
   private toPublicUser(user: UserRow): PublicUser {
     const { password, ...publicUser } = user;
     return publicUser;
-  }
-
-  private toPublicListUser(user: UserListRow): PublicListUser {
-    const { password, ...publicUser } = user;
-    return publicUser;
-  }
-
-  private resolveListUsersScope(user: AuthenticatedUser): ListUsersScope {
-    if (user.role === 'super_admin') {
-      return { type: 'all' };
-    }
-
-    if (user.role === 'coach') {
-      return {
-        coachId: user.sub,
-        type: 'assigned_students',
-      };
-    }
-
-    throw new ForbiddenException('You are not allowed to list users');
   }
 }

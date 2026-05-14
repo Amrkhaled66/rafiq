@@ -1,5 +1,4 @@
 import {
-  ForbiddenException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -46,14 +45,6 @@ export class StudentsService {
     private readonly studentsRepository: StudentsRepository,
     private readonly usersService: UsersService,
   ) {}
-
-  async getMe(user: AuthenticatedUser): Promise<StudentAggregate> {
-    return this.findStudentByIdOrThrow(user.sub);
-  }
-
-  async getStudentById(id: number): Promise<StudentAggregate> {
-    return this.findStudentByIdOrThrow(id);
-  }
 
   async getStudentOverview(id: number): Promise<StudentOverview> {
     const student = await this.findStudentByIdOrThrow(id);
