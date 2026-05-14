@@ -30,14 +30,14 @@ export class UsersController {
     return this.usersService.getMe(user.sub);
   }
 
-  @Get()
-  @RequirePolicy('users.list')
-  listUsers(
-    @CurrentUser() user: AuthenticatedUser,
-    @Query() query: ListUsersQueryDto,
-  ) {
-    return this.usersService.listUsers(user, query);
-  }
+  // @Get()
+  // @RequirePolicy('users.list')
+  // listUsers(
+  //   @CurrentUser() user: AuthenticatedUser,
+  //   @Query() query: ListUsersQueryDto,
+  // ) {
+  //   return this.usersService.listUsers(user, query);
+  // }
 
   @Get(':id')
   @RequirePolicy('users.read')

@@ -4,6 +4,7 @@ import {
   count,
   desc,
   eq,
+  ilike,
   isNotNull,
   isNull,
   type SQL,
@@ -33,6 +34,7 @@ export interface StudentListFilters {
   coachId?: number;
   gradeLevel?: StudentProfileRow['gradeLevel'];
   city?: StudentProfileRow['city'];
+  search?: string;
   deletedStatus: ListStudentsQueryDto['deletedStatus'];
 }
 
@@ -164,6 +166,18 @@ export class StudentsRepository {
 
     if (filters.city) {
       conditions.push(eq(studentProfiles.city, filters.city));
+    }
+
+    if (filters.search?.trim()) {
+      const rawSearch = filters.search.trim();
+      const normalizedPhoneSearch = rawSearch.replace(/\D/g, '');
+      const isNumericSearch = normalizedPhoneSearch.length > 0;
+
+      if (isNumericSearch) {
+        conditions.push(ilike(users.phone, `%${normalizedPhoneSearch}%`));
+      } else {
+        conditions.push(ilike(users.fullName, `%${rawSearch}%`));
+      }
     }
 
     if (filters.deletedStatus === 'active') {

@@ -1,39 +1,39 @@
 import { Icon } from "@iconify/react";
-import { useMemo, useState } from "react";
+import { memo, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import type { TableColumn } from "react-data-table-component";
+import type { Student } from "@/features/admin/students/services/studentService";
 import Button from "@/shared/components/Button";
 import FormInput from "@/shared/components/FormInput";
 import GradeBadge from "@/shared/components/GradeBadge";
 import Table from "@/shared/components/Table";
-import type { Student } from "@/features/admin/students/services/studentService";
+import { useDebouncedValue } from "@/shared/utils/useDebouncedValue";
 
 type StudentsTableProps = {
   students: Student[];
+  currentPage: number;
   isLoading?: boolean;
+  rowsPerPage: number;
+  search: string;
+  onPageChange: (page: number) => void;
+  onRowsPerPageChange: (rowsPerPage: number, page: number) => void;
+  onSearchChange: (value: string) => void;
+  totalRows: number;
 };
 
 export default function StudentsTable({
   students,
+  currentPage,
   isLoading = false,
+  rowsPerPage,
+  search,
+  onPageChange,
+  onRowsPerPageChange,
+  onSearchChange,
+  totalRows,
 }: StudentsTableProps) {
   const navigate = useNavigate();
-  const [search, setSearch] = useState("");
-
-  const filteredStudents = useMemo(() => {
-    const normalizedSearch = search.trim().toLowerCase();
-
-    if (!normalizedSearch) {
-      return students;
-    }
-
-    return students.filter((student) =>
-      [student.fullName, student.phone].some((value) =>
-        value.toLowerCase().includes(normalizedSearch),
-      ),
-    );
-  }, [search, students]);
-
+console.log("object")
   const columns = useMemo<TableColumn<Student>[]>(
     () => [
       {
@@ -81,20 +81,16 @@ export default function StudentsTable({
         </div>
 
         <div className="w-full md:max-w-sm">
-          <FormInput
-            label="البحث"
-            name="student-search"
-            placeholder="دور علي الطالب"
-            value={search}
-            onChange={(event) => setSearch(event.target.value)}
-            icon={<Icon icon="solar:magnifer-linear" className="size-4" />}
+          <StudentsSearchField
+            initialValue={search}
+            onSearchChange={onSearchChange}
           />
         </div>
       </div>
 
       <Table
         columns={columns}
-        data={filteredStudents}
+        data={students}
         progressPending={isLoading}
         progressComponent={
           <div className="py-6 text-sm text-subTitle">جاري تحميل الطلاب...</div>
@@ -103,6 +99,13 @@ export default function StudentsTable({
           <div className="py-6 text-sm text-subTitle">لا يوجد طلاب لعرضهم</div>
         }
         pagination
+        paginationDefaultPage={currentPage}
+        paginationPerPage={rowsPerPage}
+        paginationRowsPerPageOptions={[10, 20, 50, 100]}
+        paginationServer
+        paginationTotalRows={totalRows}
+        onChangePage={onPageChange}
+        onChangeRowsPerPage={onRowsPerPageChange}
         responsive
         highlightOnHover
         persistTableHead
@@ -110,3 +113,33 @@ export default function StudentsTable({
     </section>
   );
 }
+
+const StudentsSearchField = memo(function StudentsSearchField({
+  initialValue,
+  onSearchChange,
+}: {
+  initialValue: string;
+  onSearchChange: (value: string) => void;
+}) {
+  const [value, setValue] = useState(initialValue);
+  const debouncedValue = useDebouncedValue(value, 400);
+
+  useEffect(() => {
+    setValue(initialValue);
+  }, [initialValue]);
+
+  useEffect(() => {
+    onSearchChange(debouncedValue);
+  }, [debouncedValue, onSearchChange]);
+
+  return (
+    <FormInput
+      label="البحث"
+      name="student-search"
+      placeholder="ابحث باسم الطالب أو رقم الهاتف"
+      value={value}
+      onChange={(event) => setValue(event.target.value)}
+      icon={<Icon icon="solar:magnifer-linear" className="size-4" />}
+    />
+  );
+});

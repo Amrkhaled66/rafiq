@@ -1,5 +1,5 @@
 import { Type } from 'class-transformer';
-import { IsEnum, IsInt, IsOptional, Max, Min } from 'class-validator';
+import { IsEnum, IsInt, IsOptional, IsString, Max, Min } from 'class-validator';
 import { EGYPT_CITY_ENUM_VALUES } from '../../common/constants';
 import { gradeLevelEnum } from '../../db';
 import {
@@ -28,6 +28,10 @@ export class ListStudentsQueryDto {
   @IsOptional()
   @IsEnum(EGYPT_CITY_ENUM_VALUES)
   city?: (typeof EGYPT_CITY_ENUM_VALUES)[number];
+
+  @IsOptional()
+  @IsString()
+  search?: string;
 
   @IsOptional()
   @IsEnum(USER_DELETED_STATUSES)

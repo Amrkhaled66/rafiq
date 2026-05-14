@@ -73,20 +73,13 @@ export class StudentsService {
   }
 
   async listStudents(actor: AuthenticatedUser, query: ListStudentsQueryDto) {
-    if (
-      actor.role === 'coach' &&
-      query.coachId !== undefined &&
-      query.coachId !== actor.sub
-    ) {
-      throw new ForbiddenException('Coaches can only list their own students');
-    }
-
     const effectiveCoachId = actor.role === 'coach' ? actor.sub : query.coachId;
 
     return this.studentsRepository.listStudents(query.page, query.limit, {
       coachId: effectiveCoachId,
       gradeLevel: query.gradeLevel,
       city: query.city,
+      search: query.search,
       deletedStatus: query.deletedStatus,
     });
   }

@@ -1,5 +1,4 @@
 import { Icon } from "@iconify/react";
-import { Link } from "react-router-dom";
 import type { Student } from "@/features/admin/students/services/studentService";
 import Button from "@/shared/components/Button";
 import GradeBadge from "@/shared/components/GradeBadge";
@@ -9,22 +8,6 @@ import {
   normalizePhoneForWhatsapp,
 } from "./studentPageUtils";
 import { useNavigate } from "react-router-dom";
-function ActionLink({
-  to,
-  children,
-}: {
-  to: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <Link
-      to={to}
-      className="border-brand-primary text-brand-primary hover:text-brand-primary inline-flex items-center justify-center rounded-lg border px-3 py-2 text-sm font-medium transition-all duration-200 hover:bg-transparent"
-    >
-      {children}
-    </Link>
-  );
-}
 
 export default function StudentHeader({ student }: { student: Student }) {
   const initials = getStudentInitials(student.fullName);

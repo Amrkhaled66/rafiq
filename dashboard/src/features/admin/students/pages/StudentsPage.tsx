@@ -1,4 +1,5 @@
 import { Icon } from "@iconify/react";
+import { useEffect, useState } from "react";
 import PageHeader from "@/features/admin/shared/components/PageHeader";
 import StatCard from "@/features/admin/shared/components/StatCard";
 import Button from "@/shared/components/Button";
@@ -7,9 +8,18 @@ import StudentsTable from "../components/StudentsPage/StudentsTable";
 import { useStudentsQuery } from "../queries/studentQueries";
 
 export default function StudentsPage() {
+  const [search, setSearch] = useState("");
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(10);
+
+  useEffect(() => {
+    setPage(1);
+  }, [search]);
+
   const studentsQuery = useStudentsQuery({
-    page: 1,
-    limit: 100,
+    page,
+    limit,
+    search: search.trim() || undefined,
   });
 
   const students = studentsQuery.data?.items ?? [];
@@ -47,7 +57,17 @@ export default function StudentsPage() {
 
       <StudentsTable
         students={students}
-        isLoading={studentsQuery.isLoading}
+        currentPage={studentsQuery.data?.page ?? page}
+        isLoading={studentsQuery.isLoading || studentsQuery.isFetching}
+        rowsPerPage={studentsQuery.data?.limit ?? limit}
+        search={search}
+        onPageChange={setPage}
+        onRowsPerPageChange={(nextLimit, nextPage) => {
+          setLimit(nextLimit);
+          setPage(nextPage);
+        }}
+        onSearchChange={setSearch}
+        totalRows={studentsCount}
       />
     </div>
   );

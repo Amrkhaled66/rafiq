@@ -27,6 +27,7 @@ export type StudentsListResponse = {
 export type ListStudentsParams = {
   page?: number;
   limit?: number;
+  search?: string;
 };
 
 export type StudentOverviewStats = {
