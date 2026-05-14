@@ -1,5 +1,6 @@
 import { type ReactElement } from "react";
 import { createBrowserRouter, Outlet } from "react-router-dom";
+import { coachesRoutes } from "@/features/admin/coaches/routes";
 import { studentsRoutes } from "@/features/admin/students/routes";
 import DashBoardLayout from "@/features/admin/layouts/DashBoardLayout";
 import { AppProviders } from "@/app/providers";
@@ -60,6 +61,7 @@ export const router = createBrowserRouter([
                 index: true,
                 element: dashboardPage,
               },
+              coachesRoutes,
               studentsRoutes,
             ],
           },

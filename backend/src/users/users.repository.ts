@@ -17,6 +17,7 @@ import { ListUsersQueryDto } from './dto/list-users-query.dto';
 
 export type UserRow = typeof users.$inferSelect;
 export type UserInsert = typeof users.$inferInsert;
+export type UserListRow = UserRow & { assignedStudentsCount: number };
 export type ListUsersScope =
   | { type: 'all' }
   | { coachId: number; type: 'assigned_students' };
@@ -63,14 +64,61 @@ export class UsersRepository {
     const limit = query.limit ?? 20;
     const offset = (page - 1) * limit;
     const whereClause = this.buildListWhereClause(query, scope);
-
-    const itemsQuery = this.database
-      .select({ user: users })
-      .from(users)
-      .where(whereClause)
-      .orderBy(desc(users.createdAt))
-      .limit(limit)
-      .offset(offset);
+    const items =
+      scope.type === 'assigned_students'
+        ? await this.database
+            .select({
+              id: users.id,
+              fullName: users.fullName,
+              phone: users.phone,
+              password: users.password,
+              role: users.role,
+              createdAt: users.createdAt,
+              updatedAt: users.updatedAt,
+              deletedAt: users.deletedAt,
+              assignedStudentsCount: sql<number>`0`,
+            })
+            .from(users)
+            .innerJoin(
+              coachAssignments,
+              eq(users.id, coachAssignments.studentId),
+            )
+            .where(whereClause)
+            .orderBy(desc(users.createdAt))
+            .limit(limit)
+            .offset(offset)
+        : await this.database
+            .select({
+              id: users.id,
+              fullName: users.fullName,
+              phone: users.phone,
+              password: users.password,
+              role: users.role,
+              createdAt: users.createdAt,
+              updatedAt: users.updatedAt,
+              deletedAt: users.deletedAt,
+              assignedStudentsCount:
+                sql<number>`count(${coachAssignments.studentId})`,
+            })
+            .from(users)
+            .leftJoin(
+              coachAssignments,
+              eq(users.id, coachAssignments.coachId),
+            )
+            .where(whereClause)
+            .groupBy(
+              users.id,
+              users.fullName,
+              users.phone,
+              users.password,
+              users.role,
+              users.createdAt,
+              users.updatedAt,
+              users.deletedAt,
+            )
+            .orderBy(desc(users.createdAt))
+            .limit(limit)
+            .offset(offset);
 
     const countQuery = this.database
       .select({ count: sql<number>`count(*)` })
@@ -78,21 +126,16 @@ export class UsersRepository {
       .where(whereClause);
 
     if (scope.type === 'assigned_students') {
-      itemsQuery.innerJoin(
-        coachAssignments,
-        eq(users.id, coachAssignments.studentId),
-      );
       countQuery.innerJoin(
         coachAssignments,
         eq(users.id, coachAssignments.studentId),
       );
     }
 
-    const items = await itemsQuery;
     const [{ count }] = await countQuery;
 
     return {
-      items: items.map((item) => item.user),
+      items: items as UserListRow[],
       page,
       limit,
       total: Number(count),

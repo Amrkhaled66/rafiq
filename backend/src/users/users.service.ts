@@ -12,11 +12,13 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import {
   ListUsersScope,
   UserInsert,
+  UserListRow,
   UserRow,
   UsersRepository,
 } from './users.repository';
 
 type PublicUser = Omit<UserRow, 'password'>;
+type PublicListUser = Omit<UserListRow, 'password'>;
 
 @Injectable()
 export class UsersService {
@@ -55,17 +57,17 @@ export class UsersService {
     return this.toPublicUser(user);
   }
 
-  // async listUsers(user: AuthenticatedUser, query: ListUsersQueryDto) {
-  //   const scope = this.resolveListUsersScope(user);
-  //   const result = await this.usersRepository.list(query, scope);
+  async listUsers(user: AuthenticatedUser, query: ListUsersQueryDto) {
+    const scope = this.resolveListUsersScope(user);
+    const result = await this.usersRepository.list(query, scope);
 
-  //   return {
-  //     data: result.items.map((item) => this.toPublicUser(item)),
-  //     page: result.page,
-  //     limit: result.limit,
-  //     total: result.total,
-  //   };
-  // }
+    return {
+      data: result.items.map((item) => this.toPublicListUser(item)),
+      page: result.page,
+      limit: result.limit,
+      total: result.total,
+    };
+  }
 
   async createUser(dto: CreateUserDto): Promise<PublicUser> {
     await this.ensurePhoneAvailable(dto.phone);
@@ -164,18 +166,23 @@ export class UsersService {
     return publicUser;
   }
 
-  // private resolveListUsersScope(user: AuthenticatedUser): ListUsersScope {
-  //   if (user.role === 'super_admin') {
-  //     return { type: 'all' };
-  //   }
+  private toPublicListUser(user: UserListRow): PublicListUser {
+    const { password, ...publicUser } = user;
+    return publicUser;
+  }
 
-  //   if (user.role === 'coach') {
-  //     return {
-  //       coachId: user.sub,
-  //       type: 'assigned_students',
-  //     };
-  //   }
+  private resolveListUsersScope(user: AuthenticatedUser): ListUsersScope {
+    if (user.role === 'super_admin') {
+      return { type: 'all' };
+    }
 
-  //   throw new ForbiddenException('You are not allowed to list users');
-  // }
+    if (user.role === 'coach') {
+      return {
+        coachId: user.sub,
+        type: 'assigned_students',
+      };
+    }
+
+    throw new ForbiddenException('You are not allowed to list users');
+  }
 }
