@@ -2,6 +2,7 @@ import { Icon } from "@iconify/react";
 import { NavLink } from "react-router-dom";
 import Overlay from "./Overlay";
 import Button from "./Button";
+import { useAuth } from "@/shared/context/authContext";
 export interface SidebarMenuItem {
   icon: string;
   label: string;
@@ -32,6 +33,8 @@ const Sidebar: React.FC<SidebarProps> = ({
   userInfo,
   logoSrc,
 }) => {
+  const { logout } = useAuth();
+
   return (
     <>
       <div className="lg:hidden">
@@ -45,7 +48,7 @@ const Sidebar: React.FC<SidebarProps> = ({
             : "translate-x-full lg:w-22 lg:translate-x-0"
         }`}
       >
-        <div className="sticky top-3 flex h-fit flex-col">
+        <div className="sticky top-3 flex flex-1 flex-col">
           <div className="flex items-start justify-between gap-3">
             {isOpen && (
               <div className="flex min-w-0 items-center gap-3 px-2">
@@ -113,6 +116,19 @@ const Sidebar: React.FC<SidebarProps> = ({
               ))}
             </ul>
           </div>
+        </div>
+
+        <div className="border-t border-black/5 pt-4">
+          <Button
+            type="button"
+            onClick={logout}
+            className="w-full justify-start"
+          >
+            <span className="flex items-center gap-2">
+              <Icon icon="bx:log-out" className="size-5" />
+              {isOpen ? <span>تسجيل الخروج</span> : null}
+            </span>
+          </Button>
         </div>
       </aside>
     </>

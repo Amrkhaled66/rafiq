@@ -8,7 +8,8 @@ import {
   setToken,
 } from "@/shared/utils/authStorage";
 import type { IUser } from "@/shared/interfaces/User";
-
+import { useNavigate } from "react-router-dom";
+import { urls } from "../const/urls";
 type AuthState = {
   user: IUser | null;
   token: string | null;
@@ -50,7 +51,9 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
     setToken(token);
     setUser(user);
   };
+  const navigate = useNavigate();
   const logout = () => {
+    if(authData.user?.role != "student") navigate(`${urls.dashBoardUrl}/signin`);
     setAuthData({ user: null, token: null });
     clearToken();
     clearUser();
