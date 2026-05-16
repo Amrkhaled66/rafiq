@@ -8,3 +8,4 @@ export * from './schemas/plans';
 export * from './schemas/tasks';
 export * from './schemas/task-sessions';
 export * from './schemas/lessons';
+export * from './schemas/lesson-watches';

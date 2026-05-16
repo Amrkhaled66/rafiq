@@ -30,7 +30,7 @@ export default function StudentHeader({
   const whatsappPhone = normalizePhoneForWhatsapp(student.phone);
   const coachesLabel =
     assignedCoaches.length > 0
-      ? assignedCoaches.map((c) => c.fullName).join("، ")
+      ? assignedCoaches.map((coach) => coach.fullName).join("، ")
       : "لا يوجد";
 
   return (
@@ -101,9 +101,11 @@ export default function StudentHeader({
             </Button>
           </Link>
 
-          <Button disabled variant="outline" className="w-full text-sm">
-            عرض الدروس
-          </Button>
+          <Link to="lessons" className="w-full">
+            <Button variant="outline" className="w-full text-sm">
+              عرض الدروس
+            </Button>
+          </Link>
 
           <UpdateStudentModal student={student}>
             <Button variant="outline" className="col-span-2 w-full text-sm">

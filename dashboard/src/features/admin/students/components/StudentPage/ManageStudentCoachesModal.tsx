@@ -31,7 +31,6 @@ export default function ManageStudentCoachesModal({
     return new Set((assignedCoachesQuery.data ?? []).map((c) => c.id));
   }, [assignedCoachesQuery.data]);
 
-  console.log(coachesQuery.data?.data);
   const availableCoaches = useMemo<Coach[]>(() => {
     const all = coachesQuery.data?.data ?? [];
     return all;
@@ -85,7 +84,7 @@ export default function ManageStudentCoachesModal({
                 {assignedCoachesQuery.data.map((coach) => (
                   <div
                     key={coach.id}
-                    className="border-border flex items-center justify-between rounded-xl border bg-white px-4 py-3"
+                    className="flex items-center justify-between rounded-xl bg-white px-4 py-3 drop-shadow-sm"
                   >
                     <div className="flex flex-col">
                       <span className="text-foreground font-medium">
@@ -121,7 +120,7 @@ export default function ManageStudentCoachesModal({
 
             <div className="grid grid-cols-1 gap-3 md:grid-cols-[1fr_auto] md:items-end">
               <DropDownMenu
-                label="المدرب"
+                // label="المدرب"
                 value={selectedCoachId}
                 placeholder={
                   coachesQuery.isLoading ? "جاري التحميل..." : "اختر مدربًا"

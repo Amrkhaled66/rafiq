@@ -7,7 +7,7 @@ type DropdownItem = {
 };
 
 type Props = {
-  label: string;
+  label?: string;
   value?: string;
   placeholder?: string;
   error?: string;
