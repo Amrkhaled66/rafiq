@@ -150,4 +150,24 @@ export const namedAuthorizationPolicies: NamedAuthorizationPolicy[] = [
       requireStudentResourceAccess('student_profile'),
     ],
   },
+  {
+    name: 'missed_tasks.list',
+    requirements: [requireAnyRole(['coach', 'super_admin'])],
+  },
+  {
+    name: 'missed_tasks.resolve',
+    lookup: { key: 'taskId', kind: 'taskId', source: 'params' },
+    requirements: [
+      requireAnyRole(['coach', 'super_admin']),
+      requireStudentResourceAccess('task'),
+    ],
+  },
+  {
+    name: 'missed_tasks.unresolve',
+    lookup: { key: 'taskId', kind: 'taskId', source: 'params' },
+    requirements: [
+      requireAnyRole(['coach', 'super_admin']),
+      requireStudentResourceAccess('task'),
+    ],
+  },
 ];

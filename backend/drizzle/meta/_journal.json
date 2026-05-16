@@ -50,6 +50,20 @@
       "when": 1778922288041,
       "tag": "0006_panoramic_black_tom",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1778944693612,
+      "tag": "0007_lucky_lilandra",
+      "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1778947706560,
+      "tag": "0008_silly_major_mapleleaf",
+      "breakpoints": true
     }
   ]
 }

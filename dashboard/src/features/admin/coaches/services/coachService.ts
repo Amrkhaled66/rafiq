@@ -49,6 +49,7 @@ export type ListCoachesParams = {
   page?: number;
   limit?: number;
   phone?: string;
+  deletedStatus?: "active" | "deleted" | "all";
 };
 
 export type ListCoachPlansParams = {

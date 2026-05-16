@@ -5,6 +5,7 @@ import { AuthModule } from './auth/auth.module';
 import { AuthorizationModule } from './authorization/authorization.module';
 import { CoachesModule } from './coaches/coaches.module';
 import { LessonsModule } from './lessons/lessons.module';
+import { MissedTasksModule } from './missed-tasks/missed-tasks.module';
 import { PlansModule } from './plans/plans.module';
 import { StudentsModule } from './students/students.module';
 import { UsersModule } from './users/users.module';
@@ -17,6 +18,7 @@ import { UsersModule } from './users/users.module';
     StudentsModule,
     CoachesModule,
     LessonsModule,
+    MissedTasksModule,
     PlansModule,
   ],
   controllers: [AppController],
