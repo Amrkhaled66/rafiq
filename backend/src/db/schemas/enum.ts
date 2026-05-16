@@ -35,3 +35,13 @@ export const sessionStatusEnum = pgEnum('session_status', [
   'completed',
   'stopped',
 ]);
+
+export const lessonWeekdayEnum = pgEnum('lesson_weekday', [
+  'saturday',
+  'sunday',
+  'monday',
+  'tuesday',
+  'wednesday',
+  'thursday',
+  'friday',
+]);

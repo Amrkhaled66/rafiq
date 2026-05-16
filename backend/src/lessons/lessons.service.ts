@@ -5,6 +5,18 @@ import { LessonsRepository } from './lessons.repository';
 import { CreateLessonDto } from './dto/create-lesson.dto';
 import { UpdateLessonDto } from './dto/update-lesson.dto';
 
+const LESSON_WEEKDAY_ORDER = [
+  'saturday',
+  'sunday',
+  'monday',
+  'tuesday',
+  'wednesday',
+  'thursday',
+  'friday',
+] as const;
+
+type LessonWeekday = (typeof LESSON_WEEKDAY_ORDER)[number];
+
 @Injectable()
 export class LessonsService {
   constructor(
@@ -29,7 +41,7 @@ export class LessonsService {
       studentId,
       name: dto.name.trim(),
       subject: dto.subject,
-      scheduledAt: dto.scheduledAt,
+      weekday: dto.weekday,
     });
   }
 
@@ -45,7 +57,7 @@ export class LessonsService {
     const values: Partial<{
       name: string;
       subject: UpdateLessonDto['subject'];
-      scheduledAt: string;
+      weekday: UpdateLessonDto['weekday'];
     }> = {};
 
     if (dto.name !== undefined) {
@@ -56,8 +68,8 @@ export class LessonsService {
       values.subject = dto.subject;
     }
 
-    if (dto.scheduledAt !== undefined) {
-      values.scheduledAt = dto.scheduledAt;
+    if (dto.weekday !== undefined) {
+      values.weekday = dto.weekday;
     }
 
     const updated = await this.lessonsRepository.updateLessonById(
@@ -105,18 +117,33 @@ export class LessonsService {
     await this.findStudentOrThrow(studentId);
     const lesson = await this.findLessonOrThrow(lessonId, studentId);
 
-    const watchedOn = this.getTodayDateInCairo();
+    const cairoNow = this.getCairoNow();
+    const watchedOn = this.formatDateAsIso(cairoNow);
+    const currentWeekday = this.getLessonWeekdayFromDate(cairoNow);
+    const currentWeekdayIndex = LESSON_WEEKDAY_ORDER.indexOf(currentWeekday);
+    const lessonWeekdayIndex = LESSON_WEEKDAY_ORDER.indexOf(lesson.weekday);
 
-    if (watchedOn < lesson.scheduledAt) {
+    if (lessonWeekdayIndex === -1) {
+      throw new BadRequestException('Lesson weekday is invalid');
+    }
+
+    if (lessonWeekdayIndex > currentWeekdayIndex) {
       throw new BadRequestException(
-        'Lesson cannot be marked as watched before its scheduled date',
+        'Lesson cannot be marked as watched before its scheduled weekday',
       );
     }
 
+    const startOfWeek = new Date(cairoNow);
+    startOfWeek.setDate(cairoNow.getDate() - currentWeekdayIndex);
+    const scheduledForDateObject = new Date(startOfWeek);
+    scheduledForDateObject.setDate(startOfWeek.getDate() + lessonWeekdayIndex);
+    const scheduledForDate = this.formatDateAsIso(scheduledForDateObject);
+
     const existingWatch =
-      await this.lessonsRepository.findWatchByLessonAndStudent(
+      await this.lessonsRepository.findWatchByLessonAndScheduledDate(
         lessonId,
         studentId,
+        scheduledForDate,
       );
 
     if (existingWatch) {
@@ -130,8 +157,10 @@ export class LessonsService {
     const inserted = await this.lessonsRepository.markLessonWatched({
       lessonId,
       studentId,
-      scheduledOn: lesson.scheduledAt,
+      scheduledForDate,
+      scheduledWeekday: lesson.weekday,
       watchedOn,
+      watchedOnTime: lessonWeekdayIndex === currentWeekdayIndex,
     });
 
     return {
@@ -141,13 +170,24 @@ export class LessonsService {
     };
   }
 
-  private getTodayDateInCairo(): string {
+  private getCairoNow() {
+    return new Date(
+      new Date().toLocaleString('en-US', {
+        timeZone: 'Africa/Cairo',
+      }),
+    );
+  }
+
+  private getLessonWeekdayFromDate(date: Date): LessonWeekday {
+    return LESSON_WEEKDAY_ORDER[date.getDay()];
+  }
+
+  private formatDateAsIso(date: Date): string {
     const parts = new Intl.DateTimeFormat('en-GB', {
-      timeZone: 'Africa/Cairo',
       year: 'numeric',
       month: '2-digit',
       day: '2-digit',
-    }).formatToParts(new Date());
+    }).formatToParts(date);
 
     const year = parts.find((part) => part.type === 'year')?.value;
     const month = parts.find((part) => part.type === 'month')?.value;

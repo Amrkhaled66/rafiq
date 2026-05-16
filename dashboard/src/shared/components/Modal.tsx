@@ -70,11 +70,13 @@ const Model = ({
 
   return createPortal(
     <>
-      <div
-        ref={modalRef}
-        className="fixed top-1/2 left-1/2 z-90 max-h-[85vh] w-[90%] -translate-x-1/2 -translate-y-1/2 lg:max-w-[50%]"
-      >
-        {children}
+      <div className="fixed inset-0 flex items-center justify-center z-90 overflow-y-auto p-4">
+        <div
+          ref={modalRef}
+          className="mx-auto flex max-h-[90vh] min-h-fit w-full items-center justify-center overflow-visible lg:max-w-[50%]"
+        >
+          <div className="w-full overflow-visible">{children}</div>
+        </div>
       </div>
 
       <Overlay isOpen={isOpen} onClick={onClose} />

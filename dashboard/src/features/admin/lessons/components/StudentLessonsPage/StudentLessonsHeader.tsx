@@ -9,7 +9,7 @@ export default function StudentLessonsHeader({
   return (
     <PageHeader
       title="دروس الطالب"
-      subtitle="إدارة دروس الطالب المجدولة ومتابعة موعدها القادم."
+      subtitle="إدارة دروس الطالب المجدولة أسبوعيًا ومتابعة أقرب درس قادم."
       action={
         <Button onClick={onAddLesson} className="text-sm">
           إضافة درس جديد
@@ -18,4 +18,3 @@ export default function StudentLessonsHeader({
     />
   );
 }
-

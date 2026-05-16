@@ -1,5 +1,6 @@
-import { IsEnum, IsOptional, IsString, Matches, MaxLength } from 'class-validator';
+import { IsEnum, IsOptional, IsString, MaxLength } from 'class-validator';
 import { SCHOOL_SUBJECT_ENUM_VALUES } from '../../common/constants/subjects';
+import { lessonWeekdayEnum } from '../../db';
 
 export class UpdateLessonDto {
   @IsOptional()
@@ -12,8 +13,7 @@ export class UpdateLessonDto {
   subject?: (typeof SCHOOL_SUBJECT_ENUM_VALUES)[number];
 
   @IsOptional()
-  @IsString()
-  @Matches(/^\d{4}-\d{2}-\d{2}$/)
-  scheduledAt?: string;
+  @IsEnum(lessonWeekdayEnum.enumValues)
+  weekday?: (typeof lessonWeekdayEnum.enumValues)[number];
 }
 

@@ -1,49 +1,56 @@
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { useParams } from "react-router-dom";
 
 import LessonFormModal from "@/features/admin/lessons/components/StudentLessonsPage/LessonFormModal";
 import StudentLessonsHeader from "@/features/admin/lessons/components/StudentLessonsPage/StudentLessonsHeader";
 import StudentLessonsStatsSection from "@/features/admin/lessons/components/StudentLessonsPage/StudentLessonsStatsSection";
 import StudentLessonsTable from "@/features/admin/lessons/components/StudentLessonsPage/StudentLessonsTable";
-import {
-  useCreateStudentLessonMutation,
-  useDeleteStudentLessonMutation,
-  useStudentLessonsQuery,
-  useUpdateStudentLessonMutation,
-} from "@/features/admin/lessons/queries/lessonQueries";
-import type { Lesson } from "@/features/admin/lessons/services/lessonService";
-import type { LessonFormValues } from "@/features/admin/lessons/schema/lessonSchema";
-import { appToast } from "@/shared/lib/toast";
-import { showApiErrorToast } from "@/shared/utils/showApiErrorToast";
-import { formatDateArShort2DigitDay } from "@/shared/utils/dates";
+import { useStudentLessonsActions } from "@/features/admin/lessons/hooks/useStudentLessonsActions";
+import { useStudentLessonsQuery } from "@/features/admin/lessons/queries/lessonQueries";
+import type { LessonWeekday } from "@/features/admin/lessons/services/lessonService";
+import { LESSON_WEEKDAY_LABELS, LESSON_WEEKDAY_ORDER } from "@/shared/const/weekdays";
+import { getTodayWeekday } from "@/shared/utils/dates";
+
+
+function getLessonDistanceFromToday(weekday: LessonWeekday) {
+  const todayIndex = LESSON_WEEKDAY_ORDER.indexOf(getTodayWeekday());
+  const lessonIndex = LESSON_WEEKDAY_ORDER.indexOf(weekday);
+
+  if (lessonIndex >= todayIndex) {
+    return lessonIndex - todayIndex;
+  }
+
+  return LESSON_WEEKDAY_ORDER.length - todayIndex + lessonIndex;
+}
 
 export default function StudentLessonsPage() {
   const { id } = useParams();
   const studentId = Number(id);
 
-  const [isCreateOpen, setIsCreateOpen] = useState(false);
-  const [editingLesson, setEditingLesson] = useState<Lesson | null>(null);
-
   const lessonsQuery = useStudentLessonsQuery(studentId);
-  const createLessonMutation = useCreateStudentLessonMutation(studentId);
-  const deleteLessonMutation = useDeleteStudentLessonMutation(studentId);
-  const updateLessonMutation = useUpdateStudentLessonMutation(
-    studentId,
-    editingLesson?.id ?? 0,
-  );
-
+  const lessonsActions = useStudentLessonsActions(studentId);
   const lessons = lessonsQuery.data ?? [];
 
   const nextLessonLabel = useMemo(() => {
-    const today = new Date();
-    const nextLesson = lessons
-      .filter((lesson) => new Date(lesson.scheduledAt) >= today)
-      .sort(
-        (a, b) =>
-          new Date(a.scheduledAt).getTime() - new Date(b.scheduledAt).getTime(),
-      )[0];
+    const nextLesson = [...lessons].sort((a, b) => {
+      const distanceDiff =
+        getLessonDistanceFromToday(a.weekday) -
+        getLessonDistanceFromToday(b.weekday);
 
-    return nextLesson ? formatDateArShort2DigitDay(nextLesson.scheduledAt) : "-";
+      if (distanceDiff !== 0) {
+        return distanceDiff;
+      }
+
+      return a.id - b.id;
+    })[0];
+
+    if (!nextLesson) {
+      return "-";
+    }
+
+    return `${nextLesson.name} - ${
+      LESSON_WEEKDAY_LABELS[nextLesson.weekday] ?? nextLesson.weekday
+    }`;
   }, [lessons]);
 
   const totalSubjects = useMemo(
@@ -78,52 +85,9 @@ export default function StudentLessonsPage() {
     );
   }
 
-  function handleCreate(values: LessonFormValues) {
-    createLessonMutation.mutate(values, {
-      onSuccess: () => {
-        setIsCreateOpen(false);
-        appToast.success("تمت إضافة الدرس بنجاح.");
-      },
-      onError: (error) => {
-        showApiErrorToast(error, "تعذر إضافة الدرس.");
-      },
-    });
-  }
-
-  function handleUpdate(values: LessonFormValues) {
-    if (!editingLesson) return;
-
-    updateLessonMutation.mutate(values, {
-      onSuccess: () => {
-        setEditingLesson(null);
-        appToast.success("تم تعديل الدرس بنجاح.");
-      },
-      onError: (error) => {
-        showApiErrorToast(error, "تعذر تعديل الدرس.");
-      },
-    });
-  }
-
-  function handleDelete(lesson: Lesson) {
-    const confirmed = window.confirm(`هل تريد حذف الدرس "${lesson.name}"؟`);
-
-    if (!confirmed) {
-      return;
-    }
-
-    deleteLessonMutation.mutate(lesson.id, {
-      onSuccess: () => {
-        appToast.success("تم حذف الدرس بنجاح.");
-      },
-      onError: (error) => {
-        showApiErrorToast(error, "تعذر حذف الدرس.");
-      },
-    });
-  }
-
   return (
     <div className="space-y-6">
-      <StudentLessonsHeader onAddLesson={() => setIsCreateOpen(true)} />
+      <StudentLessonsHeader onAddLesson={lessonsActions.openCreateModal} />
 
       <StudentLessonsStatsSection
         nextLessonLabel={nextLessonLabel}
@@ -134,35 +98,28 @@ export default function StudentLessonsPage() {
       <StudentLessonsTable
         lessons={lessons}
         isLoading={lessonsQuery.isFetching}
-        onEditLesson={setEditingLesson}
-        onDeleteLesson={handleDelete}
+        onEditLesson={lessonsActions.openEditModal}
+        onDeleteLesson={lessonsActions.handleDelete}
       />
 
       <LessonFormModal
-        isOpen={isCreateOpen}
-        onClose={() => {
-          setIsCreateOpen(false);
-          createLessonMutation.reset();
-        }}
-        onSubmit={handleCreate}
-        isSubmitting={createLessonMutation.isPending}
+        isOpen={lessonsActions.isCreateOpen}
+        onClose={lessonsActions.closeCreateModal}
+        onSubmit={lessonsActions.handleCreate}
+        isSubmitting={lessonsActions.isCreating}
         title="إضافة درس جديد"
         submitLabel="إضافة الدرس"
       />
 
       <LessonFormModal
-        isOpen={Boolean(editingLesson)}
-        onClose={() => {
-          setEditingLesson(null);
-          updateLessonMutation.reset();
-        }}
-        onSubmit={handleUpdate}
-        isSubmitting={updateLessonMutation.isPending}
+        isOpen={Boolean(lessonsActions.editingLesson)}
+        onClose={lessonsActions.closeEditModal}
+        onSubmit={lessonsActions.handleUpdate}
+        isSubmitting={lessonsActions.isUpdating}
         title="تعديل الدرس"
         submitLabel="حفظ التعديلات"
-        lesson={editingLesson}
+        lesson={lessonsActions.editingLesson}
       />
     </div>
   );
 }
-

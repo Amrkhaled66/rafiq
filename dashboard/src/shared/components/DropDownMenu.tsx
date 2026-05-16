@@ -23,7 +23,7 @@ export default function DropdownField({
   error,
   items,
   onChange,
-  loading=false,
+  loading = false,
 }: Props) {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
@@ -43,7 +43,7 @@ export default function DropdownField({
   }, []);
 
   return (
-    <div ref={ref} className="flex flex-col gap-1">
+    <div ref={ref} className="relative z-10 flex flex-col gap-1">
       {/* Label */}
       <span className="text-start text-sm font-medium">{label}</span>
 
@@ -55,12 +55,12 @@ export default function DropdownField({
           className={`relative w-full border-0 border-b px-2 py-3 text-start text-sm transition-colors focus:outline-none ${
             error
               ? "border-red-500 hover:bg-red-500/5"
-              : "border-gray-400/40 hover:bg-brand-primary/5"
+              : "hover:bg-brand-primary/5 border-gray-400/40"
           }`}
         >
           {selected ? selected.label : placeholder}
 
-          <span className="absolute top-1/2 inset-e-2 -translate-y-1/2 text-gray-400">
+          <span className="absolute inset-e-2 top-1/2 -translate-y-1/2 text-gray-400">
             <Icon
               icon="mdi:arrow-down"
               className={`transition-transform ${open ? "rotate-180" : ""}`}
@@ -70,10 +70,10 @@ export default function DropdownField({
 
         {/* Menu */}
         {open && (
-          <div className="absolute z-10 mt-2 max-h-40 w-full overflow-y-auto rounded-xl border border-gray-200 bg-white p-1 shadow-lg">
+          <div className="absolute z-50 mt-2 max-h-40 w-full overflow-y-auto rounded-xl border border-gray-200 bg-white p-1 shadow-lg">
             {loading ? (
               <div className="flex h-full items-center justify-center py-4">
-                <span className="border-b-brand-primary size-5 animate-spin border-b-2 rounded-full "></span>
+                <span className="border-b-brand-primary size-5 animate-spin rounded-full border-b-2"></span>
               </div>
             ) : (
               items.map((item) => (

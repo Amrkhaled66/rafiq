@@ -1,11 +1,20 @@
 import { api } from "@/lib/api";
 
+export type LessonWeekday =
+  | "saturday"
+  | "sunday"
+  | "monday"
+  | "tuesday"
+  | "wednesday"
+  | "thursday"
+  | "friday";
+
 export type Lesson = {
   id: number;
   studentId: number;
   name: string;
   subject: string;
-  scheduledAt: string;
+  weekday: LessonWeekday;
   createdAt: string;
   updatedAt: string;
 };
@@ -13,7 +22,7 @@ export type Lesson = {
 export type CreateLessonPayload = {
   name: string;
   subject: string;
-  scheduledAt: string;
+  weekday: LessonWeekday;
 };
 
 export type UpdateLessonPayload = Partial<CreateLessonPayload>;
@@ -55,4 +64,3 @@ export async function deleteStudentLesson(
   );
   return data;
 }
-

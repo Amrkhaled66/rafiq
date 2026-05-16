@@ -24,4 +24,3 @@ export const SCHOOL_SUBJECT_OPTIONS = [
 export const SCHOOL_SUBJECT_LABELS = Object.fromEntries(
   SCHOOL_SUBJECT_OPTIONS.map((item) => [item.value, item.label]),
 ) as Record<string, string>;
-

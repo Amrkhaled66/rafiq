@@ -1,10 +1,11 @@
 import type { CSSProperties, ReactNode } from "react";
-
+import clsx from "clsx";
 type StatCardProps = {
   title: string;
   value: string | number;
   icon: ReactNode;
   color?: string;
+  className?: string;
 };
 
 function hexToRgba(color: string, alpha: number) {
@@ -26,6 +27,7 @@ export default function StatCard({
   value,
   icon,
   color = "#d00507",
+  className
 }: StatCardProps) {
   const iconWrapperStyle: CSSProperties = {
     backgroundColor: hexToRgba(color, 0.12),
@@ -41,7 +43,10 @@ export default function StatCard({
           style={{
             color,
           }}
-          className="text-foreground text-3xl leading-none font-bold"
+          className={clsx(
+            "text-foreground text-3xl leading-none font-bold",
+            className,
+          )}
         >
           {value}
         </p>

@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { and, count, desc, eq, gte, isNull, lt, lte, sql } from 'drizzle-orm';
+import { and, count, desc, eq, gte, isNull, lte, sql } from 'drizzle-orm';
 import { db } from '../db/db.module';
 import type { Database } from '../db/db.module';
 import { lessons, lessonWatches } from '../db';
@@ -23,7 +23,7 @@ export class LessonsRepository {
   async listLessonsByStudent(studentId: number): Promise<LessonRow[]> {
     return this.database.query.lessons.findMany({
       where: eq(lessons.studentId, studentId),
-      orderBy: [desc(lessons.scheduledAt), desc(lessons.id)],
+      orderBy: [lessons.weekday, desc(lessons.id)],
     });
   }
 
@@ -31,7 +31,7 @@ export class LessonsRepository {
     studentId: number;
     name: string;
     subject: LessonRow['subject'];
-    scheduledAt: string;
+    weekday: LessonRow['weekday'];
   }): Promise<LessonRow> {
     const [lesson] = await this.database
       .insert(lessons)
@@ -44,7 +44,7 @@ export class LessonsRepository {
   async updateLessonById(
     lessonId: number,
     studentId: number,
-    values: Partial<Pick<LessonRow, 'name' | 'subject' | 'scheduledAt'>>,
+    values: Partial<Pick<LessonRow, 'name' | 'subject' | 'weekday'>>,
   ): Promise<LessonRow | undefined> {
     const [lesson] = await this.database
       .update(lessons)
@@ -82,14 +82,16 @@ export class LessonsRepository {
     return Boolean(record);
   }
 
-  async findWatchByLessonAndStudent(
+  async findWatchByLessonAndScheduledDate(
     lessonId: number,
     studentId: number,
+    scheduledForDate: string,
   ): Promise<LessonWatchRow | undefined> {
     return this.database.query.lessonWatches.findFirst({
       where: and(
         eq(lessonWatches.lessonId, lessonId),
         eq(lessonWatches.studentId, studentId),
+        eq(lessonWatches.scheduledForDate, scheduledForDate),
       ),
     });
   }
@@ -97,8 +99,10 @@ export class LessonsRepository {
   async markLessonWatched(input: {
     lessonId: number;
     studentId: number;
-    scheduledOn: string;
+    scheduledForDate: string;
+    scheduledWeekday: LessonWatchRow['scheduledWeekday'];
     watchedOn: string;
+    watchedOnTime: boolean;
   }): Promise<boolean> {
     const inserted = await this.database
       .insert(lessonWatches)
@@ -119,9 +123,12 @@ export class LessonsRepository {
         lessonId: lessonWatches.lessonId,
         studentId: lessonWatches.studentId,
         watchedOn: lessonWatches.watchedOn,
+        watchedOnTime: lessonWatches.watchedOnTime,
+        scheduledForDate: lessonWatches.scheduledForDate,
+        scheduledWeekday: lessonWatches.scheduledWeekday,
         lessonName: lessons.name,
         subject: lessons.subject,
-        scheduledAt: lessons.scheduledAt,
+        weekday: lessons.weekday,
       })
       .from(lessonWatches)
       .innerJoin(lessons, eq(lessonWatches.lessonId, lessons.id))
@@ -158,33 +165,32 @@ export class LessonsRepository {
     from: string,
     to: string,
   ) {
-    const watchedLessonIdsSubquery = this.database
+    const watchedDatesSubquery = this.database
       .select({
         lessonId: lessonWatches.lessonId,
+        scheduledForDate: lessonWatches.scheduledForDate,
       })
       .from(lessonWatches)
       .where(eq(lessonWatches.studentId, studentId))
-      .as('watched_lesson_ids');
+      .as('watched_dates');
 
     return this.database
       .select({
         id: lessons.id,
         name: lessons.name,
         subject: lessons.subject,
-        scheduledAt: lessons.scheduledAt,
+        weekday: lessons.weekday,
       })
       .from(lessons)
       .leftJoin(
-        watchedLessonIdsSubquery,
-        eq(lessons.id, watchedLessonIdsSubquery.lessonId),
+        watchedDatesSubquery,
+        eq(lessons.id, watchedDatesSubquery.lessonId),
       )
       .where(
         and(
           eq(lessons.studentId, studentId),
-          gte(lessons.scheduledAt, from),
-          lte(lessons.scheduledAt, to),
-          lt(lessons.scheduledAt, sql`current_date`),
-          isNull(watchedLessonIdsSubquery.lessonId),
+          isNull(watchedDatesSubquery.lessonId),
+          sql`${from} <= ${to}`,
         ),
       );
   }
@@ -193,31 +199,23 @@ export class LessonsRepository {
     studentId: number,
     from: string,
     to: string,
-  ): Promise<{ totalScheduledLessons: number; watchedLessons: number }> {
+  ): Promise<{ watchedLessons: number }> {
     const [stats] = await this.database
       .select({
-        totalScheduledLessons: sql<number>`count(distinct ${lessons.id})`,
         watchedLessons: sql<number>`count(${lessonWatches.id})`,
       })
-      .from(lessons)
-      .leftJoin(
-        lessonWatches,
-        and(
-          eq(lessonWatches.lessonId, lessons.id),
-          eq(lessonWatches.studentId, studentId),
-        ),
-      )
+      .from(lessonWatches)
       .where(
         and(
-          eq(lessons.studentId, studentId),
-          gte(lessons.scheduledAt, from),
-          lte(lessons.scheduledAt, to),
+          eq(lessonWatches.studentId, studentId),
+          gte(lessonWatches.watchedOn, from),
+          lte(lessonWatches.watchedOn, to),
         ),
       );
 
     return {
-      totalScheduledLessons: Number(stats?.totalScheduledLessons ?? 0),
       watchedLessons: Number(stats?.watchedLessons ?? 0),
     };
   }
 }
+

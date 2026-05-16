@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+import { LESSON_WEEKDAY_VALUES } from "@/shared/const/weekdays";
+
 export const lessonSchema = z.object({
   name: z
     .string()
@@ -7,8 +9,9 @@ export const lessonSchema = z.object({
     .min(1, "اسم الدرس مطلوب")
     .max(255, "اسم الدرس يجب ألا يتجاوز 255 حرفًا"),
   subject: z.string().trim().min(1, "المادة مطلوبة"),
-  scheduledAt: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "تاريخ الدرس مطلوب"),
+  weekday: z.enum(LESSON_WEEKDAY_VALUES, {
+    message: "يوم الدرس مطلوب",
+  }),
 });
 
 export type LessonFormValues = z.infer<typeof lessonSchema>;
-

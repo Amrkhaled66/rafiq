@@ -1,3 +1,6 @@
+import type { LessonWeekday } from "@/features/admin/lessons/services/lessonService";
+import { LESSON_WEEKDAY_ORDER } from "@/shared/const/weekdays";
+
 export function formatDateArLong(value: string) {
   return new Intl.DateTimeFormat("ar-EG", {
     day: "numeric",
@@ -45,4 +48,9 @@ export function formatDateLocal(date: Date) {
   const day = String(date.getDate()).padStart(2, "0");
 
   return `${year}-${month}-${day}`;
+}
+
+export function getTodayWeekday(): LessonWeekday {
+  const day = new Date().getDay();
+  return LESSON_WEEKDAY_ORDER[day] as LessonWeekday;
 }

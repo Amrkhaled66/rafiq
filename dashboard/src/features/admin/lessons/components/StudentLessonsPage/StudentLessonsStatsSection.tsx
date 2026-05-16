@@ -14,12 +14,13 @@ export default function StudentLessonsStatsSection({
   totalSubjects,
 }: StudentLessonsStatsSectionProps) {
   return (
-    <section className="grid grid-cols-1 gap-4 md:grid-cols-3">
+    <section className="grid grid-cols-1 gap-4 md:grid-cols-4">
       <StatCard
         title="الدرس القادم"
         value={nextLessonLabel}
         icon={<Icon icon="solar:clock-circle-linear" />}
         color="#2563eb"
+        className="text-lg"
       />
       <StatCard
         title="إجمالي الدروس"
@@ -36,4 +37,3 @@ export default function StudentLessonsStatsSection({
     </section>
   );
 }
-

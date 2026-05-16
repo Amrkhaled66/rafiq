@@ -1,5 +1,6 @@
 import { relations } from 'drizzle-orm';
 import {
+  boolean,
   date,
   integer,
   pgTable,
@@ -7,6 +8,7 @@ import {
   timestamp,
   uniqueIndex,
 } from 'drizzle-orm/pg-core';
+import { lessonWeekdayEnum } from './enum';
 import { lessons } from './lessons';
 import { users } from './users';
 
@@ -20,17 +22,19 @@ export const lessonWatches = pgTable(
     studentId: integer('student_id')
       .notNull()
       .references(() => users.id),
-    scheduledOn: date('scheduled_on').notNull(),
+    scheduledForDate: date('scheduled_for_date').notNull(),
+    scheduledWeekday: lessonWeekdayEnum('scheduled_weekday').notNull(),
     watchedOn: date('watched_on').notNull(),
+    watchedOnTime: boolean('watched_on_time').notNull(),
     createdAt: timestamp('created_at', { withTimezone: true })
       .defaultNow()
       .notNull(),
   },
   (table) => [
-    uniqueIndex('lesson_watches_lesson_student_watched_on_uidx').on(
+    uniqueIndex('lesson_watches_lesson_student_scheduled_for_date_uidx').on(
       table.lessonId,
       table.studentId,
-      table.watchedOn,
+      table.scheduledForDate,
     ),
   ],
 );
@@ -45,3 +49,4 @@ export const lessonWatchesRelations = relations(lessonWatches, ({ one }) => ({
     references: [users.id],
   }),
 }));
+

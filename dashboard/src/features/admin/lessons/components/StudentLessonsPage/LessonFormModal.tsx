@@ -12,6 +12,7 @@ import DropDownMenu from "@/shared/components/DropDownMenu";
 import FormInput from "@/shared/components/FormInput";
 import Modal from "@/shared/components/Modal";
 import { SCHOOL_SUBJECT_OPTIONS } from "@/shared/const/subjects";
+import { LESSON_WEEKDAY_OPTIONS } from "@/shared/const/weekdays";
 
 type LessonFormModalProps = {
   isOpen: boolean;
@@ -45,7 +46,7 @@ export default function LessonFormModal({
     defaultValues: {
       name: lesson?.name ?? "",
       subject: lesson?.subject ?? "",
-      scheduledAt: lesson?.scheduledAt ?? "",
+      weekday: lesson?.weekday ?? undefined,
     },
   });
 
@@ -53,20 +54,20 @@ export default function LessonFormModal({
     reset({
       name: lesson?.name ?? "",
       subject: lesson?.subject ?? "",
-      scheduledAt: lesson?.scheduledAt ?? "",
+      weekday: lesson?.weekday ?? undefined,
     });
   }, [lesson, reset, isOpen]);
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
-      <div className="dashboard-card mx-auto max-w-2xl space-y-6 rounded-3xl p-6 md:p-8">
+      <div className="dashboard-card mx-auto max-w-2xl space-y-6 overflow-visible rounded-3xl p-6 md:p-8">
         <div className="text-right">
           <h2 className="text-foreground text-2xl font-bold">{title}</h2>
         </div>
 
         <form
           onSubmit={handleSubmit(onSubmit)}
-          className="grid grid-cols-1 gap-4 text-right md:grid-cols-2"
+          className="grid grid-cols-1 gap-4 overflow-visible text-right md:grid-cols-2"
         >
           <div className="md:col-span-2">
             <FormInput
@@ -95,11 +96,22 @@ export default function LessonFormModal({
             )}
           />
 
-          <FormInput
-            label="تاريخ الدرس"
-            type="date"
-            error={errors.scheduledAt?.message}
-            {...register("scheduledAt")}
+          <Controller
+            control={control}
+            name="weekday"
+            render={({ field }) => (
+              <DropDownMenu
+                label="يوم الدرس"
+                value={field.value}
+                error={errors.weekday?.message}
+                placeholder="اختر يوم الدرس"
+                items={LESSON_WEEKDAY_OPTIONS.map((weekday) => ({
+                  label: weekday.label,
+                  value: weekday.value,
+                }))}
+                onChange={field.onChange}
+              />
+            )}
           />
 
           {serverError ? (
@@ -121,4 +133,3 @@ export default function LessonFormModal({
     </Modal>
   );
 }
-

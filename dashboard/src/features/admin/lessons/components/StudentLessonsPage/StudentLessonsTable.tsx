@@ -6,10 +6,7 @@ import type { Lesson } from "@/features/admin/lessons/services/lessonService";
 import Button from "@/shared/components/Button";
 import Table from "@/shared/components/Table";
 import { SCHOOL_SUBJECT_LABELS } from "@/shared/const/subjects";
-import {
-  formatDateArShort2DigitDay,
-  getDayNameAr,
-} from "@/shared/utils/dates";
+import { LESSON_WEEKDAY_LABELS } from "@/shared/const/weekdays";
 
 type StudentLessonsTableProps = {
   lessons: Lesson[];
@@ -36,12 +33,8 @@ export default function StudentLessonsTable({
         selector: (row) => SCHOOL_SUBJECT_LABELS[row.subject] ?? row.subject,
       },
       {
-        name: "اليوم",
-        selector: (row) => getDayNameAr(row.scheduledAt),
-      },
-      {
-        name: "التاريخ",
-        selector: (row) => formatDateArShort2DigitDay(row.scheduledAt),
+        name: "يوم المشاهدة",
+        selector: (row) => LESSON_WEEKDAY_LABELS[row.weekday] ?? row.weekday,
       },
       {
         name: "الإجراءات",
@@ -76,7 +69,7 @@ export default function StudentLessonsTable({
       <div className="mb-5 text-right">
         <h2 className="text-foreground text-xl font-bold">جدول الدروس</h2>
         <p className="text-subTitle mt-1 text-sm">
-          عرض جميع الدروس المجدولة للطالب مع إمكانية تعديلها أو حذفها.
+          عرض جميع الدروس الأسبوعية للطالب مع إمكانية تعديلها أو حذفها.
         </p>
       </div>
 
@@ -95,4 +88,3 @@ export default function StudentLessonsTable({
     </section>
   );
 }
-
