@@ -3,6 +3,7 @@ import { createBrowserRouter, Outlet } from "react-router-dom";
 import { coachesRoutes } from "@/features/admin/coaches/routes";
 import { missedTasksRoutes } from "@/features/admin/missed-tasks/routes";
 import { studentsRoutes } from "@/features/admin/students/routes";
+import { subscriptionsRoutes } from "@/features/admin/subscriptions/routes";
 import DashBoardLayout from "@/features/admin/layouts/DashBoardLayout";
 import { AppProviders } from "@/app/providers";
 import { authRoutes } from "@/features/admin/auth/routes";
@@ -64,6 +65,7 @@ export const router = createBrowserRouter([
               },
               coachesRoutes,
               missedTasksRoutes,
+              subscriptionsRoutes,
               studentsRoutes,
             ],
           },

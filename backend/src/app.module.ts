@@ -8,6 +8,7 @@ import { LessonsModule } from './lessons/lessons.module';
 import { MissedTasksModule } from './missed-tasks/missed-tasks.module';
 import { PlansModule } from './plans/plans.module';
 import { StudentsModule } from './students/students.module';
+import { SubscriptionsModule } from './subscriptions/subscriptions.module';
 import { UsersModule } from './users/users.module';
 
 @Module({
@@ -20,6 +21,7 @@ import { UsersModule } from './users/users.module';
     LessonsModule,
     MissedTasksModule,
     PlansModule,
+    SubscriptionsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

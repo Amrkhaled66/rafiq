@@ -170,4 +170,20 @@ export const namedAuthorizationPolicies: NamedAuthorizationPolicy[] = [
       requireStudentResourceAccess('task'),
     ],
   },
+  {
+    name: 'subscription_packages.list',
+    requirements: [requireRole('super_admin')],
+  },
+  {
+    name: 'subscription_packages.create',
+    requirements: [requireRole('super_admin')],
+  },
+  {
+    name: 'subscriptions.list',
+    requirements: [requireRole('super_admin')],
+  },
+  {
+    name: 'subscriptions.create',
+    requirements: [requireRole('super_admin')],
+  },
 ];
