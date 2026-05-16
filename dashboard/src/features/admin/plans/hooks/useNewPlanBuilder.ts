@@ -21,6 +21,16 @@ type Action =
   | { type: "set_from"; value: string }
   | { type: "set_to"; value: string }
   | { type: "set_coach_id"; value: number | null }
+  | {
+      type: "load_plan";
+      payload: {
+        name: string;
+        fromDate: string;
+        toDate: string;
+        coachId: number | null;
+        days: PlanDay[];
+      };
+    }
   | { type: "reveal_next_day" }
   | { type: "update_task"; dayDate: string; taskId: string; patch: Partial<PlanTask> }
   | { type: "add_task"; dayDate: string }
@@ -87,6 +97,17 @@ function reducer(state: State, action: Action): State {
     }
     case "set_coach_id": {
       return { ...state, coachId: action.value };
+    }
+    case "load_plan": {
+      return {
+        ...state,
+        name: action.payload.name,
+        fromDate: action.payload.fromDate,
+        toDate: action.payload.toDate,
+        coachId: action.payload.coachId,
+        days: action.payload.days,
+        visibleDaysCount: action.payload.days.length,
+      };
     }
     case "reveal_next_day": {
       if (state.visibleDaysCount >= state.days.length) return state;
@@ -162,6 +183,16 @@ export default function useNewPlanBuilder() {
     (value: number | null) => dispatch({ type: "set_coach_id", value }),
     [],
   );
+  const loadPlan = useCallback(
+    (payload: {
+      name: string;
+      fromDate: string;
+      toDate: string;
+      coachId: number | null;
+      days: PlanDay[];
+    }) => dispatch({ type: "load_plan", payload }),
+    [],
+  );
   const revealNextDay = useCallback(() => dispatch({ type: "reveal_next_day" }), []);
 
   const updateTask = useCallback(
@@ -185,6 +216,7 @@ export default function useNewPlanBuilder() {
       setFromDate,
       setToDate,
       setCoachId,
+      loadPlan,
       revealNextDay,
       updateTask,
       addTask,

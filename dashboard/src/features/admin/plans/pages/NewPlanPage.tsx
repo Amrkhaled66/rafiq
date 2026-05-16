@@ -1,22 +1,72 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
+import { makeId } from "@/features/admin/plans/components/NewPlanPage/id";
 import NewPlanPeriodCard from "@/features/admin/plans/components/NewPlanPage/NewPlanPeriodCard";
 import PlanCalendarGrid from "@/features/admin/plans/components/NewPlanPage/PlanCalendarGrid";
 import PlanDayEditorModal from "@/features/admin/plans/components/NewPlanPage/PlanDayEditorModal";
+import type { PlanDay } from "@/features/admin/plans/components/NewPlanPage/types";
 import useNewPlanBuilder from "@/features/admin/plans/hooks/useNewPlanBuilder";
-import { useCreateStudentPlanMutation } from "@/features/admin/plans/queries/plansQueries";
+import {
+  useCreateStudentPlanMutation,
+  useStudentPlanDetailQuery,
+  useUpdateStudentPlanMutation,
+} from "@/features/admin/plans/queries/plansQueries";
 import PageHeader from "@/features/admin/shared/components/PageHeader";
 import { useStudentCoachesQuery } from "@/features/admin/students/queries/studentQueries";
 import Button from "@/shared/components/Button";
 import { useAuth } from "@/shared/context/authContext";
 import { appToast } from "@/shared/lib/toast";
+import { formatDateLocal } from "@/shared/utils/dates";
 import { showApiErrorToast } from "@/shared/utils/showApiErrorToast";
+
+function buildEditableDays(
+  startsOn: string,
+  endsOn: string,
+  groupedDays: Array<{
+    date: string;
+    tasks: Array<{ id: number; title: string; subject: string }>;
+  }>,
+): PlanDay[] {
+  const from = new Date(startsOn);
+  const to = new Date(endsOn);
+
+  if (!Number.isFinite(from.getTime()) || !Number.isFinite(to.getTime()) || to < from) {
+    return [];
+  }
+
+  const groupedMap = new Map(
+    groupedDays.map((day) => [
+      day.date,
+      day.tasks.map((task) => ({
+        id: String(task.id),
+        title: task.title,
+        subject: task.subject,
+      })),
+    ]),
+  );
+
+  const cursor = new Date(from);
+  const days: PlanDay[] = [];
+
+  while (cursor <= to) {
+    const date = formatDateLocal(cursor);
+    days.push({
+      date,
+      tasks: groupedMap.get(date) ?? [],
+    });
+    cursor.setDate(cursor.getDate() + 1);
+  }
+
+  return days;
+}
 
 export default function NewPlanPage() {
   const navigate = useNavigate();
-  const { id } = useParams();
+  const { id, planId } = useParams();
   const studentId = Number(id);
+  const numericPlanId = Number(planId);
+  const isEditMode = Number.isFinite(numericPlanId) && numericPlanId > 0;
 
   const { authData } = useAuth();
   const isSuperAdmin = authData.user?.role === "super_admin";
@@ -25,6 +75,10 @@ export default function NewPlanPage() {
     useNewPlanBuilder();
 
   const createPlanMutation = useCreateStudentPlanMutation(studentId);
+  const updatePlanMutation = useUpdateStudentPlanMutation(studentId, numericPlanId);
+  const detailQuery = useStudentPlanDetailQuery(studentId, numericPlanId);
+  const hydratedPlanIdRef = useRef<number | null>(null);
+
   const [submitErrors, setSubmitErrors] = useState<string[]>([]);
 
   const assignedCoachesQuery = useStudentCoachesQuery(studentId);
@@ -43,6 +97,36 @@ export default function NewPlanPage() {
       setSelectedDayDate(null);
     }
   }, [selectedDay, selectedDayDate]);
+
+  useEffect(() => {
+    if (!isEditMode || !detailQuery.data) {
+      return;
+    }
+
+    if (hydratedPlanIdRef.current === detailQuery.data.plan.id) {
+      return;
+    }
+
+    actions.loadPlan({
+      name: detailQuery.data.plan.name,
+      fromDate: detailQuery.data.plan.startsOn,
+      toDate: detailQuery.data.plan.endsOn,
+      coachId: detailQuery.data.plan.coachId ?? null,
+      days: buildEditableDays(
+        detailQuery.data.plan.startsOn,
+        detailQuery.data.plan.endsOn,
+        detailQuery.data.days,
+      ).map((day) => ({
+        ...day,
+        tasks: day.tasks.map((task) => ({
+          ...task,
+          id: task.id || makeId(),
+        })),
+      })),
+    });
+
+    hydratedPlanIdRef.current = detailQuery.data.plan.id;
+  }, [actions, detailQuery.data, isEditMode]);
 
   const validation = useMemo(() => {
     const errors: string[] = [];
@@ -66,9 +150,7 @@ export default function NewPlanPage() {
 
     if (isSuperAdmin) {
       if (assignedCoaches.length === 0) {
-        errors.push(
-          "لا يوجد مدربون معينون لهذا الطالب. قم بتعيين مدرب قبل حفظ الخطة.",
-        );
+        errors.push("لا يوجد مدربون معينون لهذا الطالب. قم بتعيين مدرب قبل حفظ الخطة.");
       } else if (!coachId) {
         errors.push("اختيار المدرب مطلوب.");
       }
@@ -111,8 +193,28 @@ export default function NewPlanPage() {
   if (!Number.isFinite(studentId) || studentId <= 0) {
     return (
       <section className="dashboard-card text-right">
-        <h1 className="text-foreground text-2xl font-bold">خطة جديدة</h1>
+        <h1 className="text-foreground text-2xl font-bold">
+          {isEditMode ? "تعديل الخطة" : "خطة جديدة"}
+        </h1>
         <p className="text-subTitle mt-2 text-sm">رقم الطالب غير صالح.</p>
+      </section>
+    );
+  }
+
+  if (isEditMode && detailQuery.isLoading) {
+    return (
+      <section className="dashboard-card text-right">
+        <h1 className="text-foreground text-2xl font-bold">تعديل الخطة</h1>
+        <p className="text-subTitle mt-2 text-sm">جاري تحميل الخطة...</p>
+      </section>
+    );
+  }
+
+  if (isEditMode && (detailQuery.isError || !detailQuery.data)) {
+    return (
+      <section className="dashboard-card text-right">
+        <h1 className="text-foreground text-2xl font-bold">تعديل الخطة</h1>
+        <p className="mt-2 text-sm text-red-500">تعذر تحميل بيانات الخطة.</p>
       </section>
     );
   }
@@ -125,45 +227,56 @@ export default function NewPlanPage() {
       return;
     }
 
-    try {
-      const tasks = days.flatMap((day) =>
+    const payload = {
+      name: name.trim(),
+      startsOn: fromDate,
+      endsOn: toDate,
+      ...(isSuperAdmin && coachId ? { coachId } : {}),
+      tasks: days.flatMap((day) =>
         day.tasks.map((task) => ({
           title: task.title.trim(),
           subject: task.subject,
           dueOn: day.date,
         })),
-      );
+      ),
+    };
 
-      await createPlanMutation.mutateAsync({
-        name: name.trim(),
-        startsOn: fromDate,
-        endsOn: toDate,
-        ...(isSuperAdmin && coachId ? { coachId } : {}),
-        tasks,
-      });
-
-      appToast.success("تم حفظ الخطة بنجاح.");
-      navigate(`/students/${studentId}/plans`);
+    try {
+      if (isEditMode) {
+        await updatePlanMutation.mutateAsync(payload);
+        appToast.success("تم تحديث الخطة بنجاح.");
+        navigate(`/students/${studentId}/plans/${numericPlanId}`);
+      } else {
+        await createPlanMutation.mutateAsync(payload);
+        appToast.success("تم حفظ الخطة بنجاح.");
+        navigate(`/students/${studentId}/plans`);
+      }
     } catch (error) {
-      showApiErrorToast(error, "تعذر حفظ الخطة.");
+      showApiErrorToast(
+        error,
+        isEditMode ? "تعذر تحديث الخطة." : "تعذر حفظ الخطة.",
+      );
     }
   }
+
+  const isSubmitting = createPlanMutation.isPending || updatePlanMutation.isPending;
 
   return (
     <div className="space-y-6">
       <PageHeader
-        title="خطة جديدة"
-        subtitle={`إنشاء خطة جديدة للطالب رقم ${studentId}.`}
+        title={isEditMode ? "تعديل الخطة" : "خطة جديدة"}
+        subtitle={
+          isEditMode
+            ? `تعديل الخطة رقم ${numericPlanId} للطالب رقم ${studentId}.`
+            : `إنشاء خطة جديدة للطالب رقم ${studentId}.`
+        }
         action={
           <div className="flex items-center gap-2">
             <Button variant="outline" onClick={() => navigate(-1)}>
               رجوع
             </Button>
-            <Button
-              onClick={handleSubmit}
-              disabled={!validation.isValid || createPlanMutation.isPending}
-            >
-              حفظ الخطة
+            <Button onClick={handleSubmit} disabled={!validation.isValid || isSubmitting}>
+              {isEditMode ? "حفظ التعديلات" : "حفظ الخطة"}
             </Button>
           </div>
         }
@@ -226,4 +339,3 @@ export default function NewPlanPage() {
     </div>
   );
 }
-

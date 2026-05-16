@@ -1,5 +1,6 @@
 import type { RouteObject } from "react-router-dom";
 import StudentLessonsPage from "@/features/admin/lessons/pages/StudentLessonsPage";
+import StudentPlanDetailsPage from "@/features/admin/plans/pages/StudentPlanDetailsPage";
 import StudentPage from "./pages/StudentPage";
 import StudentPlansPage from "@/features/admin/plans/pages/StudentPlansPage";
 import NewPlanPage from "@/features/admin/plans/pages/NewPlanPage";
@@ -22,6 +23,14 @@ export const studentsRoutes: RouteObject = {
     },
     {
       path: ":id/plans/new",
+      element: <NewPlanPage />,
+    },
+    {
+      path: ":id/plans/:planId",
+      element: <StudentPlanDetailsPage />,
+    },
+    {
+      path: ":id/plans/:planId/edit",
       element: <NewPlanPage />,
     },
     {

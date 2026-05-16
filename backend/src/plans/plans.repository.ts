@@ -28,6 +28,15 @@ export type CoachPlanRow = {
   tasksCount: number;
 };
 
+export type PlanTaskDetailRow = {
+  id: number;
+  title: string;
+  subject: string;
+  status: string;
+  dueAt: string;
+  completedAt: Date | null;
+};
+
 @Injectable()
 export class PlansRepository {
   constructor(@Inject(db) private readonly database: Database) {}
@@ -155,6 +164,7 @@ export class PlansRepository {
     studentId: number;
     startsOn: string; // YYYY-MM-DD
     endsOn: string; // YYYY-MM-DD
+    excludePlanId?: number;
   }): Promise<boolean> {
     // Overlap condition for inclusive ranges:
     // existing.startsOn <= new.endsOn AND existing.endsOn >= new.startsOn
@@ -162,6 +172,9 @@ export class PlansRepository {
       where: and(
         eq(plans.studentId, input.studentId),
         sql`${plans.startsOn} <= ${input.endsOn} and ${plans.endsOn} >= ${input.startsOn}`,
+        input.excludePlanId
+          ? sql`${plans.id} <> ${input.excludePlanId}`
+          : undefined,
       ),
       columns: { id: true },
     });
@@ -194,7 +207,7 @@ export class PlansRepository {
         title: t.title,
         // subject is validated in service/DTO; keep as string for Drizzle enum column.
         subject: t.subject as any,
-        dueAt:t.dueOn,
+        dueAt: t.dueOn,
       }));
 
       if (taskRows.length > 0) {
@@ -202,6 +215,98 @@ export class PlansRepository {
       }
 
       return { id: createdPlan.id };
+    });
+  }
+
+  async findPlanByIdAndStudent(planId: number, studentId: number) {
+    return this.database.query.plans.findFirst({
+      where: and(eq(plans.id, planId), eq(plans.studentId, studentId)),
+    });
+  }
+
+  async listPlanTasks(planId: number): Promise<PlanTaskDetailRow[]> {
+    const rows = await this.database
+      .select({
+        id: tasks.id,
+        title: tasks.title,
+        subject: tasks.subject,
+        status: tasks.status,
+        dueAt: tasks.dueAt,
+        completedAt: tasks.completedAt,
+      })
+      .from(tasks)
+      .where(eq(tasks.planId, planId))
+      .orderBy(tasks.dueAt, tasks.createdAt);
+
+    return rows as PlanTaskDetailRow[];
+  }
+
+  async deletePlanById(planId: number, studentId: number): Promise<boolean> {
+    const deleted = await this.database
+      .delete(plans)
+      .where(and(eq(plans.id, planId), eq(plans.studentId, studentId)))
+      .returning({ id: plans.id });
+
+    return deleted.length > 0;
+  }
+
+  async markTaskDone(taskId: number, planId: number) {
+    const [updated] = await this.database
+      .update(tasks)
+      .set({
+        status: 'done',
+        completedAt: new Date(),
+        updatedAt: new Date(),
+      })
+      .where(and(eq(tasks.id, taskId), eq(tasks.planId, planId)))
+      .returning({
+        id: tasks.id,
+        title: tasks.title,
+        subject: tasks.subject,
+        status: tasks.status,
+        dueAt: tasks.dueAt,
+        completedAt: tasks.completedAt,
+      });
+
+    return updated as PlanTaskDetailRow | undefined;
+  }
+
+  async updateStudentPlan(input: {
+    planId: number;
+    studentId: number;
+    coachId: number;
+    name: string;
+    startsOn: string;
+    endsOn: string;
+    tasks: Array<{ title: string; subject: string; dueOn: string }>;
+  }) {
+    return this.database.transaction(async (tx) => {
+      const [updatedPlan] = await tx
+        .update(plans)
+        .set({
+          name: input.name,
+          coachId: input.coachId,
+          startsOn: input.startsOn,
+          endsOn: input.endsOn,
+          updatedAt: new Date(),
+        })
+        .where(and(eq(plans.id, input.planId), eq(plans.studentId, input.studentId)))
+        .returning({ id: plans.id });
+
+      await tx.delete(tasks).where(eq(tasks.planId, input.planId));
+
+      const taskRows = input.tasks.map((t) => ({
+        planId: input.planId,
+        title: t.title,
+        subject: t.subject as any,
+        dueAt: t.dueOn,
+      }));
+
+      if (taskRows.length > 0) {
+        await tx.insert(tasks).values(taskRows);
+      }
+
+      return { id: updatedPlan.id };
     });
   }
 }

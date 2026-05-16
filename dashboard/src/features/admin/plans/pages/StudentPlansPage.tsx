@@ -48,6 +48,7 @@ export default function StudentPlansPage() {
       <StudentPlansHeader student={student} />
       <StudentPlansStatsSection stats={stats} />
       <StudentPlansTableSection
+        studentId={studentId}
         items={items}
         total={total}
         page={plansQuery.data.page ?? page}
@@ -62,4 +63,3 @@ export default function StudentPlansPage() {
     </div>
   );
 }
-

@@ -5,10 +5,11 @@ import type {
   PlanDay,
   PlanTask,
 } from "@/features/admin/plans/components/NewPlanPage/types";
-import Modal from "@/shared/components/Modal";
 import Button from "@/shared/components/Button";
 import DropdownField from "@/shared/components/DropDownMenu";
 import FormInput from "@/shared/components/FormInput";
+import Modal from "@/shared/components/Modal";
+import { SCHOOL_SUBJECT_OPTIONS } from "@/shared/const/subjects";
 import { formatDateArLong, getDayNameAr } from "@/shared/utils/dates";
 
 const TASKS_PAGE_SIZE = 3;
@@ -28,25 +29,18 @@ export default function PlanDayEditorModal({
   onAddTask: () => void;
   onDeleteTask: (taskId: string) => void;
 }) {
-  // Page tasks instead of revealing all at once.
   const [pageIndex, setPageIndex] = useState(0);
 
   useEffect(() => {
-    // Reset pagination when opening a different day.
     setPageIndex(0);
   }, [day.date, isOpen]);
 
   const subjects = useMemo(
-    () => [
-      { label: "رياضيات", value: "math" },
-      { label: "لغة عربية", value: "arabic" },
-      { label: "لغة إنجليزية", value: "english" },
-      { label: "فيزياء", value: "physics" },
-      { label: "كيمياء", value: "chemistry" },
-      { label: "أحياء", value: "biology" },
-      { label: "تاريخ", value: "history" },
-      { label: "جغرافيا", value: "geography" },
-    ],
+    () =>
+      SCHOOL_SUBJECT_OPTIONS.map((subject) => ({
+        label: subject.label,
+        value: subject.value,
+      })),
     [],
   );
 
@@ -133,7 +127,10 @@ export default function PlanDayEditorModal({
 
           {canShowPrev ? (
             <div className="flex justify-start">
-              <Button variant="outline" onClick={() => setPageIndex((p) => Math.max(0, p - 1))}>
+              <Button
+                variant="outline"
+                onClick={() => setPageIndex((p) => Math.max(0, p - 1))}
+              >
                 عرض السابق
               </Button>
             </div>
@@ -145,9 +142,7 @@ export default function PlanDayEditorModal({
             إضافة مهمة
           </Button>
 
-          <div className="text-subTitle text-sm">
-            {day.tasks.length} مهمة
-          </div>
+          <div className="text-subTitle text-sm">{day.tasks.length} مهمة</div>
         </div>
       </div>
     </Modal>
