@@ -5,7 +5,11 @@ import { CreateUserDto } from '../users/dto/create-user.dto';
 import { CreateStudentDto } from './dto/create-student.dto';
 import { ListStudentsQueryDto } from './dto/list-students-query.dto';
 import { UpdateStudentDto } from './dto/update-student.dto';
-import { StudentAggregate, StudentsRepository } from './students.repository';
+import {
+  AssignedCoachRow,
+  StudentAggregate,
+  StudentsRepository,
+} from './students.repository';
 
 export interface StudentOverviewStats {
   totalTasks: number;
@@ -31,6 +35,7 @@ export interface StudentOverviewLesson {
 
 export interface StudentOverview {
   student: StudentAggregate;
+  assignedCoaches: AssignedCoachRow[];
   stats: StudentOverviewStats;
   todayTasks: StudentOverviewTask[];
   todayLessons: StudentOverviewLesson[];
@@ -45,19 +50,52 @@ export class StudentsService {
 
   async getStudentOverview(id: number): Promise<StudentOverview> {
     const student = await this.findStudentByIdOrThrow(id);
+    const assignedCoaches = await this.studentsRepository.listAssignedCoaches(id);
+    const todayTasks = await this.studentsRepository.listTodayTasks(id);
 
     return {
       student,
+      assignedCoaches,
       stats: {
-        totalTasks: 0,
+        totalTasks: todayTasks.length,
         completedTasks: 0,
         remainingTasks: 0,
         missedTasks: 0,
         completionRate: 0,
       },
-      todayTasks: [],
+      todayTasks: todayTasks.map((t) => ({
+        id: t.id,
+        title: t.title,
+        subject: t.subject,
+        status: t.status,
+        sessionsCount: t.sessionsCount,
+      })),
       todayLessons: [],
     };
+  }
+
+  async listAssignedCoaches(studentId: number) {
+    await this.findStudentByIdOrThrow(studentId);
+    return this.studentsRepository.listAssignedCoaches(studentId);
+  }
+
+  async assignCoachToStudent(studentId: number, coachId: number) {
+    await this.findStudentByIdOrThrow(studentId);
+
+    const coachRole = await this.studentsRepository.findUserRoleById(coachId);
+    if (coachRole !== 'coach') {
+      // Keep message intentionally generic to avoid role leakage.
+      throw new NotFoundException('Coach not found');
+    }
+
+    await this.studentsRepository.assignCoachToStudent(studentId, coachId);
+    return { ok: true };
+  }
+
+  async removeCoachFromStudent(studentId: number, coachId: number) {
+    await this.findStudentByIdOrThrow(studentId);
+    await this.studentsRepository.removeCoachFromStudent(studentId, coachId);
+    return { ok: true };
   }
 
   async listStudents(actor: AuthenticatedUser, query: ListStudentsQueryDto) {

@@ -1,25 +1,26 @@
 import { Icon } from "@iconify/react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import PageHeader from "@/features/admin/shared/components/PageHeader";
 import StatCard from "@/features/admin/shared/components/StatCard";
+import StatsRow from "@/features/admin/shared/components/StatsRow";
+import useResetPageOnChange from "@/features/admin/shared/hooks/useResetPageOnChange";
+import useServerPagination from "@/features/admin/shared/hooks/useServerPagination";
 import Button from "@/shared/components/Button";
+import { optionalTrim } from "@/shared/utils/query";
 import AddCoachModal from "../components/CoachesPage/AddCoachModal";
 import CoachesTable from "../components/CoachesPage/CoachesTable";
 import { useCoachesQuery } from "../queries/coachQueries";
 
 export default function CoachesPage() {
   const [phoneSearch, setPhoneSearch] = useState("");
-  const [page, setPage] = useState(1);
-  const [limit, setLimit] = useState(10);
+  const { page, limit, setPage, onChangeRowsPerPage } = useServerPagination();
 
-  useEffect(() => {
-    setPage(1);
-  }, [phoneSearch]);
+  useResetPageOnChange(setPage, [phoneSearch]);
 
   const coachesQuery = useCoachesQuery({
     page,
     limit,
-    phone: phoneSearch.trim() || undefined,
+    phone: optionalTrim(phoneSearch),
   });
 
   const coaches = coachesQuery.data?.data ?? [];
@@ -40,14 +41,14 @@ export default function CoachesPage() {
         }
       />
 
-      <section className="flex flex-wrap gap-4 md:gap-6 lg:gap-8">
+      <StatsRow>
         <StatCard
           title="إجمالي المدربين"
           value={coachesCount}
           color="#d00507"
           icon={<Icon icon="fluent:people-team-24-regular" className="size-7" />}
         />
-      </section>
+      </StatsRow>
 
       <CoachesTable
         coaches={coaches}
@@ -57,10 +58,7 @@ export default function CoachesPage() {
         rowsPerPage={coachesQuery.data?.limit ?? limit}
         onPageChange={setPage}
         onPhoneSearchChange={setPhoneSearch}
-        onRowsPerPageChange={(nextLimit, nextPage) => {
-          setLimit(nextLimit);
-          setPage(nextPage);
-        }}
+        onRowsPerPageChange={onChangeRowsPerPage}
         totalRows={coachesCount}
       />
     </div>

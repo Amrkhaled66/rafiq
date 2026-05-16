@@ -1,3 +1,5 @@
+import { formatDateArLong, formatTimeAr } from "@/shared/utils/dates";
+
 export function getStudentInitials(name: string) {
   return name
     .trim()
@@ -9,18 +11,11 @@ export function getStudentInitials(name: string) {
 }
 
 export function formatStudentDate(value: string) {
-  return new Intl.DateTimeFormat("ar-EG", {
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  }).format(new Date(value));
+  return formatDateArLong(value);
 }
 
 export function formatStudentTime(value: string) {
-  return new Intl.DateTimeFormat("ar-EG", {
-    hour: "numeric",
-    minute: "2-digit",
-  }).format(new Date(value));
+  return formatTimeAr(value);
 }
 
 export function normalizePhoneForWhatsapp(phone: string) {

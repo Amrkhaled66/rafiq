@@ -1,11 +1,9 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { ListCoachPlansQueryDto } from './dto/list-coach-plans-query.dto';
 import { UpdateCoachDto } from './dto/update-coach.dto';
 import { ListCoachesQueryDto } from './dto/list-coaches-query.dto';
 import {
   CoachesRepository,
   type CoachOverviewRow,
-  type CoachPlanRow,
   type CoachRow,
 } from './coaches.repository';
 import { UsersService } from '../users/users.service';
@@ -77,23 +75,6 @@ export class CoachesService {
     };
   }
 
-  async listCoachPlans(id: number, query: ListCoachPlansQueryDto) {
-    const coach = await this.coachesRepository.findById(id);
-
-    if (!coach) {
-      throw new NotFoundException('Coach not found');
-    }
-
-    const result = await this.coachesRepository.listCoachPlans(id, query);
-
-    return {
-      items: result.items.map((item) => this.toPublicCoachPlan(item)),
-      limit: result.limit,
-      page: result.page,
-      total: result.total,
-    };
-  }
-
   async updateCoach(
     id: number,
     dto: UpdateCoachDto,
@@ -121,9 +102,5 @@ export class CoachesService {
   private toPublicCoach(coach: CoachRow): PublicCoach {
     const { password, ...publicCoach } = coach;
     return publicCoach;
-  }
-
-  private toPublicCoachPlan(plan: CoachPlanRow): CoachPlanRow {
-    return plan;
   }
 }

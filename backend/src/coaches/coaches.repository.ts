@@ -10,10 +10,9 @@ import {
   type SQL,
 } from 'drizzle-orm';
 import { alias } from 'drizzle-orm/pg-core';
-import { coachAssignments, plans, tasks, users } from '../db';
+import { coachAssignments, plans, users } from '../db';
 import { db } from '../db/db.module';
 import type { Database } from '../db/db.module';
-import { ListCoachPlansQueryDto } from './dto/list-coach-plans-query.dto';
 import { ListCoachesQueryDto } from './dto/list-coaches-query.dto';
 
 export type CoachRow = typeof users.$inferSelect & {
@@ -24,17 +23,6 @@ export type CoachOverviewRow = typeof users.$inferSelect & {
   createdPlans: number;
   missedTasks: number;
   totalAssignedStudents: number;
-};
-
-export type CoachPlanRow = {
-  createdAt: Date;
-  endsOn: string;
-  id: number;
-  missedTasksCount: number;
-  startsOn: string;
-  studentId: number;
-  studentName: string;
-  tasksCount: number;
 };
 
 @Injectable()
@@ -116,54 +104,6 @@ export class CoachesRepository {
       .where(and(eq(coachUser.id, id), eq(coachUser.role, 'coach')));
 
     return coach as CoachOverviewRow | undefined;
-  }
-
-  async listCoachPlans(coachId: number, query: ListCoachPlansQueryDto) {
-    const page = query.page ?? 1;
-    const limit = query.limit ?? 10;
-    const offset = (page - 1) * limit;
-
-    const items = await this.database
-      .select({
-        id: plans.id,
-        studentId: plans.studentId,
-        studentName: sql<string>`(
-          select ${users.fullName}
-          from ${users}
-          where ${users.id} = ${plans.studentId}
-        )`,
-        startsOn: plans.startsOn,
-        endsOn: plans.endsOn,
-        createdAt: plans.createdAt,
-        tasksCount: sql<number>`(
-          select count(*)
-          from ${tasks}
-          where ${tasks.planId} = ${plans.id}
-        )`,
-        missedTasksCount: sql<number>`(
-          select count(*)
-          from ${tasks}
-          where ${tasks.planId} = ${plans.id}
-            and ${tasks.status} = 'missed'
-        )`,
-      })
-      .from(plans)
-      .where(eq(plans.coachId, coachId))
-      .orderBy(desc(plans.createdAt))
-      .limit(limit)
-      .offset(offset);
-
-    const [{ count }] = await this.database
-      .select({ count: sql<number>`count(*)` })
-      .from(plans)
-      .where(eq(plans.coachId, coachId));
-
-    return {
-      items: items as CoachPlanRow[],
-      limit,
-      page,
-      total: Number(count),
-    };
   }
 
   private buildWhereClause(query: ListCoachesQueryDto): SQL {

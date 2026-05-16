@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   ParseIntPipe,
@@ -15,6 +16,7 @@ import { CurrentUser } from '../authorization/decorators/current-user.decorator'
 import { RequirePolicy } from '../authorization/decorators/require-policy.decorator';
 import type { AuthenticatedUser } from '../authorization/types/authenticated-user.type';
 import { CreateStudentDto } from './dto/create-student.dto';
+import { CreateStudentCoachAssignmentDto } from './dto/create-student-coach-assignment.dto';
 import { ListStudentsQueryDto } from './dto/list-students-query.dto';
 import { UpdateStudentDto } from './dto/update-student.dto';
 import { StudentsService } from './students.service';
@@ -37,6 +39,30 @@ export class StudentsController {
   @RequirePolicy('students.read')
   getStudentOverview(@Param('id', ParseIntPipe) id: number) {
     return this.studentsService.getStudentOverview(id);
+  }
+
+  @Get(':id/coaches')
+  @RequirePolicy('students.coaches.list')
+  listAssignedCoaches(@Param('id', ParseIntPipe) id: number) {
+    return this.studentsService.listAssignedCoaches(id);
+  }
+
+  @Post(':id/coach-assignments')
+  @RequirePolicy('students.coaches.assign')
+  assignCoachToStudent(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() dto: CreateStudentCoachAssignmentDto,
+  ) {
+    return this.studentsService.assignCoachToStudent(id, dto.coachId);
+  }
+
+  @Delete(':id/coach-assignments/:coachId')
+  @RequirePolicy('students.coaches.remove')
+  removeCoachFromStudent(
+    @Param('id', ParseIntPipe) id: number,
+    @Param('coachId', ParseIntPipe) coachId: number,
+  ) {
+    return this.studentsService.removeCoachFromStudent(id, coachId);
   }
 
   @Post()

@@ -1,25 +1,26 @@
 import { Icon } from "@iconify/react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import PageHeader from "@/features/admin/shared/components/PageHeader";
 import StatCard from "@/features/admin/shared/components/StatCard";
+import StatsRow from "@/features/admin/shared/components/StatsRow";
+import useResetPageOnChange from "@/features/admin/shared/hooks/useResetPageOnChange";
+import useServerPagination from "@/features/admin/shared/hooks/useServerPagination";
 import Button from "@/shared/components/Button";
+import { optionalTrim } from "@/shared/utils/query";
 import AddStudentModal from "../components/StudentsPage/AddStudentModal";
 import StudentsTable from "../components/StudentsPage/StudentsTable";
 import { useStudentsQuery } from "../queries/studentQueries";
 
 export default function StudentsPage() {
   const [search, setSearch] = useState("");
-  const [page, setPage] = useState(1);
-  const [limit, setLimit] = useState(10);
+  const { page, limit, setPage, onChangeRowsPerPage } = useServerPagination();
 
-  useEffect(() => {
-    setPage(1);
-  }, [search]);
+  useResetPageOnChange(setPage, [search]);
 
   const studentsQuery = useStudentsQuery({
     page,
     limit,
-    search: search.trim() || undefined,
+    search: optionalTrim(search),
   });
 
   const students = studentsQuery.data?.items ?? [];
@@ -40,7 +41,7 @@ export default function StudentsPage() {
         }
       />
 
-      <section className="flex flex-wrap gap-4 md:gap-6 lg:gap-8">
+      <StatsRow>
         <StatCard
           title="اجمالي الطلاب"
           value={studentsCount}
@@ -53,7 +54,7 @@ export default function StudentsPage() {
           color="#1f7a5a"
           icon={<Icon icon="mdi:account-check-outline" className="size-7" />}
         />
-      </section>
+      </StatsRow>
 
       <StudentsTable
         students={students}
@@ -62,10 +63,7 @@ export default function StudentsPage() {
         rowsPerPage={studentsQuery.data?.limit ?? limit}
         search={search}
         onPageChange={setPage}
-        onRowsPerPageChange={(nextLimit, nextPage) => {
-          setLimit(nextLimit);
-          setPage(nextPage);
-        }}
+        onRowsPerPageChange={onChangeRowsPerPage}
         onSearchChange={setSearch}
         totalRows={studentsCount}
       />

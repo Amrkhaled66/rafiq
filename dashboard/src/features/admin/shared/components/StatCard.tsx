@@ -33,11 +33,16 @@ export default function StatCard({
   };
 
   return (
-    <article className="group dashboard-card flex w-full md:max-w-xs items-center justify-between transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md">
+    <article className="group dashboard-card flex w-full items-start justify-between transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md md:max-w-xs">
       <div className="space-y-2 text-right">
         <p className="text-subTitle text-sm font-medium">{title}</p>
 
-        <p className="text-foreground text-3xl leading-none font-bold">
+        <p
+          style={{
+            color,
+          }}
+          className="text-foreground text-3xl leading-none font-bold"
+        >
           {value}
         </p>
       </div>

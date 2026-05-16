@@ -46,4 +46,36 @@ export const namedAuthorizationPolicies: NamedAuthorizationPolicy[] = [
       requireStudentResourceAccess('student_profile'),
     ],
   },
+  {
+    name: 'plans.list_by_student',
+    lookup: { key: 'studentId', kind: 'studentId', source: 'params' },
+    requirements: [
+      requireAnyRole(['coach', 'super_admin']),
+      requireStudentResourceAccess('student_profile'),
+    ],
+  },
+  {
+    name: 'plans.create_by_student',
+    lookup: { key: 'studentId', kind: 'studentId', source: 'params' },
+    requirements: [
+      requireAnyRole(['coach', 'super_admin']),
+      requireStudentResourceAccess('student_profile'),
+    ],
+  },
+  {
+    name: 'students.coaches.list',
+    lookup: { key: 'id', kind: 'resourceId', source: 'params' },
+    requirements: [
+      requireAnyRole(['coach', 'super_admin']),
+      requireStudentResourceAccess('student_profile'),
+    ],
+  },
+  {
+    name: 'students.coaches.assign',
+    requirements: [requireRole('super_admin')],
+  },
+  {
+    name: 'students.coaches.remove',
+    requirements: [requireRole('super_admin')],
+  },
 ];

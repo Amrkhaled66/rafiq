@@ -1,3 +1,5 @@
+import { formatDateArLong } from "@/shared/utils/dates";
+
 export function getUserInitials(name: string) {
   return name
     .trim()
@@ -9,9 +11,6 @@ export function getUserInitials(name: string) {
 }
 
 export function formatProfileDate(value: string) {
-  return new Intl.DateTimeFormat("ar-EG", {
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  }).format(new Date(value));
+  // Backward-compatible wrapper; prefer importing from `@/shared/utils/dates` in new code.
+  return formatDateArLong(value);
 }

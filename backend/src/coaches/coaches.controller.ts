@@ -13,7 +13,6 @@ import { AuthorizationGuard } from '../authorization/authorization.guard';
 import { CurrentUser } from '../authorization/decorators/current-user.decorator';
 import { RequirePolicy } from '../authorization/decorators/require-policy.decorator';
 import type { AuthenticatedUser } from '../authorization/types/authenticated-user.type';
-import { ListCoachPlansQueryDto } from './dto/list-coach-plans-query.dto';
 import { CoachesService } from './coaches.service';
 import { ListCoachesQueryDto } from './dto/list-coaches-query.dto';
 import { UpdateCoachDto } from './dto/update-coach.dto';
@@ -39,15 +38,6 @@ export class CoachesController {
   @RequirePolicy('coaches.read')
   getCoachOverview(@Param('id', ParseIntPipe) id: number) {
     return this.coachesService.getCoachOverview(id);
-  }
-
-  @Get(':id/plans')
-  @RequirePolicy('coaches.read')
-  listCoachPlans(
-    @Param('id', ParseIntPipe) id: number,
-    @Query() query: ListCoachPlansQueryDto,
-  ) {
-    return this.coachesService.listCoachPlans(id, query);
   }
 
   @Patch(':id')

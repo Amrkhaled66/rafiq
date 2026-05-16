@@ -1,5 +1,6 @@
 import { relations } from 'drizzle-orm';
 import {
+  date,
   index,
   integer,
   pgTable,
@@ -17,10 +18,10 @@ export const tasks = pgTable(
     id: serial('id').primaryKey(),
     planId: integer('plan_id')
       .notNull()
-      .references(() => plans.id),
+      .references(() => plans.id, { onDelete: 'cascade' }),
     title: varchar('title', { length: 255 }).notNull(),
     subject: schoolSubjectEnum('subject').notNull(),
-    dueAt: timestamp('due_at', { withTimezone: true }),
+    dueAt: date('due_at').notNull(),
     status: taskStatusEnum('status').notNull().default('pending'),
     completedAt: timestamp('completed_at', { withTimezone: true }),
     createdAt: timestamp('created_at', { withTimezone: true })
@@ -30,9 +31,7 @@ export const tasks = pgTable(
       .defaultNow()
       .notNull(),
   },
-  (table) => [
-    index('tasks_plan_status_idx').on(table.planId, table.status),
-  ],
+  (table) => [index('tasks_plan_status_idx').on(table.planId, table.status)],
 );
 
 export const tasksRelations = relations(tasks, ({ many, one }) => ({

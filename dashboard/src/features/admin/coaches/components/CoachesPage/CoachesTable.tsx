@@ -1,12 +1,13 @@
 import { Icon } from "@iconify/react";
-import { memo, useEffect, useMemo, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useMemo } from "react";
 import type { TableColumn } from "react-data-table-component";
+import { useNavigate } from "react-router-dom";
+
 import type { Coach } from "@/features/admin/coaches/services/coachService";
+import AdminServerTable from "@/features/admin/shared/components/AdminServerTable";
+import DebouncedSearchField from "@/features/admin/shared/components/DebouncedSearchField";
 import Button from "@/shared/components/Button";
-import FormInput from "@/shared/components/FormInput";
-import Table from "@/shared/components/Table";
-import { useDebouncedValue } from "@/shared/utils/useDebouncedValue";
+import { formatDateArShort2DigitDay } from "@/shared/utils/dates";
 
 type CoachesTableProps = {
   coaches: Coach[];
@@ -47,13 +48,13 @@ export default function CoachesTable({
       },
       {
         name: "تاريخ الإنشاء",
-        selector: (row) => formatDate(row.createdAt ?? ""),
+        selector: (row) => formatDateArShort2DigitDay(row.createdAt ?? ""),
       },
       {
         name: "إجمالي الطلاب",
         selector: (row) => row.assignedStudentsCount,
         center: true,
-        sortable:true
+        sortable: true,
       },
       {
         name: "",
@@ -64,13 +65,13 @@ export default function CoachesTable({
             onClick={() => navigate(`${row.id}`)}
           >
             <Icon icon="solar:eye-linear" className="size-4" />
-            <span>شوفني</span>
+            <span>عرض</span>
           </Button>
         ),
         button: true,
       },
     ],
-    [],
+    [navigate],
   );
 
   return (
@@ -84,81 +85,30 @@ export default function CoachesTable({
         </div>
 
         <div className="w-full md:max-w-sm">
-          <CoachPhoneSearchField
-            initialValue={phoneSearch}
-            onSearchChange={onPhoneSearchChange}
+          <DebouncedSearchField
+            label="البحث بالهاتف"
+            name="coach-phone-search"
+            placeholder="ابحث برقم الهاتف"
+            value={phoneSearch}
+            onChange={onPhoneSearchChange}
+            icon={<Icon icon="solar:magnifer-linear" className="size-4" />}
           />
         </div>
       </div>
 
-      <Table
+      <AdminServerTable
         columns={columns}
         data={coaches}
-        progressPending={isLoading}
-        progressComponent={
-          <div className="text-subTitle py-6 text-sm">
-            جاري تحميل المدربين...
-          </div>
-        }
-        noDataComponent={
-          <div className="text-subTitle py-6 text-sm">
-            لا يوجد مدربين لعرضهم
-          </div>
-        }
-        pagination
-        paginationDefaultPage={currentPage}
-        paginationPerPage={rowsPerPage}
-        paginationRowsPerPageOptions={[10, 20, 50, 100]}
-        paginationServer
-        paginationTotalRows={totalRows}
-        onChangePage={onPageChange}
-        onChangeRowsPerPage={onRowsPerPageChange}
-        responsive
-        highlightOnHover
-        persistTableHead
+        isLoading={isLoading}
+        loadingText="جاري تحميل المدربين..."
+        noDataText="لا يوجد مدربون لعرضهم"
+        currentPage={currentPage}
+        rowsPerPage={rowsPerPage}
+        totalRows={totalRows}
+        onPageChange={onPageChange}
+        onRowsPerPageChange={onRowsPerPageChange}
       />
     </section>
   );
 }
 
-const CoachPhoneSearchField = memo(function CoachPhoneSearchField({
-  initialValue,
-  onSearchChange,
-}: {
-  initialValue: string;
-  onSearchChange: (value: string) => void;
-}) {
-  const [value, setValue] = useState(initialValue);
-  const debouncedValue = useDebouncedValue(value, 400);
-
-  useEffect(() => {
-    setValue(initialValue);
-  }, [initialValue]);
-
-  useEffect(() => {
-    onSearchChange(debouncedValue);
-  }, [debouncedValue, onSearchChange]);
-
-  return (
-    <FormInput
-      label="البحث بالهاتف"
-      name="coach-phone-search"
-      placeholder="ابحث برقم الهاتف"
-      value={value}
-      onChange={(event) => setValue(event.target.value)}
-      icon={<Icon icon="solar:magnifer-linear" className="size-4" />}
-    />
-  );
-});
-
-function formatDate(value: string) {
-  if (!value) {
-    return "-";
-  }
-
-  return new Intl.DateTimeFormat("ar-EG", {
-    day: "2-digit",
-    month: "short",
-    year: "numeric",
-  }).format(new Date(value));
-}

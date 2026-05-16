@@ -8,6 +8,34 @@
       "when": 1778628450143,
       "tag": "0000_daily_saracen",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1789480000000,
+      "tag": "0001_add_plans_name",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1778831914686,
+      "tag": "0002_stormy_mikhail_rasputin",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1778868202088,
+      "tag": "0003_tiny_rick_jones",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1778869094083,
+      "tag": "0004_organic_gauntlet",
+      "breakpoints": true
     }
   ]
 }

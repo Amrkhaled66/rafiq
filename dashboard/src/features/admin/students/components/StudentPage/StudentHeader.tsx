@@ -1,19 +1,37 @@
 import { Icon } from "@iconify/react";
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
+
+import ManageStudentCoachesModal from "@/features/admin/students/components/StudentPage/ManageStudentCoachesModal";
 import UpdateStudentModal from "@/features/admin/students/components/StudentPage/UpdateStudentModal";
-import type { Student } from "@/features/admin/students/services/studentService";
+import type {
+  AssignedCoach,
+  Student,
+} from "@/features/admin/students/services/studentService";
 import Button from "@/shared/components/Button";
 import GradeBadge from "@/shared/components/GradeBadge";
+import { useAuth } from "@/shared/context/authContext";
 import {
   formatStudentDate,
   getStudentInitials,
   normalizePhoneForWhatsapp,
 } from "./studentPageUtils";
 
-export default function StudentHeader({ student }: { student: Student }) {
+export default function StudentHeader({
+  student,
+  assignedCoaches,
+}: {
+  student: Student;
+  assignedCoaches: AssignedCoach[];
+}) {
+  const { authData } = useAuth();
+  const isSuperAdmin = authData.user?.role === "super_admin";
+
   const initials = getStudentInitials(student.fullName);
   const whatsappPhone = normalizePhoneForWhatsapp(student.phone);
-  const navigate = useNavigate();
+  const coachesLabel =
+    assignedCoaches.length > 0
+      ? assignedCoaches.map((c) => c.fullName).join("، ")
+      : "لا يوجد";
 
   return (
     <section className="dashboard-card overflow-hidden">
@@ -29,6 +47,7 @@ export default function StudentHeader({ student }: { student: Student }) {
                 {student.fullName}
               </h1>
             </div>
+
             <div className="flex gap-x-6">
               <div className="inline-flex items-center gap-2">
                 <Icon
@@ -46,6 +65,15 @@ export default function StudentHeader({ student }: { student: Student }) {
                 <GradeBadge grade={student.gradeLevel} />
               </div>
             </div>
+
+            <div className="text-subTitle inline-flex items-center gap-2 text-sm">
+              <Icon
+                icon="solar:users-group-two-rounded-linear"
+                className="text-brand-primary size-4"
+              />
+              <span>المدربون: {coachesLabel}</span>
+            </div>
+
             <div className="text-subTitle inline-flex items-center gap-2 text-sm">
               <Icon
                 icon="solar:calendar-mark-linear"
@@ -57,20 +85,21 @@ export default function StudentHeader({ student }: { student: Student }) {
             </div>
           </div>
         </div>
-        <div className="grid grid-cols-3 place-items-end gap-3 lg:min-w-60">
-          <Button variant="outline" className="w-full text-sm">
-            تحليلات الاداء
-          </Button>
 
-          <Button
-            variant="outline"
-            onClick={() => {
-              navigate(`/students/${student.id}/plans`);
-            }}
-            className="w-full text-sm"
-          >
-            عرض الخطط
-          </Button>
+        <div className="grid grid-cols-3 place-items-end gap-3 lg:min-w-60">
+          {isSuperAdmin ? (
+            <ManageStudentCoachesModal studentId={student.id} />
+          ) : (
+            <Button variant="outline" className="w-full text-sm" disabled>
+              تحليلات الأداء
+            </Button>
+          )}
+
+          <Link to="plans" className="w-full">
+            <Button variant="outline" className="w-full text-sm">
+              عرض الخطط
+            </Button>
+          </Link>
 
           <Button disabled variant="outline" className="w-full text-sm">
             عرض الدروس
@@ -95,3 +124,4 @@ export default function StudentHeader({ student }: { student: Student }) {
     </section>
   );
 }
+

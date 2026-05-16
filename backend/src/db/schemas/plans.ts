@@ -7,6 +7,7 @@ import {
   serial,
   text,
   timestamp,
+  varchar,
 } from 'drizzle-orm/pg-core';
 import { tasks } from './tasks';
 import { users } from './users';
@@ -15,6 +16,7 @@ export const plans = pgTable(
   'plans',
   {
     id: serial('id').primaryKey(),
+    name: varchar('name', { length: 255 }).notNull(),
     studentId: integer('student_id')
       .notNull()
       .references(() => users.id),
@@ -24,9 +26,7 @@ export const plans = pgTable(
     startsOn: date('starts_on').notNull(),
     endsOn: date('ends_on').notNull(),
     notes: text('notes'),
-    createdAt: timestamp('created_at', { withTimezone: true })
-      .defaultNow()
-      .notNull(),
+    createdAt: timestamp('created_at').defaultNow().notNull(),
     updatedAt: timestamp('updated_at', { withTimezone: true })
       .defaultNow()
       .notNull(),

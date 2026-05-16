@@ -1,13 +1,13 @@
 import { Icon } from "@iconify/react";
-import { memo, useEffect, useMemo, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useMemo } from "react";
 import type { TableColumn } from "react-data-table-component";
+import { useNavigate } from "react-router-dom";
+
+import AdminServerTable from "@/features/admin/shared/components/AdminServerTable";
+import DebouncedSearchField from "@/features/admin/shared/components/DebouncedSearchField";
 import type { Student } from "@/features/admin/students/services/studentService";
 import Button from "@/shared/components/Button";
-import FormInput from "@/shared/components/FormInput";
 import GradeBadge from "@/shared/components/GradeBadge";
-import Table from "@/shared/components/Table";
-import { useDebouncedValue } from "@/shared/utils/useDebouncedValue";
 
 type StudentsTableProps = {
   students: Student[];
@@ -33,7 +33,7 @@ export default function StudentsTable({
   totalRows,
 }: StudentsTableProps) {
   const navigate = useNavigate();
-console.log("object")
+
   const columns = useMemo<TableColumn<Student>[]>(
     () => [
       {
@@ -59,7 +59,7 @@ console.log("object")
             onClick={() => navigate(`${row.id}`)}
           >
             <Icon icon="solar:eye-linear" className="size-4" />
-            <span>شوفني</span>
+            <span>عرض</span>
           </Button>
         ),
         ignoreRowClick: true,
@@ -81,65 +81,30 @@ console.log("object")
         </div>
 
         <div className="w-full md:max-w-sm">
-          <StudentsSearchField
-            initialValue={search}
-            onSearchChange={onSearchChange}
+          <DebouncedSearchField
+            label="البحث"
+            name="student-search"
+            placeholder="ابحث باسم الطالب أو رقم الهاتف"
+            value={search}
+            onChange={onSearchChange}
+            icon={<Icon icon="solar:magnifer-linear" className="size-4" />}
           />
         </div>
       </div>
 
-      <Table
+      <AdminServerTable
         columns={columns}
         data={students}
-        progressPending={isLoading}
-        progressComponent={
-          <div className="py-6 text-sm text-subTitle">جاري تحميل الطلاب...</div>
-        }
-        noDataComponent={
-          <div className="py-6 text-sm text-subTitle">لا يوجد طلاب لعرضهم</div>
-        }
-        pagination
-        paginationDefaultPage={currentPage}
-        paginationPerPage={rowsPerPage}
-        paginationRowsPerPageOptions={[10, 20, 50, 100]}
-        paginationServer
-        paginationTotalRows={totalRows}
-        onChangePage={onPageChange}
-        onChangeRowsPerPage={onRowsPerPageChange}
-        responsive
-        highlightOnHover
-        persistTableHead
+        isLoading={isLoading}
+        loadingText="جاري تحميل الطلاب..."
+        noDataText="لا يوجد طلاب لعرضهم"
+        currentPage={currentPage}
+        rowsPerPage={rowsPerPage}
+        totalRows={totalRows}
+        onPageChange={onPageChange}
+        onRowsPerPageChange={onRowsPerPageChange}
       />
     </section>
   );
 }
 
-const StudentsSearchField = memo(function StudentsSearchField({
-  initialValue,
-  onSearchChange,
-}: {
-  initialValue: string;
-  onSearchChange: (value: string) => void;
-}) {
-  const [value, setValue] = useState(initialValue);
-  const debouncedValue = useDebouncedValue(value, 400);
-
-  useEffect(() => {
-    setValue(initialValue);
-  }, [initialValue]);
-
-  useEffect(() => {
-    onSearchChange(debouncedValue);
-  }, [debouncedValue, onSearchChange]);
-
-  return (
-    <FormInput
-      label="البحث"
-      name="student-search"
-      placeholder="ابحث باسم الطالب أو رقم الهاتف"
-      value={value}
-      onChange={(event) => setValue(event.target.value)}
-      icon={<Icon icon="solar:magnifer-linear" className="size-4" />}
-    />
-  );
-});

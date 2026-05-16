@@ -19,7 +19,7 @@ export default function PageHeader({
   action,
 }: PageHeaderProps) {
   return (
-    <section className="flex flex-row items-start justify-between gap-4">
+    <section className="flex flex-row bg-white rounded-3xl px-8 py-7 items-start justify-between gap-4">
       <div className="space-y-2 text-right">
         <h1 className="text-foreground text-2xl font-bold md:text-3xl">
           {title}

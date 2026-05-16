@@ -54,8 +54,15 @@ export type StudentOverviewLesson = {
   scheduledAt: string;
 };
 
+export type AssignedCoach = {
+  id: number;
+  fullName: string;
+  phone: string;
+};
+
 export type StudentOverview = {
   student: Student;
+  assignedCoaches: AssignedCoach[];
   stats: StudentOverviewStats;
   todayTasks: StudentOverviewTask[];
   todayLessons: StudentOverviewLesson[];
@@ -83,10 +90,45 @@ export async function getStudentOverview(id: number): Promise<StudentOverview> {
   return data;
 }
 
+export async function listStudentCoaches(id: number): Promise<AssignedCoach[]> {
+  const { data } = await api.get<AssignedCoach[]>(`/students/${id}/coaches`);
+  return data;
+}
+
+export async function assignCoachToStudent(
+  studentId: number,
+  coachId: number,
+): Promise<{ ok: true }> {
+  const { data } = await api.post<{ ok: true }>(
+    `/students/${studentId}/coach-assignments`,
+    { coachId },
+  );
+  return data;
+}
+
+export async function removeCoachFromStudent(
+  studentId: number,
+  coachId: number,
+): Promise<{ ok: true }> {
+  const { data } = await api.delete<{ ok: true }>(
+    `/students/${studentId}/coach-assignments/${coachId}`,
+  );
+  return data;
+}
+
 export async function updateStudent(
   id: number,
   payload: UpdateStudentFormValues,
 ): Promise<Student> {
-  const { data } = await api.patch<Student>(`/students/${id}`, payload);
+  const normalizedPayload = {
+    fullName: payload.fullName,
+    phone: payload.phone,
+    city: payload.city,
+    parentPhone: payload.parentPhone,
+    gradeLevel: payload.gradeLevel,
+    ...(payload.password.trim() ? { password: payload.password } : {}),
+  };
+
+  const { data } = await api.patch<Student>(`/students/${id}`, normalizedPayload);
   return data;
 }

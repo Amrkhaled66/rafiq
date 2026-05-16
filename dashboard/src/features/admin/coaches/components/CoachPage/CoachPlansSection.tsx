@@ -2,6 +2,7 @@ import { useMemo } from "react";
 import type { TableColumn } from "react-data-table-component";
 import type { CoachPlan } from "@/features/admin/coaches/services/coachService";
 import Table from "@/shared/components/Table";
+import { formatDateArLong } from "@/shared/utils/dates";
 import { formatProfileDate } from "@/shared/utils/profile";
 
 type CoachPlansSectionProps = {
@@ -32,11 +33,11 @@ export default function CoachPlansSection({
       },
       {
         name: "تبدأ من",
-        selector: (row) => formatDateOnly(row.startsOn),
+        selector: (row) => formatDateArLong(row.startsOn),
       },
       {
         name: "تنتهي في",
-        selector: (row) => formatDateOnly(row.endsOn),
+        selector: (row) => formatDateArLong(row.endsOn),
       },
       {
         name: "عدد المهام",
@@ -93,10 +94,4 @@ export default function CoachPlansSection({
   );
 }
 
-function formatDateOnly(value: string) {
-  return new Intl.DateTimeFormat("ar-EG", {
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  }).format(new Date(value));
-}
+// `formatDateOnly` was inlined here previously; centralized in `@/shared/utils/dates`.

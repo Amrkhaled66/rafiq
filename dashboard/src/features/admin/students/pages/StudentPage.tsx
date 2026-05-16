@@ -44,7 +44,10 @@ export default function StudentPage() {
 
   return (
     <div className="space-y-6">
-      <StudentHeader student={student} />
+      <StudentHeader
+        student={student}
+        assignedCoaches={studentOverviewQuery.data.assignedCoaches}
+      />
       <StudentStatsSection stats={stats} />
       <StudentTasksSection tasks={todayTasks} />
       <StudentLessonsSection lessons={todayLessons} />
