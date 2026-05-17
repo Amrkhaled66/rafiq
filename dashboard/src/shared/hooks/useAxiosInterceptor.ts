@@ -1,11 +1,14 @@
 import { useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { api } from "@/lib/api";
 import { getToken } from "@/shared/utils/authStorage";
 import { useAuth } from "@/shared/context/authContext";
+import { urls } from "@/shared/const/urls";
 
 export function useAxiosInterceptor() {
   const navigate = useNavigate();
+  const location = useLocation();
   const { logout, isAuthenticated } = useAuth();
 
   useEffect(() => {
@@ -27,7 +30,10 @@ export function useAxiosInterceptor() {
       (error) => {
         if (error?.response?.status === 401 && isAuthenticated) {
           logout();
-          navigate("/", { replace: true });
+          navigate(`/${urls.dashBoardUrl}/signin`, {
+            replace: true,
+            state: { from: location },
+          });
 
           //   Alert({
           //     title: "Session Expired",
@@ -45,5 +51,5 @@ export function useAxiosInterceptor() {
       api.interceptors.request.eject(requestInterceptor);
       api.interceptors.response.eject(responseInterceptor);
     };
-  }, [logout, navigate, isAuthenticated]);
+  }, [logout, navigate, isAuthenticated, location]);
 }

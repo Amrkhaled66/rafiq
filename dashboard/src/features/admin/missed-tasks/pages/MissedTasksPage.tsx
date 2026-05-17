@@ -11,10 +11,11 @@ import PageHeader from "@/features/admin/shared/components/PageHeader";
 import useResetPageOnChange from "@/features/admin/shared/hooks/useResetPageOnChange";
 import useServerPagination from "@/features/admin/shared/hooks/useServerPagination";
 import { useAuth } from "@/shared/context/authContext";
+import { can } from "@/shared/auth/can";
 
 export default function MissedTasksPage() {
   const { authData } = useAuth();
-  const isSuperAdmin = authData.user?.role === "super_admin";
+  const canReadCoaches = can(authData.user, "coaches", "read");
   const [from, setFrom] = useState("");
   const [to, setTo] = useState("");
   const [status, setStatus] = useState<"" | "resolved" | "unresolved">("");
@@ -24,7 +25,7 @@ export default function MissedTasksPage() {
   useResetPageOnChange(pagination.setPage, [from, to, status, coachId]);
 
   const coachesQuery = useCoachesQuery(
-    isSuperAdmin ? { page: 1, limit: 100, deletedStatus: "active" } : {},
+    canReadCoaches ? { page: 1, limit: 100, deletedStatus: "active" } : {},
   );
 
   const coachOptions = useMemo(
@@ -84,9 +85,9 @@ export default function MissedTasksPage() {
         to={to}
         status={status}
         coachId={coachId}
-        isSuperAdmin={Boolean(isSuperAdmin)}
+        canReadCoaches={Boolean(canReadCoaches)}
         coachOptions={coachOptions}
-        coachesLoading={Boolean(isSuperAdmin && coachesQuery.isLoading)}
+        coachesLoading={Boolean(canReadCoaches && coachesQuery.isLoading)}
         onFromChange={setFrom}
         onToChange={setTo}
         onStatusChange={setStatus}
@@ -99,7 +100,7 @@ export default function MissedTasksPage() {
         page={page}
         limit={limit}
         isLoading={missedTasksQuery.isFetching}
-        isSuperAdmin={Boolean(isSuperAdmin)}
+        canReadCoaches={Boolean(canReadCoaches)}
         resolvingTaskId={actions.resolvingTaskId}
         onResolve={actions.openResolveModal}
         onUnresolve={actions.handleUnresolve}

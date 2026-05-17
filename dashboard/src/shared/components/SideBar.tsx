@@ -76,7 +76,11 @@ const Sidebar: React.FC<SidebarProps> = ({
               </div>
             ) : null}
 
-            <Button type="button" onClick={isOpen ? onClose : onOpen} className="p-2!">
+            <Button
+              type="button"
+              onClick={isOpen ? onClose : onOpen}
+              className="p-2!"
+            >
               <Icon
                 icon="boxicons:chevron-right"
                 className={`animate size-5 ${!isOpen && "rotate-180"}`}
@@ -115,9 +119,9 @@ const Sidebar: React.FC<SidebarProps> = ({
           </div>
         </div>
 
-        <div className="border-t border-black/5 pt-4">
-          <Button type="button" onClick={logout} className="w-full justify-start">
-            <span className="flex items-center gap-2">
+        <div className="flex justify-center border-t border-black/15 pt-2">
+          <Button type="button" onClick={logout} className="w-[90%]">
+            <span className="flex items-center justify-center gap-2">
               <Icon icon="bx:log-out" className="size-5" />
               {isOpen ? <span>تسجيل الخروج</span> : null}
             </span>
@@ -129,4 +133,3 @@ const Sidebar: React.FC<SidebarProps> = ({
 };
 
 export default Sidebar;
-

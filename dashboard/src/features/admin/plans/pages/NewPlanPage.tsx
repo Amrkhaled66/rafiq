@@ -16,6 +16,7 @@ import PageHeader from "@/features/admin/shared/components/PageHeader";
 import { useStudentCoachesQuery } from "@/features/admin/students/queries/studentQueries";
 import Button from "@/shared/components/Button";
 import { useAuth } from "@/shared/context/authContext";
+import { can } from "@/shared/auth/can";
 import { appToast } from "@/shared/lib/toast";
 import { formatDateLocal } from "@/shared/utils/dates";
 import { showApiErrorToast } from "@/shared/utils/showApiErrorToast";
@@ -69,7 +70,7 @@ export default function NewPlanPage() {
   const isEditMode = Number.isFinite(numericPlanId) && numericPlanId > 0;
 
   const { authData } = useAuth();
-  const isSuperAdmin = authData.user?.role === "super_admin";
+  const isAdminPlanner = can(authData.user, "plans_admin", "create");
 
   const { name, fromDate, toDate, coachId, days, durationDays, actions } =
     useNewPlanBuilder();
@@ -148,7 +149,7 @@ export default function NewPlanPage() {
       }
     }
 
-    if (isSuperAdmin) {
+    if (isAdminPlanner) {
       if (assignedCoaches.length === 0) {
         errors.push("لا يوجد مدربون معينون لهذا الطالب. قم بتعيين مدرب قبل حفظ الخطة.");
       } else if (!coachId) {
@@ -185,7 +186,7 @@ export default function NewPlanPage() {
     coachId,
     days,
     fromDate,
-    isSuperAdmin,
+    isAdminPlanner,
     name,
     toDate,
   ]);
@@ -231,7 +232,7 @@ export default function NewPlanPage() {
       name: name.trim(),
       startsOn: fromDate,
       endsOn: toDate,
-      ...(isSuperAdmin && coachId ? { coachId } : {}),
+      ...(isAdminPlanner && coachId ? { coachId } : {}),
       tasks: days.flatMap((day) =>
         day.tasks.map((task) => ({
           title: task.title.trim(),
@@ -302,7 +303,7 @@ export default function NewPlanPage() {
           onFromDateChange={actions.setFromDate}
           onToDateChange={actions.setToDate}
           duration={durationDays || undefined}
-          isSuperAdmin={Boolean(isSuperAdmin)}
+          isSuperAdmin={Boolean(isAdminPlanner)}
           assignedCoaches={assignedCoaches}
           coachId={coachId}
           onCoachIdChange={actions.setCoachId}

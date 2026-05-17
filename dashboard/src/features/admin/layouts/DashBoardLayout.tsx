@@ -1,21 +1,21 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Icon } from "@iconify/react";
 import { Outlet } from "react-router-dom";
 
 import logo from "@/assets/logo1.svg";
 import ReusableSidebar, { type SidebarMenuItem } from "@/shared/components/SideBar";
+import { useAuth } from "@/shared/context/authContext";
+import { can, type Action, type Resource } from "@/shared/auth/can";
 
-const sidebarItems: SidebarMenuItem[] = [
+type SidebarItem = SidebarMenuItem & {
+  requires?: { resource: Resource; action: Action };
+};
+
+const SIDEBAR_ITEMS: SidebarItem[] = [
   {
     icon: "material-symbols:grid-view-rounded",
     label: "الرئيسية",
-    // Use the dashboard index route (relative), not absolute "/".
     path: "",
-  },
-  {
-    icon: "material-symbols:analytics-outline",
-    label: "التحليلات",
-    path: "analytics",
   },
   {
     icon: "mdi:school-outline",
@@ -26,16 +26,18 @@ const sidebarItems: SidebarMenuItem[] = [
     icon: "fluent:people-team-24-regular",
     label: "المدربين",
     path: "coaches",
-  },
-  {
-    icon: "material-symbols:subscriptions-outline",
-    label: "الاشتراكات",
-    path: "subscriptions",
+    requires: { resource: "coaches", action: "read" },
   },
   {
     icon: "material-symbols:event-busy-outline",
     label: "المهام الفائتة",
     path: "missed-tasks",
+  },
+  {
+    icon: "material-symbols:subscriptions-outline",
+    label: "الاشتراكات",
+    path: "subscriptions",
+    requires: { resource: "subscriptions", action: "read" },
   },
   {
     icon: "material-symbols:timer-outline",
@@ -46,6 +48,17 @@ const sidebarItems: SidebarMenuItem[] = [
 
 export default function DashBoardLayout() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const { authData } = useAuth();
+
+  const sidebarItems = useMemo(
+    () =>
+      SIDEBAR_ITEMS.filter(
+        (item) =>
+          !item.requires ||
+          can(authData.user, item.requires.resource, item.requires.action),
+      ),
+    [authData.user],
+  );
 
   return (
     <div className="bg-background text-foreground flex">

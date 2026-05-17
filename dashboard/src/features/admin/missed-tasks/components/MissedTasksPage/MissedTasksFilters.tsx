@@ -11,7 +11,7 @@ export default function MissedTasksFilters({
   to,
   status,
   coachId,
-  isSuperAdmin,
+  canReadCoaches,
   coachOptions,
   coachesLoading,
   onFromChange,
@@ -23,7 +23,7 @@ export default function MissedTasksFilters({
   to: string;
   status: "" | "resolved" | "unresolved";
   coachId: string;
-  isSuperAdmin: boolean;
+  canReadCoaches: boolean;
   coachOptions: CoachOption[];
   coachesLoading: boolean;
   onFromChange: (value: string) => void;
@@ -35,7 +35,7 @@ export default function MissedTasksFilters({
     <section className="dashboard-card">
       <div
         className={`grid grid-cols-1 gap-4 ${
-          isSuperAdmin ? "md:grid-cols-4" : "md:grid-cols-3"
+          canReadCoaches ? "md:grid-cols-4" : "md:grid-cols-3"
         }`}
       >
         <FormInput
@@ -65,7 +65,7 @@ export default function MissedTasksFilters({
             onStatusChange(value as "" | "resolved" | "unresolved")
           }
         />
-        {isSuperAdmin ? (
+        {canReadCoaches ? (
           <DropdownField
             label="المدرب"
             value={coachId}

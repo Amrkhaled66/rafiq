@@ -8,7 +8,7 @@ import InfoTooltipCell from "@/features/admin/shared/components/InfoTooltipCell"
 import Button from "@/shared/components/Button";
 import { SCHOOL_SUBJECT_LABELS } from "@/shared/const/subjects";
 import { formatDateArShort } from "@/shared/utils/dates";
-
+import { urls } from "@/shared/const/urls";
 function TaskStatusBadge({ status }: { status: string }) {
   return (
     <span className="inline-flex rounded-full bg-rose-100 px-3 py-1 text-xs font-medium text-rose-700">
@@ -51,7 +51,7 @@ export default function MissedTasksTable({
   page,
   limit,
   isLoading,
-  isSuperAdmin,
+  canReadCoaches,
   resolvingTaskId,
   onResolve,
   onUnresolve,
@@ -63,7 +63,7 @@ export default function MissedTasksTable({
   page: number;
   limit: number;
   isLoading: boolean;
-  isSuperAdmin: boolean;
+  canReadCoaches: boolean;
   resolvingTaskId: number | null;
   onResolve: (task: MissedTaskRow) => void;
   onUnresolve: (task: MissedTaskRow) => void;
@@ -80,7 +80,9 @@ export default function MissedTasksTable({
           <button
             type="button"
             className="text-brand-primary text-sm font-medium hover:underline"
-            onClick={() => navigate(`/students/${row.studentId}`)}
+            onClick={() =>
+              navigate(`/${urls.dashBoardUrl}/students/${row.studentId}`)
+            }
           >
             {row.studentName}
           </button>
@@ -103,7 +105,7 @@ export default function MissedTasksTable({
             type="button"
             className="text-brand-primary text-sm font-medium hover:underline"
             onClick={() =>
-              navigate(`/students/${row.studentId}/plans/${row.planId}`)
+              navigate(`/${urls.dashBoardUrl}/students/${row.studentId}/plans/${row.planId}`)
             }
           >
             {row.planName}
@@ -141,7 +143,9 @@ export default function MissedTasksTable({
 
           return (
             <InfoTooltipCell tooltipText={note} tooltipLabel="عرض ملاحظة الحل">
-              <p className="max-w-48 truncate text-sm text-foreground">{note}</p>
+              <p className="text-foreground max-w-48 truncate text-sm">
+                {note}
+              </p>
             </InfoTooltipCell>
           );
         },
@@ -155,7 +159,7 @@ export default function MissedTasksTable({
       },
     ];
 
-    if (isSuperAdmin) {
+    if (canReadCoaches) {
       baseColumns.push({
         name: "المدرب",
         selector: (row) => row.coachName,
@@ -182,10 +186,10 @@ export default function MissedTasksTable({
     });
 
     return baseColumns;
-  }, [isSuperAdmin, navigate, onResolve, onUnresolve, resolvingTaskId]);
+  }, [canReadCoaches, navigate, onResolve, onUnresolve, resolvingTaskId]);
 
   return (
-    <section className="dashboard-card ">
+    <section className="dashboard-card">
       <div className="mb-5 text-right">
         <h2 className="text-foreground text-xl font-bold">
           قائمة المهام الفائتة

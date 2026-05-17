@@ -10,6 +10,7 @@ import type {
 import Button from "@/shared/components/Button";
 import GradeBadge from "@/shared/components/GradeBadge";
 import { useAuth } from "@/shared/context/authContext";
+import { can } from "@/shared/auth/can";
 import {
   formatStudentDate,
   getStudentInitials,
@@ -24,7 +25,11 @@ export default function StudentHeader({
   assignedCoaches: AssignedCoach[];
 }) {
   const { authData } = useAuth();
-  const isSuperAdmin = authData.user?.role === "super_admin";
+  const canManageCoaches = can(
+    authData.user,
+    "student_coach_assignments",
+    "update",
+  );
 
   const initials = getStudentInitials(student.fullName);
   const whatsappPhone = normalizePhoneForWhatsapp(student.phone);
@@ -87,7 +92,7 @@ export default function StudentHeader({
         </div>
 
         <div className="grid grid-cols-3 place-items-end gap-3 lg:min-w-60">
-          {isSuperAdmin ? (
+          {canManageCoaches ? (
             <ManageStudentCoachesModal studentId={student.id} />
           ) : (
             <Button variant="outline" className="w-full text-sm" disabled>
@@ -126,4 +131,3 @@ export default function StudentHeader({
     </section>
   );
 }
-

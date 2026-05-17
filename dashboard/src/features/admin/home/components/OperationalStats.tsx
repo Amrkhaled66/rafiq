@@ -10,12 +10,12 @@ export default function OperationalStats({
   missedStats,
   sessionsStats,
   subscriptionsStats,
-  isSuperAdmin,
+  canReadSubscriptions,
 }: {
   missedStats?: MissedTasksStats;
   sessionsStats?: SessionStats;
   subscriptionsStats?: SubscriptionStats;
-  isSuperAdmin: boolean;
+  canReadSubscriptions: boolean;
 }) {
   return (
     <StatsRow>
@@ -31,7 +31,7 @@ export default function OperationalStats({
         icon={<Icon icon="material-symbols:timer-outline" />}
         color="#0ea5e9"
       />
-      {isSuperAdmin ? (
+      {canReadSubscriptions ? (
         <StatCard
           title="اشتراكات قاربت على الانتهاء"
           value={subscriptionsStats?.soonEndingSubscriptions ?? "-"}
@@ -39,7 +39,7 @@ export default function OperationalStats({
           color="#a16207"
         />
       ) : null}
-      {isSuperAdmin ? (
+      {canReadSubscriptions ? (
         <StatCard
           title="اشتراكات فعّالة"
           value={subscriptionsStats?.activeSubscriptions ?? "-"}

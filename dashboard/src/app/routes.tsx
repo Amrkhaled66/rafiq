@@ -2,7 +2,7 @@ import { type ReactElement } from "react";
 import { createBrowserRouter, Outlet } from "react-router-dom";
 
 import { AppProviders } from "@/app/providers";
-import { authRoutes } from "@/features/admin/auth/routes";
+import SigninPage from "@/features/admin/auth/SigninPage";
 import { coachesRoutes } from "@/features/admin/coaches/routes";
 import DashboardHomePage from "@/features/admin/home/pages/DashboardHomePage";
 import DashBoardLayout from "@/features/admin/layouts/DashBoardLayout";
@@ -13,6 +13,8 @@ import { subscriptionsRoutes } from "@/features/admin/subscriptions/routes";
 import { urls } from "@/shared/const/urls";
 import { useAxiosInterceptor } from "@/shared/hooks/useAxiosInterceptor";
 import useScrollToTop from "@/shared/hooks/useScrollToTop";
+import RequireAdminAuth from "@/shared/routes/RequireAdminAuth";
+import RequireAdminGuest from "@/shared/routes/RequireAdminGuest";
 
 function RouterProvidersLayout(): ReactElement {
   useScrollToTop();
@@ -31,19 +33,32 @@ export const router = createBrowserRouter([
       {
         path: urls.dashBoardUrl,
         children: [
-          authRoutes,
           {
-            element: <DashBoardLayout />,
+            element: <RequireAdminGuest />,
             children: [
               {
-                index: true,
-                element: <DashboardHomePage />,
+                path: "signin",
+                element: <SigninPage />,
               },
-              coachesRoutes,
-              missedTasksRoutes,
-              sessionsRoutes,
-              subscriptionsRoutes,
-              studentsRoutes,
+            ],
+          },
+          {
+            element: <RequireAdminAuth />,
+            children: [
+              {
+                element: <DashBoardLayout />,
+                children: [
+                  {
+                    index: true,
+                    element: <DashboardHomePage />,
+                  },
+                  coachesRoutes,
+                  missedTasksRoutes,
+                  sessionsRoutes,
+                  subscriptionsRoutes,
+                  studentsRoutes,
+                ],
+              },
             ],
           },
         ],
@@ -51,4 +66,3 @@ export const router = createBrowserRouter([
     ],
   },
 ]);
-

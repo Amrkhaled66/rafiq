@@ -1,6 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import AuthLayout from "@/features/admin/layouts/AuthLayout";
 import FormInput from "@/shared/components/FormInput";
 import { useAuth } from "@/shared/context/authContext";
@@ -15,6 +16,7 @@ import { urls } from "@/shared/const/urls";
 
 const SigninPage = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { login } = useAuth();
   const loginMutation = useAdminLoginMutation();
 
@@ -35,7 +37,14 @@ const SigninPage = () => {
     loginMutation.mutate(values, {
       onSuccess: ({ user, token }) => {
         login(user, token);
-        navigate(`/${urls.dashBoardUrl}`, { replace: true });
+
+        const from = (location.state as any)?.from;
+        const to =
+          from?.pathname
+            ? `${from.pathname ?? ""}${from.search ?? ""}`
+            : `/${urls.dashBoardUrl}`;
+
+        navigate(to, { replace: true });
       },
       onError: (error) => {
         setError("phone", {
