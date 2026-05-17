@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Icon } from "@iconify/react";
 import { Outlet } from "react-router-dom";
+
 import logo from "@/assets/logo1.svg";
 import ReusableSidebar, {
   type SidebarMenuItem,
@@ -39,8 +40,8 @@ const sidebarItems: SidebarMenuItem[] = [
   },
   {
     icon: "material-symbols:timer-outline",
-    label: "الجلسات النشطة",
-    path: "active-sessions",
+    label: "الجلسات",
+    path: "sessions",
   },
 ];
 
@@ -59,8 +60,6 @@ export default function DashBoardLayout() {
       />
 
       <main className="bg-background space-y relative min-w-0 flex-1 p-4 md:p-6 lg:p-8">
-        {/* <div className="min-h-18  drop-shadow-md bg-white">
-        </div> */}
         <div className="mb-4 flex lg:hidden">
           <button type="button" onClick={() => setIsSidebarOpen(true)}>
             <Icon icon="material-symbols:menu-rounded" className="size-9" />

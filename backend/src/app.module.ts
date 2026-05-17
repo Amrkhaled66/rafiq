@@ -9,6 +9,7 @@ import { MissedTasksModule } from './missed-tasks/missed-tasks.module';
 import { PlansModule } from './plans/plans.module';
 import { StudentsModule } from './students/students.module';
 import { SubscriptionsModule } from './subscriptions/subscriptions.module';
+import { TaskSessionsModule } from './task-sessions/task-sessions.module';
 import { UsersModule } from './users/users.module';
 
 @Module({
@@ -22,6 +23,7 @@ import { UsersModule } from './users/users.module';
     MissedTasksModule,
     PlansModule,
     SubscriptionsModule,
+    TaskSessionsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

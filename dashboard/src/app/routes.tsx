@@ -2,6 +2,7 @@ import { type ReactElement } from "react";
 import { createBrowserRouter, Outlet } from "react-router-dom";
 import { coachesRoutes } from "@/features/admin/coaches/routes";
 import { missedTasksRoutes } from "@/features/admin/missed-tasks/routes";
+import { sessionsRoutes } from "@/features/admin/sessions/routes";
 import { studentsRoutes } from "@/features/admin/students/routes";
 import { subscriptionsRoutes } from "@/features/admin/subscriptions/routes";
 import DashBoardLayout from "@/features/admin/layouts/DashBoardLayout";
@@ -65,6 +66,7 @@ export const router = createBrowserRouter([
               },
               coachesRoutes,
               missedTasksRoutes,
+              sessionsRoutes,
               subscriptionsRoutes,
               studentsRoutes,
             ],

@@ -186,4 +186,8 @@ export const namedAuthorizationPolicies: NamedAuthorizationPolicy[] = [
     name: 'subscriptions.create',
     requirements: [requireRole('super_admin')],
   },
+  {
+    name: 'task_sessions.list',
+    requirements: [requireAnyRole(['coach', 'super_admin'])],
+  },
 ];
