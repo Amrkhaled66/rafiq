@@ -67,7 +67,7 @@ export class SubscriptionsService {
     }
 
     const startsOn = dto.startsAt;
-    const endsOn = this.addDays(startsOn, subscriptionPackage.durationDays - 1);
+    const endsOn = this.addDays(startsOn, subscriptionPackage.durationDays);
 
     const hasOverlap =
       await this.subscriptionsRepository.hasOverlappingSubscription(
@@ -85,8 +85,8 @@ export class SubscriptionsService {
     return this.subscriptionsRepository.createSubscription({
       studentId: student.id,
       packageId: subscriptionPackage.id,
-      startsAt: this.toStoredDate(startsOn),
-      endsAt: this.toStoredDate(endsOn),
+      startsAt: startsOn,
+      endsAt: endsOn,
       amountPaid: dto.amountPaid,
       createdBy: actor.sub,
     });
@@ -99,8 +99,4 @@ export class SubscriptionsService {
     return utc.toISOString().slice(0, 10);
   }
 
-  private toStoredDate(date: string) {
-    const [year, month, day] = date.split('-').map(Number);
-    return new Date(Date.UTC(year, month - 1, day, 12, 0, 0, 0));
-  }
 }

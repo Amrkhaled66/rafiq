@@ -5,6 +5,7 @@ import {
   serial,
   text,
   timestamp,
+  date,
 } from 'drizzle-orm/pg-core';
 import { subscriptionPackages } from './subscription-packages';
 import { users } from './users';
@@ -17,8 +18,8 @@ export const subscriptions = pgTable('subscriptions', {
   packageId: integer('package_id')
     .notNull()
     .references(() => subscriptionPackages.id),
-  startsAt: timestamp('starts_at', { withTimezone: true }).notNull(),
-  endsAt: timestamp('ends_at', { withTimezone: true }).notNull(),
+  startsAt: date('starts_at').notNull(),
+  endsAt: date('ends_at').notNull(),
   amountPaid: integer('amount_paid').notNull(),
   cancelledAt: timestamp('cancelled_at', { withTimezone: true }),
   cancellationReason: text('cancellation_reason'),

@@ -63,7 +63,7 @@ export default function CreateSubscriptionModal({
       return "-";
     }
 
-    return addDays(startsAt, selectedPackage.durationDays - 1);
+    return addDays(startsAt, selectedPackage.durationDays);
   }, [selectedPackage, startsAt]);
 
   useEffect(() => {

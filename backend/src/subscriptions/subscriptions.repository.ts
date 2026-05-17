@@ -22,8 +22,8 @@ export type SubscriptionListRow = {
   studentName: string;
   packageId: number;
   packageName: string;
-  startsAt: Date;
-  endsAt: Date;
+  startsAt: string;
+  endsAt: string;
   status: 'active' | 'upcoming' | 'ended' | 'cancelled';
 };
 
@@ -59,8 +59,8 @@ export class SubscriptionsRepository {
   async createSubscription(input: {
     studentId: number;
     packageId: number;
-    startsAt: Date;
-    endsAt: Date;
+    startsAt: string;
+    endsAt: string;
     amountPaid: number;
     createdBy: number;
   }): Promise<SubscriptionRow> {
@@ -84,8 +84,8 @@ export class SubscriptionsRepository {
         and(
           eq(subscriptions.studentId, studentId),
           isNull(subscriptions.cancelledAt),
-          lte(sql`date(${subscriptions.startsAt})`, startsOn),
-          gte(sql`date(${subscriptions.endsAt})`, startsOn),
+          lte(subscriptions.startsAt, startsOn),
+          gte(subscriptions.endsAt, startsOn),
         ),
       )
       .limit(1);
@@ -101,8 +101,8 @@ export class SubscriptionsRepository {
         and(
           eq(subscriptions.studentId, studentId),
           isNull(subscriptions.cancelledAt),
-          lte(sql`date(${subscriptions.startsAt})`, endsOn),
-          gte(sql`date(${subscriptions.endsAt})`, startsOn),
+          lte(subscriptions.startsAt, endsOn),
+          gte(subscriptions.endsAt, startsOn),
         ),
       )
       .limit(1);
@@ -125,8 +125,8 @@ export class SubscriptionsRepository {
         status: sql<'active' | 'upcoming' | 'ended' | 'cancelled'>`
           case
             when ${subscriptions.cancelledAt} is not null then 'cancelled'
-            when current_date < date(${subscriptions.startsAt}) then 'upcoming'
-            when current_date > date(${subscriptions.endsAt}) then 'ended'
+            when current_date < ${subscriptions.startsAt} then 'upcoming'
+            when current_date > ${subscriptions.endsAt} then 'ended'
             else 'active'
           end
         `,
@@ -158,11 +158,11 @@ export class SubscriptionsRepository {
       .select({
         totalCount: count(subscriptions.id),
         activeSubscriptions:
-          sql<number>`count(${subscriptions.id}) filter (where ${subscriptions.cancelledAt} is null and current_date >= date(${subscriptions.startsAt}) and current_date <= date(${subscriptions.endsAt}))`,
+          sql<number>`count(${subscriptions.id}) filter (where ${subscriptions.cancelledAt} is null and current_date >= ${subscriptions.startsAt} and current_date <= ${subscriptions.endsAt})`,
         soonEndingSubscriptions:
-          sql<number>`count(${subscriptions.id}) filter (where ${subscriptions.cancelledAt} is null and current_date <= date(${subscriptions.endsAt}) and date(${subscriptions.endsAt}) <= current_date + interval '7 days')`,
+          sql<number>`count(${subscriptions.id}) filter (where ${subscriptions.cancelledAt} is null and current_date <= ${subscriptions.endsAt} and ${subscriptions.endsAt} <= current_date + interval '7 days')`,
         endedSubscriptions:
-          sql<number>`count(${subscriptions.id}) filter (where ${subscriptions.cancelledAt} is null and current_date > date(${subscriptions.endsAt}))`,
+          sql<number>`count(${subscriptions.id}) filter (where ${subscriptions.cancelledAt} is null and current_date > ${subscriptions.endsAt})`,
       })
       .from(subscriptions);
 
