@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 
 import SessionsFilters from "@/features/admin/sessions/components/SessionsPage/SessionsFilters";
 import SessionsStatsSection from "@/features/admin/sessions/components/SessionsPage/SessionsStatsSection";
@@ -11,10 +12,25 @@ import useServerPagination from "@/features/admin/shared/hooks/useServerPaginati
 import { optionalTrim } from "@/shared/utils/query";
 
 export default function SessionsPage() {
+  const [searchParams, setSearchParams] = useSearchParams();
   const [studentPhone, setStudentPhone] = useState("");
   const [status, setStatus] = useState<"" | SessionStatus>("");
   const [from, setFrom] = useState("");
   const [to, setTo] = useState("");
+
+  // Sync status from query param -> state so deep links like `sessions?status=running` work.
+  useEffect(() => {
+    const raw = (searchParams.get("status") ?? "").trim();
+    const next =
+      raw === "running" || raw === "completed" || raw === "stopped"
+        ? (raw as SessionStatus)
+        : "";
+
+    if (next !== status) {
+      setStatus(next);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams]);
 
   const pagination = useServerPagination();
   useResetPageOnChange(pagination.setPage, [studentPhone, status, from, to]);
@@ -31,7 +47,7 @@ export default function SessionsPage() {
   if (sessionsQuery.isLoading && !sessionsQuery.data) {
     return (
       <section className="dashboard-card text-right">
-        <h1 className="text-foreground text-2xl font-bold">Sessions</h1>
+        <h1 className="text-foreground text-2xl font-bold">الجلسات</h1>
         <p className="text-subTitle mt-2 text-sm">جاري تحميل الجلسات...</p>
       </section>
     );
@@ -40,7 +56,7 @@ export default function SessionsPage() {
   if (sessionsQuery.isError || !sessionsQuery.data) {
     return (
       <section className="dashboard-card text-right">
-        <h1 className="text-foreground text-2xl font-bold">Sessions</h1>
+        <h1 className="text-foreground text-2xl font-bold">الجلسات</h1>
         <p className="mt-2 text-sm text-red-500">تعذر تحميل بيانات الجلسات.</p>
       </section>
     );
@@ -63,7 +79,20 @@ export default function SessionsPage() {
         from={from}
         to={to}
         onStudentPhoneChange={setStudentPhone}
-        onStatusChange={setStatus}
+        onStatusChange={(next) => {
+          setStatus(next);
+
+          // Sync state -> query param so refresh/copy-link keeps the active filter.
+          setSearchParams((prev) => {
+            const p = new URLSearchParams(prev);
+            if (next) {
+              p.set("status", next);
+            } else {
+              p.delete("status");
+            }
+            return p;
+          });
+        }}
         onFromChange={setFrom}
         onToChange={setTo}
       />

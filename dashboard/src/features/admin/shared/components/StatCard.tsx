@@ -27,7 +27,7 @@ export default function StatCard({
   value,
   icon,
   color = "#d00507",
-  className
+  className,
 }: StatCardProps) {
   const iconWrapperStyle: CSSProperties = {
     backgroundColor: hexToRgba(color, 0.12),
@@ -36,8 +36,10 @@ export default function StatCard({
 
   return (
     <article className="group dashboard-card flex w-full items-start justify-between transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md md:max-w-xs">
-      <div className="space-y-2 text-right">
-        <p className="text-subTitle text-sm font-medium">{title}</p>
+      <div className="w-full space-y-2 text-right">
+        <p className="text-subTitle max-w-[96%] text-sm font-medium text-wrap">
+          {title}
+        </p>
 
         <p
           style={{

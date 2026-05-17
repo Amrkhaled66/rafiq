@@ -3,15 +3,14 @@ import { Icon } from "@iconify/react";
 import { Outlet } from "react-router-dom";
 
 import logo from "@/assets/logo1.svg";
-import ReusableSidebar, {
-  type SidebarMenuItem,
-} from "@/shared/components/SideBar";
+import ReusableSidebar, { type SidebarMenuItem } from "@/shared/components/SideBar";
 
 const sidebarItems: SidebarMenuItem[] = [
   {
     icon: "material-symbols:grid-view-rounded",
     label: "الرئيسية",
-    path: "/",
+    // Use the dashboard index route (relative), not absolute "/".
+    path: "",
   },
   {
     icon: "material-symbols:analytics-outline",
@@ -70,3 +69,4 @@ export default function DashBoardLayout() {
     </div>
   );
 }
+

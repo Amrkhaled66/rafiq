@@ -148,9 +148,9 @@ export default function SessionsTable({
     <section className="dashboard-card">
       <div className="mb-5 text-right">
         <h2 className="text-foreground text-xl font-bold">قائمة الجلسات</h2>
-        <p className="text-subTitle mt-1 text-sm">
+        {/* <p className="text-subTitle mt-1 text-sm">
           جميع جلسات المهام مع إمكانية التصفية حسب الهاتف والحالة والتاريخ.
-        </p>
+        </p> */}
       </div>
 
       <AdminServerTable
