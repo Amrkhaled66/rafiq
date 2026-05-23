@@ -1,0 +1,69 @@
+import React, {
+  PropsWithChildren,
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
+import { setAuthToken } from "@/lib/api";
+import * as authStorage from "@/features/auth/storage/authStorage";
+
+type AuthState = {
+  user: any | null;
+  token: string | null;
+  login: (user: any, token: string) => Promise<void>;
+  logout: () => Promise<void>;
+};
+
+const AuthContext = createContext<AuthState | null>(null);
+
+export function AuthProvider({ children }: PropsWithChildren) {
+  const [user, setUser] = useState<any | null>(null);
+  const [token, setToken] = useState<string | null>(null);
+
+  useEffect(() => {
+    (async () => {
+      const savedToken = await authStorage.getToken();
+      const savedUserJson = await authStorage.getUser();
+      if (savedToken) {
+        setAuthToken(savedToken);
+        setToken(savedToken);
+      }
+      if (savedUserJson) {
+        try {
+          setUser(JSON.parse(savedUserJson));
+        } catch {
+          setUser(null);
+        }
+      }
+    })();
+  }, []);
+
+  async function login(nextUser: any, nextToken: string) {
+    await authStorage.setToken(nextToken);
+    await authStorage.setUser(JSON.stringify(nextUser));
+    setAuthToken(nextToken);
+    setToken(nextToken);
+    setUser(nextUser);
+  }
+
+  async function logout() {
+    await authStorage.clearToken();
+    await authStorage.clearUser();
+    setAuthToken(null);
+    setToken(null);
+    setUser(null);
+  }
+
+  return (
+    <AuthContext.Provider value={{ user, token, login, logout }}>
+      {children}
+    </AuthContext.Provider>
+  );
+}
+
+export function useAuth() {
+  const ctx = useContext(AuthContext);
+  if (!ctx) throw new Error("useAuth must be used within AuthProvider");
+  return ctx;
+}

@@ -1,0 +1,34 @@
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/preflight.css" layer(base);
+@import "tailwindcss/utilities.css";
+
+@import "nativewind/theme";
+
+:root {
+  --background: #f8f7f5;
+  --foreground: #171717;
+
+  --brand-primary: #d00507;
+  --brand-primary-soft: #f6dcdd;
+  --brand-primary-muted: #efa9ab;
+  --brand-primary-hover: #8f0d10;
+  --brand-primary-active: #6e090b;
+
+  --sub-title: #6b6b6b;
+  --card: #ffffff;
+  --card-border: rgba(208, 5, 7, 0.12);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+
+  --color-brand-primary: var(--brand-primary);
+  --color-brand-primary-soft: var(--brand-primary-soft);
+  --color-brand-primary-muted: var(--brand-primary-muted);
+  --color-brand-primary-hover: var(--brand-primary-hover);
+  --color-brand-primary-active: var(--brand-primary-active);
+  --color-sub-title: var(--sub-title);
+  --color-card: var(--card);
+  --color-card-border: var(--card-border);
+}

@@ -52,7 +52,7 @@ const AuthLayout: React.FC<AuthLayoutProps> = ({ children }) => {
             <img
               src={adminAvatar}
               alt="مسؤول رفيق"
-              className="relative z-10 w-full max-w-[430px] object-contain drop-shadow-2xl"
+              className="relative z-10 w-full md:max-w-81 xl:max-w-107.5 object-contain drop-shadow-2xl"
             />
           </div>
         </div>
