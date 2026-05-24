@@ -7,18 +7,19 @@ import React, {
 } from "react";
 import { setAuthToken } from "@/lib/api";
 import * as authStorage from "@/features/auth/storage/authStorage";
+import type { AuthUser } from "@/features/auth/types";
 
 type AuthState = {
-  user: any | null;
+  user: AuthUser | null;
   token: string | null;
-  login: (user: any, token: string) => Promise<void>;
+  login: (user: AuthUser, token: string) => Promise<void>;
   logout: () => Promise<void>;
 };
 
 const AuthContext = createContext<AuthState | null>(null);
 
 export function AuthProvider({ children }: PropsWithChildren) {
-  const [user, setUser] = useState<any | null>(null);
+  const [user, setUser] = useState<AuthUser | null>(null);
   const [token, setToken] = useState<string | null>(null);
 
   useEffect(() => {
@@ -39,7 +40,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
     })();
   }, []);
 
-  async function login(nextUser: any, nextToken: string) {
+  async function login(nextUser: AuthUser, nextToken: string) {
     await authStorage.setToken(nextToken);
     await authStorage.setUser(JSON.stringify(nextUser));
     setAuthToken(nextToken);

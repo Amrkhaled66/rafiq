@@ -1,18 +1,20 @@
 import { router } from "expo-router";
 import { View } from "react-native";
 
-import { useI18n } from "@/shared/i18n/I18nProvider";
-
-import LoginHeader from "@/features/auth/components/LoginHeader";
 import LoginForm from "@/features/auth/components/LoginForm";
+import LoginHeader from "@/features/auth/components/LoginHeader";
+import { useI18n } from "@/shared/i18n/I18nProvider";
+import { KeyboardScreenView } from "@/shared/ui/keyboard-screen-view";
 
 export function LoginScreen() {
   const { language } = useI18n();
 
   return (
-    <View className="h-screen sm:gap-0 gap-8 bg-white">
+    <View className="flex-1 bg-white">
       <LoginHeader />
-      <LoginForm language={language} onSubmit={() => router.push("/home")} />
+      <KeyboardScreenView>
+        <LoginForm language={language} onSubmit={() => router.push("/home")} />
+      </KeyboardScreenView>
     </View>
   );
 }
