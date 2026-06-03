@@ -3,6 +3,7 @@ import {
   Cairo_500Medium,
   Cairo_600SemiBold,
   Cairo_700Bold,
+  Cairo_800ExtraBold,
 } from "@expo-google-fonts/cairo";
 import {
   IBMPlexSansArabic_400Regular,
@@ -38,6 +39,7 @@ export function AppProviders({ children }: PropsWithChildren) {
     Cairo_500Medium,
     Cairo_600SemiBold,
     Cairo_700Bold,
+    Cairo_800ExtraBold,
   });
 
   if (!fontsLoaded) {

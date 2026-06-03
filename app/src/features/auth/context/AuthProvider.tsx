@@ -8,7 +8,7 @@ import React, {
 import { setAuthToken } from "@/lib/api";
 import * as authStorage from "@/features/auth/storage/authStorage";
 import type { AuthUser } from "@/features/auth/types";
-
+import { router } from "expo-router";
 type AuthState = {
   user: AuthUser | null;
   token: string | null;
@@ -54,6 +54,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
     setAuthToken(null);
     setToken(null);
     setUser(null);
+    router.push("/login");
   }
 
   return (

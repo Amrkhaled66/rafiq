@@ -4,10 +4,11 @@ import { Pressable, View } from "react-native";
 import { useI18n } from "@/shared/i18n/I18nProvider";
 import { ScreenShell } from "@/shared/ui/screen-shell";
 import { ThemedText } from "@/shared/ui/themed-text";
-
+import { useAuth } from "@/features/auth/context/AuthProvider";
 export function ProfileScreen() {
   const { language, setLanguage, t } = useI18n();
-
+  const { logout } = useAuth();
+  
   return (
     <ScreenShell
       eyebrow={t("profile.eyebrow")}
@@ -53,7 +54,7 @@ export function ProfileScreen() {
 
         <Pressable
           className="self-start rounded-2xl bg-brand-primary-soft px-4 py-3 active:bg-brand-primary-muted"
-          onPress={() => router.replace("/login")}
+          onPress={logout}
         >
           <ThemedText type="defaultSemiBold">{t("profile.logout")}</ThemedText>
         </Pressable>

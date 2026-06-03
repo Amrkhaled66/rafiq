@@ -5,7 +5,7 @@
 @import "nativewind/theme";
 
 :root {
-  --background: #f8f7f5;
+  --background: #ffff;
   --foreground: #171717;
 
   --brand-primary: #d00507;

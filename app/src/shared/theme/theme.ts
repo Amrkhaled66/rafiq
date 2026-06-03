@@ -58,15 +58,15 @@ export const AppFonts = {
     // medium: "IBMPlexSansArabic_500Medium",
     // semibold: "IBMPlexSansArabic_600SemiBold",
     // bold: "IBMPlexSansArabic_700Bold",
-     regular: "Cairo_400Regular",
+    regular: "Cairo_400Regular",
     medium: "Cairo_500Medium",
     semibold: "Cairo_600SemiBold",
-    bold: "Cairo_700Bold",
+    bold: "Cairo_800ExtraBold",
   },
   en: {
     regular: "Cairo_400Regular",
     medium: "Cairo_500Medium",
     semibold: "Cairo_600SemiBold",
-    bold: "Cairo_700Bold",
+    bold: "Cairo_800ExtraBold",
   },
 } as const;
