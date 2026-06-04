@@ -1,64 +1,117 @@
+import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
-import { Pressable, View } from "react-native";
+import { useMemo, useState } from "react";
+import { View } from "react-native";
 
-import { useI18n } from "@/shared/i18n/I18nProvider";
-import { ScreenShell } from "@/shared/ui/screen-shell";
-import { ThemedText } from "@/shared/ui/themed-text";
 import { useAuth } from "@/features/auth/context/AuthProvider";
+import { PersonalInfoSheet } from "@/features/profile/components/PersonalInfoSheet";
+import { ProfileActionCard } from "@/features/profile/components/ProfileActionCard";
+import { ProfileHeroCard } from "@/features/profile/components/ProfileHeroCard";
+import { SupportSectionCard } from "@/features/profile/components/SupportSectionCard";
+import { PROFILE_FALLBACK } from "@/features/profile/data/mock-profile-data";
+import { useDirection } from "@/shared/hooks/use-direction";
+import { PageTitle } from "@/shared/ui/page-title";
+import { TabPageLayout } from "@/shared/ui/tab-page-layout";
+import { AppText } from "@/shared/ui/app-text";
+
+function getInitialFromName(fullName: string) {
+  const trimmedName = fullName.trim();
+
+  if (!trimmedName) {
+    return "أ";
+  }
+
+  return trimmedName[0];
+}
+
 export function ProfileScreen() {
-  const { language, setLanguage, t } = useI18n();
-  const { logout } = useAuth();
-  
+  const { user, logout } = useAuth();
+  const dir = useDirection();
+  const [isPersonalInfoVisible, setIsPersonalInfoVisible] = useState(false);
+
+  const studentName = user?.fullName?.trim() || PROFILE_FALLBACK.fullName;
+  const studentInitial = useMemo(
+    () => getInitialFromName(studentName),
+    [studentName],
+  );
+
+  const handleSubscriptionsPress = () => {
+    router.push("/subscriptions");
+  };
+
+  const handleSupportPress = () => {
+    // Placeholder until support flow is implemented.
+  };
+
   return (
-    <ScreenShell
-      eyebrow={t("profile.eyebrow")}
-      title={t("profile.title")}
-      description={t("profile.description")}
-      contentClassName="gap-4"
-    >
-      <View className="gap-3 pt-2">
-        <View className="rounded-2xl border border-card-border bg-card px-4 py-4">
-          <ThemedText type="defaultSemiBold">{t("profile.summary")}</ThemedText>
-          <ThemedText className="mt-1 text-sub-title">
-            {t("profile.placeholder")}
-          </ThemedText>
+    <>
+      <TabPageLayout>
+        <View className="items-center gap-2">
+          <PageTitle title="حسابي" />
+          <AppText
+            className="text-sm md:text-base"
+            tone="muted"
+            weight="medium"
+          >
+            بياناتك واشتراكك في رفيق
+          </AppText>
         </View>
 
-        <View className="gap-2 rounded-2xl border border-card-border bg-card px-4 py-4">
-          <ThemedText type="defaultSemiBold">{t("profile.language")}</ThemedText>
-          <View className="flex-row gap-2">
-            <Pressable
-              className={`rounded-2xl px-4 py-3 ${language === "en" ? "bg-brand-primary" : "bg-brand-primary-soft"}`}
-              onPress={() => void setLanguage("en")}
-            >
-              <ThemedText
-                className={language === "en" ? "text-white" : "text-brand-primary"}
-                type="defaultSemiBold"
-              >
-                {t("profile.english")}
-              </ThemedText>
-            </Pressable>
-            <Pressable
-              className={`rounded-2xl px-4 py-3 ${language === "ar" ? "bg-brand-primary" : "bg-brand-primary-soft"}`}
-              onPress={() => void setLanguage("ar")}
-            >
-              <ThemedText
-                className={language === "ar" ? "text-white" : "text-brand-primary"}
-                type="defaultSemiBold"
-              >
-                {t("profile.arabic")}
-              </ThemedText>
-            </Pressable>
+        <ProfileHeroCard
+          fullName={studentName}
+          gradeLabel={PROFILE_FALLBACK.gradeLabel}
+          initial={studentInitial}
+        />
+
+        <View className="gap-3">
+          <View className={`items-center ${dir.rowReverse}`}>
+            <View className="size-10 items-center justify-center rounded-2xl">
+              <Ionicons name="grid-outline" size={18} color="#D00507" />
+            </View>
+            <AppText className="text-lg md:text-xl" weight="bold">
+              الخدمات
+            </AppText>
+          </View>
+
+          <View className="gap-2.5">
+            <ProfileActionCard
+              title="البيانات الشخصية"
+              icon="person-outline"
+              onPress={() => setIsPersonalInfoVisible(true)}
+            />
+            <ProfileActionCard
+              title="الاشتراكات"
+              icon="card-outline"
+              onPress={handleSubscriptionsPress}
+            />
           </View>
         </View>
 
-        <Pressable
-          className="self-start rounded-2xl bg-brand-primary-soft px-4 py-3 active:bg-brand-primary-muted"
-          onPress={logout}
-        >
-          <ThemedText type="defaultSemiBold">{t("profile.logout")}</ThemedText>
-        </Pressable>
-      </View>
-    </ScreenShell>
+        <View className="gap-3">
+          <View className={`items-center ${dir.rowReverse}`}>
+            <View className="size-10 items-center justify-center rounded-2xl">
+              <Ionicons name="settings-outline" size={18} color="#D00507" />
+            </View>
+            <AppText className="text-lg md:text-xl" weight="bold">
+              الدعم والحساب
+            </AppText>
+          </View>
+
+          <SupportSectionCard
+            onSupportPress={handleSupportPress}
+            onLogoutPress={() => void logout()}
+          />
+        </View>
+      </TabPageLayout>
+
+      <PersonalInfoSheet
+        visible={isPersonalInfoVisible}
+        onClose={() => setIsPersonalInfoVisible(false)}
+        phone={user?.phone || PROFILE_FALLBACK.phone}
+        city={PROFILE_FALLBACK.city}
+        parentPhone={PROFILE_FALLBACK.parentPhone}
+        studyStage={PROFILE_FALLBACK.studyStage}
+      />
+    </>
   );
 }

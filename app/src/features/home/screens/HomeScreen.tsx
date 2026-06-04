@@ -175,7 +175,7 @@ export function HomeScreen() {
                   <TodayLessons
                     lessons={lessons}
                     isLoading={isLoadingLessons}
-                    onViewAll={() => router.push("/(tabs)/plans")}
+                    onViewAll={() => router.push("/(tabs)/my-lessons")}
                   />
                 </View>
               </View>

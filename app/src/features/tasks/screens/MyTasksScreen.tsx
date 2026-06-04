@@ -1,37 +1,58 @@
-import { View } from "react-native";
+import { useState } from "react";
 
-import { useI18n } from "@/shared/i18n/I18nProvider";
-import { ScreenShell } from "@/shared/ui/screen-shell";
-import { ThemedText } from "@/shared/ui/themed-text";
+import { TaskProgressCard } from "@/features/tasks/components/TaskProgressCard";
+import { TaskSection } from "@/features/tasks/components/TaskSection";
+import {
+  TaskStatusFilterTabs,
+  type TaskStatusFilterKey,
+} from "@/features/tasks/components/TaskStatusFilterTabs";
+import { MY_TASKS_DAY_DATA } from "@/features/tasks/data/mock-my-tasks-data";
+import type { MyTaskItem, MyTaskStatus } from "@/features/tasks/types";
+import { PageDateBadge } from "@/shared/ui/page-date-badge";
+import { PageTitle } from "@/shared/ui/page-title";
+import { TabPageLayout } from "@/shared/ui/tab-page-layout";
 
-const taskSectionKeys = ["tasks.section1", "tasks.section2", "tasks.section3"] as const;
+function buildTaskStatusCounts(tasks: MyTaskItem[]): Record<MyTaskStatus, number> {
+  return tasks.reduce(
+    (acc, task) => {
+      acc[task.status] += 1;
+      return acc;
+    },
+    {
+      completed: 0,
+      in_progress: 0,
+      not_started: 0,
+    },
+  );
+}
 
 export function MyTasksScreen() {
-  const { t } = useI18n();
+  const dayData = MY_TASKS_DAY_DATA.today;
+  const [selectedStatus, setSelectedStatus] =
+    useState<TaskStatusFilterKey>("all");
+
+  const visibleTasks =
+    selectedStatus === "all"
+      ? dayData.tasks
+      : dayData.tasks.filter((task) => task.status === selectedStatus);
+
+  const handleTaskPress = (_task: MyTaskItem) => {
+    // Placeholder until the task details entrypoint is implemented.
+  };
 
   return (
-    <ScreenShell
-      eyebrow={t("tasks.eyebrow")}
-      title={t("tasks.title")}
-      description={t("tasks.description")}
-      contentClassName="gap-4"
-    >
-      <View className="gap-3 pt-2">
-        {taskSectionKeys.map((item, index) => (
-          <View
-            key={item}
-            className="rounded-2xl border border-card-border bg-card px-4 py-4"
-          >
-            <ThemedText className="mb-1 text-brand-primary" type="eyebrow">
-              0{index + 1}
-            </ThemedText>
-            <ThemedText type="defaultSemiBold">{t(item)}</ThemedText>
-            <ThemedText className="mt-1 text-sub-title">
-              {t("tasks.placeholder")}
-            </ThemedText>
-          </View>
-        ))}
-      </View>
-    </ScreenShell>
+    <TabPageLayout>
+      <PageTitle title="مهامي" />
+      <PageDateBadge dateLabel={dayData.dateLabel} />
+      <TaskProgressCard
+        progress={dayData.progress}
+        statusCounts={buildTaskStatusCounts(dayData.tasks)}
+      />
+      <TaskStatusFilterTabs
+        value={selectedStatus}
+        onChange={setSelectedStatus}
+      />
+      <TaskSection tasks={visibleTasks} onTaskPress={handleTaskPress} />
+    </TabPageLayout>
   );
 }

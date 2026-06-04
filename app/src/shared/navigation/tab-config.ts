@@ -2,7 +2,7 @@ import type Ionicons from "@expo/vector-icons/Ionicons";
 import type { TranslationKey } from "@/shared/i18n/translations";
 
 export type TabConfig = {
-  name: "home" | "my-tasks" | "plans" | "profile";
+  name: "home" | "my-tasks" | "plans" | "my-lessons" | "profile";
   titleKey: TranslationKey;
   defaultIcon: keyof typeof Ionicons.glyphMap;
   selectedIcon: keyof typeof Ionicons.glyphMap;
@@ -22,11 +22,18 @@ export const TABS: readonly TabConfig[] = [
     selectedIcon: "file-tray-full",
   },
   {
+    name: "my-lessons",
+    titleKey: "tabs.lessons",
+    defaultIcon: "school-outline",
+    selectedIcon: "school",
+  },
+  {
     name: "plans",
     titleKey: "tabs.plans",
     defaultIcon: "calendar-clear-outline",
     selectedIcon: "calendar-clear",
   },
+
   {
     name: "profile",
     titleKey: "tabs.profile",

@@ -1,0 +1,247 @@
+import type { MyTasksDayData, MyTasksDayKey } from "@/features/tasks/types";
+
+const SUBJECT_STYLES = {
+  math: {
+    iconBackgroundColor: "#F3E8FF",
+    iconColor: "#8B5CF6",
+  },
+  chemistry: {
+    iconBackgroundColor: "#DBEAFE",
+    iconColor: "#2563EB",
+  },
+  history: {
+    iconBackgroundColor: "#DCFCE7",
+    iconColor: "#16A34A",
+  },
+  arabic: {
+    iconBackgroundColor: "#FFEDD5",
+    iconColor: "#EA580C",
+  },
+  physics: {
+    iconBackgroundColor: "#CCFBF1",
+    iconColor: "#0F766E",
+  },
+  biology: {
+    iconBackgroundColor: "#ECFCCB",
+    iconColor: "#65A30D",
+  },
+  english: {
+    iconBackgroundColor: "#FCE7F3",
+    iconColor: "#DB2777",
+  },
+} as const;
+
+export const MY_TASKS_DAY_DATA: Record<MyTasksDayKey, MyTasksDayData> = {
+  yesterday: {
+    dateLabel: "الأربعاء، 2 يونيو 2025",
+    progress: {
+      percentage: 71,
+      completedCount: 5,
+      totalCount: 7,
+    },
+    tasks: [
+      {
+        id: "y-physics",
+        title: "حل مراجعة الفيزياء",
+        subject: "فيزياء",
+        estimatedTime: "40 دقيقة",
+        status: "completed",
+        icon: "flask-outline",
+        ...SUBJECT_STYLES.physics,
+      },
+      {
+        id: "y-arabic",
+        title: "تلخيص درس البلاغة",
+        subject: "اللغة العربية",
+        estimatedTime: "25 دقيقة",
+        status: "completed",
+        icon: "book-outline",
+        ...SUBJECT_STYLES.arabic,
+      },
+      {
+        id: "y-math",
+        title: "تدريبات التفاضل",
+        subject: "رياضيات",
+        estimatedTime: "60 دقيقة",
+        status: "in_progress",
+        icon: "calculator-outline",
+        ...SUBJECT_STYLES.math,
+      },
+    ],
+    lessons: [
+      {
+        id: "y-lesson-math",
+        subject: "رياضيات",
+        icon: "calculator-outline",
+        checked: true,
+        ...SUBJECT_STYLES.math,
+      },
+      {
+        id: "y-lesson-arabic",
+        subject: "اللغة العربية",
+        icon: "book-outline",
+        checked: true,
+        ...SUBJECT_STYLES.arabic,
+      },
+      {
+        id: "y-lesson-chemistry",
+        subject: "كيمياء",
+        icon: "flask-outline",
+        checked: false,
+        ...SUBJECT_STYLES.chemistry,
+      },
+    ],
+  },
+  today: {
+    dateLabel: "الخميس، 3 يونيو 2025",
+    progress: {
+      percentage: 43,
+      completedCount: 3,
+      totalCount: 7,
+    },
+    tasks: [
+      {
+        id: "t-physics",
+        title: "حل واجب الفيزياء",
+        subject: "فيزياء",
+        estimatedTime: "45 دقيقة",
+        status: "in_progress",
+        icon: "flask-outline",
+        ...SUBJECT_STYLES.physics,
+      },
+      {
+        id: "t-biology",
+        title: "مراجعة الأحياء",
+        subject: "أحياء",
+        estimatedTime: "30 دقيقة",
+        status: "completed",
+        icon: "leaf-outline",
+        ...SUBJECT_STYLES.biology,
+      },
+      {
+        id: "t-math-1",
+        title: "تدريبات الرياضيات",
+        subject: "رياضيات",
+        estimatedTime: "60 دقيقة",
+        status: "not_started",
+        icon: "calculator-outline",
+        ...SUBJECT_STYLES.math,
+      },
+      {
+        id: "t-chemistry",
+        title: "مراجعة الباب الثالث",
+        subject: "كيمياء",
+        estimatedTime: "35 دقيقة",
+        status: "not_started",
+        icon: "flask-outline",
+        ...SUBJECT_STYLES.chemistry,
+      },
+      {
+        id: "t-arabic",
+        title: "تلخيص نص القراءة",
+        subject: "اللغة العربية",
+        estimatedTime: "20 دقيقة",
+        status: "in_progress",
+        icon: "book-outline",
+        ...SUBJECT_STYLES.arabic,
+      },
+    ],
+    lessons: [
+      {
+        id: "t-lesson-math",
+        subject: "رياضيات",
+        icon: "calculator-outline",
+        checked: true,
+        ...SUBJECT_STYLES.math,
+      },
+      {
+        id: "t-lesson-arabic",
+        subject: "اللغة العربية",
+        icon: "book-outline",
+        checked: false,
+        ...SUBJECT_STYLES.arabic,
+      },
+      {
+        id: "t-lesson-biology",
+        subject: "أحياء",
+        icon: "leaf-outline",
+        checked: false,
+        ...SUBJECT_STYLES.biology,
+      },
+      {
+        id: "t-lesson-physics",
+        subject: "فيزياء",
+        icon: "flask-outline",
+        checked: true,
+        ...SUBJECT_STYLES.physics,
+      },
+    ],
+  },
+  tomorrow: {
+    dateLabel: "الجمعة، 4 يونيو 2025",
+    progress: {
+      percentage: 14,
+      completedCount: 1,
+      totalCount: 7,
+    },
+    tasks: [
+      {
+        id: "tm-chemistry",
+        title: "تجهيز ملخص الكيمياء",
+        subject: "كيمياء",
+        estimatedTime: "35 دقيقة",
+        status: "not_started",
+        icon: "flask-outline",
+        ...SUBJECT_STYLES.chemistry,
+      },
+      {
+        id: "tm-history",
+        title: "قراءة أسئلة التاريخ",
+        subject: "تاريخ",
+        estimatedTime: "20 دقيقة",
+        status: "not_started",
+        icon: "reader-outline",
+        ...SUBJECT_STYLES.history,
+      },
+      {
+        id: "tm-english",
+        title: "حل كلمات اللغة الإنجليزية",
+        subject: "إنجليزي",
+        estimatedTime: "30 دقيقة",
+        status: "in_progress",
+        icon: "language-outline",
+        ...SUBJECT_STYLES.english,
+      },
+    ],
+    lessons: [
+      {
+        id: "tm-lesson-history",
+        subject: "تاريخ",
+        icon: "reader-outline",
+        checked: false,
+        ...SUBJECT_STYLES.history,
+      },
+      {
+        id: "tm-lesson-chemistry",
+        subject: "كيمياء",
+        icon: "flask-outline",
+        checked: false,
+        ...SUBJECT_STYLES.chemistry,
+      },
+      {
+        id: "tm-lesson-english",
+        subject: "إنجليزي",
+        icon: "language-outline",
+        checked: false,
+        ...SUBJECT_STYLES.english,
+      },
+      {
+        id: "tm-lesson-math",
+        subject: "رياضيات",
+        icon: "calculator-outline",
+        checked: true,
+        ...SUBJECT_STYLES.math,
+      },
+    ],
+  },
+};

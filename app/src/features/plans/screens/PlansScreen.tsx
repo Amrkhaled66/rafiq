@@ -1,27 +1,41 @@
-import { View } from "react-native";
+import { useState } from "react";
 
-import { useI18n } from "@/shared/i18n/I18nProvider";
-import { ScreenShell } from "@/shared/ui/screen-shell";
-import { ThemedText } from "@/shared/ui/themed-text";
+import { CurrentPlanCard } from "@/features/plans/components/CurrentPlanCard";
+import { PlansSection } from "@/features/plans/components/PlansSection";
+import { PlanStatusFilterTabs } from "@/features/plans/components/PlanStatusFilterTabs";
+import { MOCK_PLANS, PLANS_DATE_LABEL } from "@/features/plans/data/mock-plans-data";
+import type { PlanStatusFilterKey, StudyPlan } from "@/features/plans/types";
+import { PageDateBadge } from "@/shared/ui/page-date-badge";
+import { PageTitle } from "@/shared/ui/page-title";
+import { TabPageLayout } from "@/shared/ui/tab-page-layout";
 
 export function PlansScreen() {
-  const { t } = useI18n();
+  const plans = MOCK_PLANS;
+  const [selectedStatus, setSelectedStatus] =
+    useState<PlanStatusFilterKey>("all");
+
+  const currentPlan = plans.find((plan) => plan.status === "active") ?? plans[0];
+  const visiblePlans =
+    selectedStatus === "all"
+      ? plans
+      : plans.filter((plan) => plan.status === selectedStatus);
+
+  const handlePlanPress = (_plan: StudyPlan) => {
+    // Placeholder until the plan details route is implemented.
+  };
 
   return (
-    <ScreenShell
-      eyebrow={t("plans.eyebrow")}
-      title={t("plans.title")}
-      description={t("plans.description")}
-      contentClassName="gap-4"
-    >
-      <View className="pt-2">
-        <View className="gap-2 rounded-2xl border border-card-border bg-card px-4 py-4">
-          <ThemedText type="subtitle">{t("plans.currentPlan")}</ThemedText>
-          <ThemedText className="text-sub-title">
-            {t("plans.placeholder")}
-          </ThemedText>
-        </View>
-      </View>
-    </ScreenShell>
+    <TabPageLayout>
+      <PageTitle title="الخطط" />
+      <PageDateBadge dateLabel={PLANS_DATE_LABEL} />
+      {currentPlan ? (
+        <CurrentPlanCard plan={currentPlan} onPress={handlePlanPress} />
+      ) : null}
+      <PlanStatusFilterTabs
+        value={selectedStatus}
+        onChange={setSelectedStatus}
+      />
+      <PlansSection plans={visiblePlans} onPlanPress={handlePlanPress} />
+    </TabPageLayout>
   );
 }
