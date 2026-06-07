@@ -2,15 +2,15 @@ import { Ionicons } from "@expo/vector-icons";
 import { Pressable, View, useWindowDimensions } from "react-native";
 
 import { HomeStateCard } from "@/features/home/components/HomeStateCard";
-import {
-  TodayLessonCard,
-  type LessonItem,
-} from "@/features/home/components/TodayLessonCard";
 import { SectionTitle } from "@/features/home/components/SectionTitle";
 import { TodayLessonsSkeleton } from "@/features/home/components/skeletons";
 import { useDirection } from "@/shared/hooks/use-direction";
 import { Colors } from "@/shared/theme/theme";
 import { AppText } from "@/shared/ui/app-text";
+import {
+  LessonChecklistRow,
+  type LessonChecklistItem as LessonItem,
+} from "@/shared/ui/lesson-checklist-row";
 
 type TodayLessonsProps = {
   lessons: LessonItem[];
@@ -63,26 +63,24 @@ export function TodayLessons({
 
       <View
         style={{
-        borderWidth: 1,
-        borderColor: "#F1F1F1",
-
-        shadowColor: "#000",
-        shadowOffset: {
-          width: 0,
-          height: 4,
-        },
-        shadowOpacity: 0.06,
-        shadowRadius: 10,
-
-        elevation: 2,
-      }}
+          borderWidth: 1,
+          borderColor: "#F1F1F1",
+          shadowColor: "#000",
+          shadowOffset: {
+            width: 0,
+            height: 4,
+          },
+          shadowOpacity: 0.06,
+          shadowRadius: 10,
+          elevation: 1,
+        }}
         className="rounded-2xl! bg-white"
       >
         {previewLessons.map((lesson, index) => (
-          <TodayLessonCard
-            key={`${lesson.subject}-${lesson.time}`}
+          <LessonChecklistRow
+            key={lesson.id}
             lesson={lesson}
-            isLast={index === ENDLESSONSINDEX - 1}
+            isLast={index === previewLessons.length - 1}
           />
         ))}
       </View>

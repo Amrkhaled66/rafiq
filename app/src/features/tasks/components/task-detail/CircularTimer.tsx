@@ -1,4 +1,4 @@
-import { Image, View } from "react-native";
+import { Image, View, useWindowDimensions } from "react-native";
 import Svg, {
   Circle,
   Defs,
@@ -6,10 +6,11 @@ import Svg, {
   Stop,
 } from "react-native-svg";
 
-import { formatTaskTimer } from "@/features/tasks/utils/task-session-ui";
-import { AppText } from "@/shared/ui/app-text";
 import tomato from "@assets/images/tomato.png";
 import tomatoHead from "@assets/images/tomato-head.png";
+import { formatTaskTimer } from "@/features/tasks/utils/task-session-ui";
+import { AppText } from "@/shared/ui/app-text";
+
 type CircularTimerProps = {
   durationSeconds: number;
   remainingSeconds: number;
@@ -29,10 +30,27 @@ export function CircularTimer({
   remainingSeconds,
   progress,
 }: CircularTimerProps) {
-  const size = 246;
-  const strokeWidth = 14;
+  const { width } = useWindowDimensions();
+  const isTablet = width >= 768;
+
+  const size = isTablet ? 286 : 246;
+  const strokeWidth = isTablet ? 16 : 14;
   const radius = (size - strokeWidth) / 2;
   const circumference = 2 * Math.PI * radius;
+
+  const headWidth = isTablet ? 70 : 59;
+  const headHeight = isTablet ? 58 : 50;
+  const headTop = isTablet ? 2 : 4;
+  const svgTop = isTablet ? 28 : 24;
+  const contentTop = isTablet ? 84 : 72;
+  const tomatoSize = isTablet ? 40 : 34;
+  const labelFontSize = isTablet ? 15 : 13;
+  const labelLineHeight = isTablet ? 20 : 18;
+  const timerWidth = isTablet ? 220 : 190;
+  const timerFontSize = isTablet ? 62 : 54;
+  const timerLineHeight = isTablet ? 76 : 68;
+  const subLabelFontSize = isTablet ? 15 : 13;
+  const subLabelLineHeight = isTablet ? 20 : 18;
 
   const safeProgress = Math.max(0, Math.min(1, progress));
   const dashOffset = circumference * (1 - safeProgress);
@@ -46,20 +64,19 @@ export function CircularTimer({
       <View
         style={{
           width: size,
-          height: size + 12,
+          height: size + (isTablet ? 18 : 12),
           alignItems: "center",
           justifyContent: "center",
         }}
       >
-        {/* Tomato leaves above the circle */}
         <Image
           source={tomatoHead}
           resizeMode="contain"
           style={{
             position: "absolute",
-            top: 4,
-            width: 59,
-            height: 50,
+            top: headTop,
+            width: headWidth,
+            height: headHeight,
             zIndex: 5,
           }}
         />
@@ -67,7 +84,7 @@ export function CircularTimer({
         <Svg
           width={size}
           height={size}
-          style={{ position: "absolute", top: 24 }}
+          style={{ position: "absolute", top: svgTop }}
         >
           <Defs>
             <SvgLinearGradient id="timerGradient" x1="0" y1="0" x2="1" y2="1">
@@ -76,7 +93,6 @@ export function CircularTimer({
             </SvgLinearGradient>
           </Defs>
 
-          {/* Background track */}
           <Circle
             cx={size / 2}
             cy={size / 2}
@@ -86,7 +102,6 @@ export function CircularTimer({
             fill="none"
           />
 
-          {/* Active progress */}
           <Circle
             cx={size / 2}
             cy={size / 2}
@@ -101,7 +116,6 @@ export function CircularTimer({
             fill="none"
           />
 
-          {/* Progress dot */}
           {safeProgress > 0.01 ? (
             <Circle
               cx={dotX}
@@ -112,11 +126,10 @@ export function CircularTimer({
           ) : null}
         </Svg>
 
-        {/* Center content */}
         <View
           style={{
             position: "absolute",
-            top: 72,
+            top: contentTop,
             left: 0,
             right: 0,
             alignItems: "center",
@@ -127,8 +140,8 @@ export function CircularTimer({
             source={tomato}
             resizeMode="contain"
             style={{
-              width: 34,
-              height: 34,
+              width: tomatoSize,
+              height: tomatoSize,
               marginBottom: 4,
             }}
           />
@@ -137,8 +150,8 @@ export function CircularTimer({
             weight="medium"
             style={{
               color: TIMER_COLORS.muted,
-              fontSize: 13,
-              lineHeight: 18,
+              fontSize: labelFontSize,
+              lineHeight: labelLineHeight,
               includeFontPadding: false,
               marginBottom: 4,
             }}
@@ -151,11 +164,11 @@ export function CircularTimer({
             numberOfLines={1}
             adjustsFontSizeToFit
             style={{
-              width: 190,
+              width: timerWidth,
               textAlign: "center",
               color: TIMER_COLORS.title,
-              fontSize: 54,
-              lineHeight: 68,
+              fontSize: timerFontSize,
+              lineHeight: timerLineHeight,
               includeFontPadding: false,
             }}
           >
@@ -166,8 +179,8 @@ export function CircularTimer({
             weight="bold"
             style={{
               color: TIMER_COLORS.red,
-              fontSize: 13,
-              lineHeight: 18,
+              fontSize: subLabelFontSize,
+              lineHeight: subLabelLineHeight,
               includeFontPadding: false,
               marginTop: -4,
             }}

@@ -1,5 +1,4 @@
 import { View } from "react-native";
-import { StatusBar } from "expo-status-bar";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export const LOGO_XML = `<svg width="91" height="63" viewBox="0 0 91 63" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -16,8 +15,6 @@ export function TabPageHeader() {
 
   return (
     <View className="">
-      <StatusBar style="light"/>
-
       <View
         style={{ height: insets.top }}
         className="bg-brand-primary w-full"

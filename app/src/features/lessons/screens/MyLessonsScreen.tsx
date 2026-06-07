@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { View } from "react-native";
 
 import { LessonProgressCard } from "@/features/lessons/components/LessonProgressCard";
 import { LessonSection } from "@/features/lessons/components/LessonSection";
@@ -46,14 +47,16 @@ export function MyLessonsScreen() {
 
   return (
     <TabPageLayout>
-      <PageTitle title="حصصي" />
-      <PageDateBadge dateLabel={MY_TASKS_DAY_DATA.today.dateLabel} />
-      <LessonProgressCard
-        progress={lessonsProgress}
-        attendedCount={lessonsProgress.completedCount}
-        remainingCount={remainingLessonsCount}
-      />
-      <LessonSection lessons={lessons} onToggleLesson={handleToggleLesson} />
+      <View className="gap-4 md:gap-5">
+        <PageTitle title="حصصي" />
+        <PageDateBadge dateLabel={MY_TASKS_DAY_DATA.today.dateLabel} />
+        <LessonProgressCard
+          progress={lessonsProgress}
+          attendedCount={lessonsProgress.completedCount}
+          remainingCount={remainingLessonsCount}
+        />
+        <LessonSection lessons={lessons} onToggleLesson={handleToggleLesson} />
+      </View>
     </TabPageLayout>
   );
 }

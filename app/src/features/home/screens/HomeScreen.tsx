@@ -1,20 +1,17 @@
 import { router } from "expo-router";
 import { ScrollView, View, useWindowDimensions } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { SvgXml } from "react-native-svg";
 
 import { useAuth } from "@/features/auth/context/AuthProvider";
 import { HomeHeader } from "@/features/home/components";
 import { HomeStateCard } from "@/features/home/components/HomeStateCard";
 import { Progress } from "@/features/home/components/Progress";
-import {
-  TodayLessons,
-} from "@/features/home/components/TodayLessons";
-import type { LessonItem } from "@/features/home/components/TodayLessonCard";
+import { TodayLessons } from "@/features/home/components/TodayLessons";
 import { TodayTasks } from "@/features/home/components/TodayTasks";
 import type { TaskItem } from "@/features/home/components/TodayTaskCard";
-import { useI18n } from "@/shared/i18n/I18nProvider";
-// import { LOGO_XML } from "@/shared/ui/tab-page-header";
+import { FocusedStatusBar } from "@/shared/ui/focused-status-bar";
+import type { LessonChecklistItem as LessonItem } from "@/shared/ui/lesson-checklist-row";
+import { getSubjectUi } from "@/shared/utils/subject-ui";
 
 const TASKS: TaskItem[] = [
   {
@@ -56,23 +53,26 @@ const TASKS: TaskItem[] = [
 
 const LESSONS: LessonItem[] = [
   {
+    id: "home-lesson-math",
     subject: "الرياضيات",
-    time: "9:00 ص",
-    teacher: "أستاذ أحمد",
-    icon: "calculator-outline",
-    attended: true,
+    icon: getSubjectUi("math").icon,
+    iconBackgroundColor: getSubjectUi("math").iconBackgroundColor,
+    iconColor: getSubjectUi("math").iconColor,
+    checked: true,
   },
   {
+    id: "home-lesson-chemistry",
     subject: "الكيمياء",
-    time: "11:30 ص",
-    teacher: "أستاذة منى",
-    icon: "flask-outline",
+    icon: getSubjectUi("chemistry").icon,
+    iconBackgroundColor: getSubjectUi("chemistry").iconBackgroundColor,
+    iconColor: getSubjectUi("chemistry").iconColor,
   },
   {
+    id: "home-lesson-arabic",
     subject: "اللغة العربية",
-    time: "2:00 م",
-    teacher: "أستاذ خالد",
-    icon: "book-outline",
+    icon: getSubjectUi("arabic").icon,
+    iconBackgroundColor: getSubjectUi("arabic").iconBackgroundColor,
+    iconColor: getSubjectUi("arabic").iconColor,
   },
 ];
 
@@ -118,7 +118,6 @@ function getFirstName(fullName?: string | null) {
 export function HomeScreen() {
   const insets = useSafeAreaInsets();
   const { width } = useWindowDimensions();
-  const { isRTL } = useI18n();
   const isTablet = width >= 768;
   const { user } = useAuth();
   const {
@@ -134,12 +133,8 @@ export function HomeScreen() {
 
   return (
     <View className="bg-background flex-1">
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        // contentContainerStyle={{
-
-        // }}
-      >
+      <FocusedStatusBar style="light" />
+      <ScrollView showsVerticalScrollIndicator={false}>
         <HomeHeader firstName={getFirstName(user?.fullName)} />
         <View
           style={{
@@ -147,7 +142,7 @@ export function HomeScreen() {
             paddingBottom: insets.bottom + 20,
             paddingHorizontal: isTablet ? 28 : 18,
           }}
-          className="w-full max-w-260 -translate-y-12 gap-4 md:gap-6 self-center"
+          className="w-full max-w-260 -translate-y-12 gap-4 self-center md:gap-6"
         >
           {isError ? (
             <HomeStateCard
@@ -166,7 +161,7 @@ export function HomeScreen() {
                 isLoading={isLoadingProgress}
               />
 
-              <View className={`gap-6 md:gap-5`}>
+              <View className="gap-6 md:gap-5">
                 <View className="flex-1">
                   <TodayTasks tasks={tasks} isLoading={isLoadingTasks} />
                 </View>

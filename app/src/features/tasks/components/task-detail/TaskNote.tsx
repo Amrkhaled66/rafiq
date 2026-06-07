@@ -1,5 +1,5 @@
-import { View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { View } from "react-native";
 
 import { AppText } from "@/shared/ui/app-text";
 
@@ -12,43 +12,41 @@ export function TaskNote({ note }: TaskNoteProps) {
 
   return (
     <View
-      className="relative overflow-hidden rounded-3xl border bg-[#FFFDFB] px-5 py-4"
+      className="relative overflow-hidden rounded-3xl border bg-[#FFFDFB] px-5 py-4 md:px-6 md:py-5"
       style={{
         borderColor: "#FFE1D6",
         shadowColor: "#000",
         shadowOpacity: 0.04,
         shadowRadius: 12,
         shadowOffset: { width: 0, height: 6 },
-        elevation: 2,
+        elevation: 1,
       }}
     >
-      {/* Left sparkles */}
-      <View className="absolute top-6 left-5">
+      <View className="absolute left-5 top-6">
         <AppText className="text-lg text-[#FFC83D]!">✦</AppText>
       </View>
 
-      <View className="absolute top-4 left-9">
+      <View className="absolute left-9 top-4">
         <AppText className="text-xs text-[#FFC83D]!">✧</AppText>
       </View>
 
-      <View className="absolute top-10 left-7">
+      <View className="absolute left-7 top-10">
         <AppText className="text-xs text-[#FFC83D]!">✧</AppText>
       </View>
 
-      {/* Content */}
       <View className="items-end">
-        <View className="mb-2 flex-row-reverse items-center gap-2">
+        <View className="mb-2 flex-row-reverse items-center gap-2 md:mb-2.5 md:gap-2.5">
           <Ionicons name="chatbox-ellipses-outline" size={20} color="#F97316" />
 
           <AppText
             weight="bold"
-            className="text-right text-base text-[#F97316]"
+            className="text-right text-base text-[#F97316] md:text-[17px]"
           >
-            ملاحظات المهمة 
+            ملاحظات المهمة
           </AppText>
         </View>
 
-        <AppText className="max-w-[82%] text-right text-base leading-7 text-[#3F2A3F]">
+        <AppText className="max-w-[82%] text-right text-base leading-7 text-[#3F2A3F] md:text-[17px] md:leading-8">
           {note}
         </AppText>
       </View>

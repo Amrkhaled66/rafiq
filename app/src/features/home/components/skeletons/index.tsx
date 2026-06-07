@@ -128,11 +128,11 @@ export function TodayTasksSkeleton() {
       <View className="gap-4">
         <SectionHeaderSkeleton isTablet={isTablet} />
 
-        <View className="flex-row-reverse flex-wrap justify-between gap-y-3">
-          {[0, 1].map((item) => (
+        <View className="flex-row flex-wrap justify-between gap-y-3">
+          {[0, 1, 2, 3].map((item) => (
             <View
               key={item}
-              className="rounded-2xl border border-[#F0E1E1] bg-[#FAF7F6]"
+              className="w-[40%] rounded-2xl border border-[#F0E1E1] bg-[#FAF7F6]"
               style={{
                 width: isTablet ? "100%" : "48.5%",
                 paddingHorizontal: isTablet ? 18 : 16,

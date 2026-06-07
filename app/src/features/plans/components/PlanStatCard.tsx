@@ -29,31 +29,28 @@ export function PlanStatCard({
 
   return (
     <View
-      className="min-w-[31%] flex-1 rounded-3xl  px-4 py-4"
+      className="min-w-[31%] flex-1 rounded-3xl px-4 py-4 md:px-5 md:py-5"
       style={{
         backgroundColor,
         borderColor,
         borderWidth: 1,
       }}
     >
-      <View className={`gap-3 items-center text-center mx-auto w-fit ${dir.itemsAlign}`}>
+      <View className={`mx-auto w-fit items-center gap-3 md:gap-3.5 ${dir.itemsAlign}`}>
         <View
-          className="size-11 mx-auto items-center justify-center rounded-2xl"
+          className="mx-auto size-11 items-center justify-center rounded-2xl md:size-12"
           style={{ backgroundColor: iconBackgroundColor }}
         >
-          <Ionicons name={icon} size={20} color={iconColor} />
+          <Ionicons name={icon} size={21} color={iconColor} />
         </View>
 
-        <View className={`gap-1  ${dir.itemsAlign}`}>
-          <AppText className="text-sm" tone="muted" weight="semibold">
+        <View className={`gap-1 md:gap-1.5 ${dir.itemsAlign}`}>
+          <AppText className="text-sm md:text-[15px]" tone="muted" weight="semibold">
             {title}
           </AppText>
-          <AppText className="text-2xl mx-auto leading-7.5" weight="bold">
+          <AppText className="mx-auto text-2xl leading-7.5 md:text-[28px] md:leading-8" weight="bold">
             {value}
           </AppText>
-          {/* <AppText className="text-xs mx-auto text-nowrap!" tone="muted" weight="medium">
-            {subtitle}
-          </AppText> */}
         </View>
       </View>
     </View>

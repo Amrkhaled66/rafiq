@@ -14,7 +14,7 @@ type PlanDaysCarouselProps = {
   days: PlanDetailDay[];
   selectedDate: string | null;
   onSelect: (date: string) => void;
-  parentHorizontalPadding?: number; // pass the parent's px value here
+  parentHorizontalPadding?: number;
 };
 
 export function PlanDaysCarousel({
@@ -30,12 +30,11 @@ export function PlanDaysCarousel({
   );
 
   return (
-    <View className="gap-3">
-      <AppText className="text-lg md:text-xl" weight="bold">
+    <View className="gap-3 md:gap-4">
+      <AppText className="text-lg md:text-[22px]" weight="bold">
         أيام الخطة
       </AppText>
 
-      {/* Negative margin to escape parent padding, then restore with contentContainerStyle */}
       <View
         style={{
           marginHorizontal: -parentHorizontalPadding,
@@ -44,13 +43,11 @@ export function PlanDaysCarousel({
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
-          // 1. RTL: tell ScrollView that content starts from the right
           style={{
             flexDirection: dir.isRTL ? "row-reverse" : "row",
           }}
           contentContainerStyle={{
-            gap: 4,
-            // 2. Restore the edge padding so cards don't stick to screen edges
+            gap: 6,
             paddingHorizontal: parentHorizontalPadding,
             flexDirection: dir.isRTL ? "row-reverse" : "row",
           }}
@@ -62,24 +59,22 @@ export function PlanDaysCarousel({
             return (
               <Pressable
                 key={day.date}
-                className="rounded-3xl  px-3 py-4 active:opacity-90"
+                className="rounded-3xl px-3 py-4 active:opacity-90 md:px-4 md:py-5"
                 onPress={() => onSelect(day.date)}
                 style={{
                   backgroundColor: isSelected ? "#D00507" : "#FFFFFF",
-                  borderColor: isSelected
-                    ? "#D00507"
-                    : "rgba(208, 5, 7, 0.12)",
+                  borderColor: isSelected ? "#D00507" : "rgba(208, 5, 7, 0.12)",
                   borderWidth: 1,
                   shadowColor: "#000",
                   shadowOffset: { width: 0, height: 4 },
                   shadowOpacity: isSelected ? 0.08 : 0.04,
                   shadowRadius: 10,
-                  elevation: 2,
+                  elevation: 1,
                 }}
               >
-                <View className={`gap-2 ${dir.itemsAlign}`}>
+                <View className={`gap-2 md:gap-2.5 ${dir.itemsAlign}`}>
                   <AppText
-                    className={`text-sm ${dir.textAlign} mx-auto shrink flex-wrap`}
+                    className={`mx-auto shrink flex-wrap text-sm md:text-[15px] ${dir.textAlign}`}
                     tone={isSelected ? "inverse" : "default"}
                     weight="bold"
                   >
@@ -87,7 +82,7 @@ export function PlanDaysCarousel({
                   </AppText>
                   <View className="w-full">
                     <AppText
-                      className={`mx-auto text-2xl ${dir.textAlign}`}
+                      className={`mx-auto text-2xl md:text-[28px] ${dir.textAlign}`}
                       tone={isSelected ? "inverse" : "default"}
                       weight="bold"
                       numberOfLines={1}
@@ -95,11 +90,11 @@ export function PlanDaysCarousel({
                       {getDayNumber(day.date)}
                     </AppText>
                     <AppText
-                      className={`mx-auto text-sm ${dir.textAlign}`}
+                      className={`mx-auto text-sm md:text-[15px] ${dir.textAlign}`}
                       tone={isSelected ? "inverse" : "muted"}
                       weight="semibold"
                     >
-                      {`${getDayMonthName(day.date)}`}
+                      {getDayMonthName(day.date)}
                     </AppText>
                   </View>
                 </View>

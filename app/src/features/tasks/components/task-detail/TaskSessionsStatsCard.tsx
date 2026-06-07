@@ -23,12 +23,10 @@ type MiniStatCardProps = {
 const STATS_COLORS = {
   textDark: "#321334",
   textMuted: "#6B5A6E",
-
   focusBg: "#EFFAF0",
   focusBorder: "#CDEFD1",
   focusIconBg: "#D9F5DD",
   focusIcon: "#21A447",
-
   sessionsBg: "#F7EEFF",
   sessionsBorder: "#E4CCFF",
   sessionsIconBg: "#EAD7FF",
@@ -47,7 +45,7 @@ function MiniStatCard({
 }: MiniStatCardProps) {
   return (
     <View
-      className="flex-1 rounded-3xl border px-4 py-1"
+      className="flex-1 rounded-3xl border px-4 py-1 md:px-5 md:py-2"
       style={{
         backgroundColor: bgColor,
         borderColor,
@@ -55,29 +53,29 @@ function MiniStatCard({
         shadowOffset: { width: 0, height: 4 },
         shadowOpacity: 0.04,
         shadowRadius: 10,
-        elevation: 2,
+        elevation: 1,
       }}
     >
-      <View className="flex-row items-center justify-between">
+      <View className="flex-row items-center justify-between gap-3 md:gap-4">
         <View
-          className="h-12 w-12 items-center justify-center rounded-full"
+          className="h-12 w-12 items-center justify-center rounded-full md:h-13 md:w-13"
           style={{ backgroundColor: iconBgColor }}
         >
-          <Ionicons name={icon} size={24} color={iconColor} />
+          <Ionicons name={icon} size={25} color={iconColor} />
         </View>
 
         <View className="flex-1 items-end">
           <AppText
-            className="text-right text-[13px]"
+            className="text-right text-[13px] md:text-[14px]"
             weight="medium"
             style={{ color: STATS_COLORS.textMuted }}
           >
             {label}
           </AppText>
 
-          <View className=" flex-row-reverse items-baseline gap-1">
+          <View className="flex-row-reverse items-baseline gap-1">
             <AppText
-              className="text-right text-[28px]"
+              className="text-right text-[28px] md:text-[30px]"
               weight="bold"
               style={{ color: STATS_COLORS.textDark }}
             >
@@ -86,7 +84,7 @@ function MiniStatCard({
 
             {unit ? (
               <AppText
-                className="text-right text-xs"
+                className="text-right text-xs md:text-[13px]"
                 weight="semibold"
                 style={{ color: STATS_COLORS.textMuted }}
               >
@@ -106,7 +104,7 @@ export function TaskSessionsStatsCard({
   completedSessions,
 }: TaskSessionsStatsCardProps) {
   return (
-    <View className="mb-5 flex-row-reverse gap-3">
+    <View className="mb-5 flex-row-reverse gap-3 md:mb-6 md:gap-4">
       <MiniStatCard
         icon="time-outline"
         value={totalFocusMinutes}

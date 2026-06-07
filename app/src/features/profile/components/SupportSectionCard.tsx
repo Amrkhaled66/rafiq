@@ -33,7 +33,7 @@ function SupportRow({
 
   return (
     <Pressable
-      className={`px-4 py-4 active:opacity-90 ${!isLast ? "border-b border-card-border" : ""}`}
+      className={`px-4 py-4 active:opacity-90 ${!isLast ? "border-card-border border-b" : ""}`}
       onPress={onPress}
     >
       <View className={`items-center gap-3 ${dir.rowReverse}`}>
@@ -70,13 +70,13 @@ export function SupportSectionCard({
 }: SupportSectionCardProps) {
   return (
     <View
-      className="overflow-hidden rounded-[26px] border border-card-border bg-card"
+      className="border-card-border bg-card overflow-hidden rounded-[26px] border"
       style={{
         shadowColor: "#000",
         shadowOffset: { width: 0, height: 4 },
         shadowOpacity: 0.04,
         shadowRadius: 10,
-        elevation: 2,
+        elevation: 1,
       }}
     >
       <SupportRow

@@ -22,34 +22,34 @@ export function PlanCard({ plan, onPress }: PlanCardProps) {
 
   return (
     <Pressable
-      className="border-card-border bg-card rounded-3xl border px-4 py-4 active:opacity-90"
+      className="border-card-border bg-card rounded-3xl border px-4 py-4 active:opacity-90 md:px-5 md:py-4.5"
       onPress={() => onPress?.(plan)}
       style={{
         shadowColor: "#000",
         shadowOffset: { width: 0, height: 4 },
         shadowOpacity: 0.05,
         shadowRadius: 10,
-        elevation: 2,
+        elevation: 1,
       }}
     >
-      <View className={`items-start gap-3 ${dir.rowReverse}`}>
+      <View className={`items-start gap-3 md:gap-3.5 ${dir.rowReverse}`}>
         <View
-          className="size-14 items-center justify-center rounded-2xl"
+          className="size-14 md:size-15 items-center justify-center rounded-2xl"
           style={{ backgroundColor: statusAppearance.iconBackgroundColor }}
         >
           <Ionicons
             name={plan.icon}
-            size={24}
+            size={25}
             color={statusAppearance.iconColor}
           />
         </View>
 
-        <View className={`flex-1 gap-2 ${dir.itemsAlign}`}>
+        <View className={`flex-1 gap-2 md:gap-2.5 ${dir.itemsAlign}`}>
           <View
-            className={`items-center justify-between gap-2 ${dir.rowReverse}`}
+            className={`items-center justify-between gap-2 md:gap-2.5 ${dir.rowReverse}`}
           >
             <AppText
-              className={`flex-1 text-base md:text-lg ${dir.textAlign}`}
+              className={`flex-1 text-base md:text-[19px] ${dir.textAlign}`}
               weight="bold"
               numberOfLines={1}
             >
@@ -57,11 +57,11 @@ export function PlanCard({ plan, onPress }: PlanCardProps) {
             </AppText>
 
             <View
-              className="rounded-full px-3 py-1"
+              className="rounded-full px-3 py-1 md:px-3.5 md:py-1.5"
               style={{ backgroundColor: statusAppearance.backgroundColor }}
             >
               <AppText
-                className="text-[11px] md:text-xs"
+                className="text-[11px] md:text-[13px]"
                 weight="semibold"
                 style={{ color: statusAppearance.textColor }}
               >
@@ -71,7 +71,7 @@ export function PlanCard({ plan, onPress }: PlanCardProps) {
           </View>
 
           <AppText
-            className={`text-sm md:text-base ${dir.textAlign}`}
+            className={`text-sm md:text-[15px] ${dir.textAlign}`}
             tone="muted"
             weight="medium"
           >
@@ -79,10 +79,10 @@ export function PlanCard({ plan, onPress }: PlanCardProps) {
           </AppText>
         </View>
 
-        <View className="size-9 items-center justify-center rounded-full bg-gray-50">
+        <View className="size-9 md:size-10 items-center justify-center rounded-full bg-gray-50">
           <Ionicons
             name={dir.isRTL ? "chevron-back" : "chevron-forward"}
-            size={18}
+            size={19}
             color={Colors.light.icon}
           />
         </View>

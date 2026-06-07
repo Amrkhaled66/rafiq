@@ -23,18 +23,18 @@ export function TasksProgressCard({
 
   return (
     <View
-      className="rounded-3xl border border-card-border bg-card px-4 py-3.5 md:px-5 md:py-4"
+      className="border-card-border bg-card rounded-3xl border px-4 py-3.5 md:px-5 md:py-4"
       style={{
         shadowColor: "#000",
         shadowOffset: { width: 0, height: 5 },
         shadowOpacity: 0.04,
         shadowRadius: 12,
-        elevation: 2,
+        elevation: 1,
       }}
     >
       <View className="gap-5">
         <View className={`items-center justify-between ${dir.row}`}>
-          <View className="h-11 w-11 items-center justify-center rounded-2xl bg-brand-primary-soft">
+          <View className="bg-brand-primary-soft h-11 w-11 items-center justify-center rounded-2xl">
             <Ionicons
               name="stats-chart-outline"
               size={20}

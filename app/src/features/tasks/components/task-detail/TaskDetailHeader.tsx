@@ -9,8 +9,8 @@ type TaskDetailHeaderProps = {
 
 export function TaskDetailHeader({ title }: TaskDetailHeaderProps) {
   return (
-    <View className="relative items-center gap-2">
-      <View className="absolute left-0 top-2">
+    <View className="relative items-center gap-2 md:gap-2.5">
+      <View className="absolute left-0 top-2 md:top-2.5">
         <BackButton />
       </View>
       <PageTitle title={title} />

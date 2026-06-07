@@ -14,7 +14,7 @@ export function PlanDetailStats({
   progressPercentage,
 }: PlanDetailStatsProps) {
   return (
-    <View className="flex-row flex-wrap gap-3">
+    <View className="flex-row flex-wrap gap-3 md:gap-4">
       <PlanStatCard
         title="إجمالي الأيام"
         value={String(totalDays)}

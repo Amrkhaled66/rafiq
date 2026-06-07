@@ -1,5 +1,6 @@
-import { router } from "expo-router";
+import { RelativePathString, router } from "expo-router";
 import { useState } from "react";
+import { View } from "react-native";
 
 import { TaskProgressCard } from "@/features/tasks/components/my-tasks/TaskProgressCard";
 import { TaskSection } from "@/features/tasks/components/my-tasks/TaskSection";
@@ -13,7 +14,9 @@ import { PageDateBadge } from "@/shared/ui/page-date-badge";
 import { PageTitle } from "@/shared/ui/page-title";
 import { TabPageLayout } from "@/shared/ui/tab-page-layout";
 
-function buildTaskStatusCounts(tasks: MyTaskItem[]): Record<MyTaskStatus, number> {
+function buildTaskStatusCounts(
+  tasks: MyTaskItem[],
+): Record<MyTaskStatus, number> {
   return tasks.reduce(
     (acc, task) => {
       acc[task.status] += 1;
@@ -38,22 +41,24 @@ export function MyTasksScreen() {
       : dayData.tasks.filter((task) => task.status === selectedStatus);
 
   const handleTaskPress = (task: MyTaskItem) => {
-    router.push(`/tasks/${task.id}`);
+    router.push(`/tasks/${task.id}` as RelativePathString);
   };
 
   return (
     <TabPageLayout>
-      <PageTitle title="مهامي" />
-      <PageDateBadge dateLabel={dayData.dateLabel} />
-      <TaskProgressCard
-        progress={dayData.progress}
-        statusCounts={buildTaskStatusCounts(dayData.tasks)}
-      />
-      <TaskStatusFilterTabs
-        value={selectedStatus}
-        onChange={setSelectedStatus}
-      />
-      <TaskSection tasks={visibleTasks} onTaskPress={handleTaskPress} />
+      <View className="gap-4 md:gap-4">
+        <PageTitle title="مهامي" />
+        <PageDateBadge dateLabel={dayData.dateLabel} />
+        <TaskProgressCard
+          progress={dayData.progress}
+          statusCounts={buildTaskStatusCounts(dayData.tasks)}
+        />
+        <TaskStatusFilterTabs
+          value={selectedStatus}
+          onChange={setSelectedStatus}
+        />
+        <TaskSection tasks={visibleTasks} onTaskPress={handleTaskPress} />
+      </View>
     </TabPageLayout>
   );
 }

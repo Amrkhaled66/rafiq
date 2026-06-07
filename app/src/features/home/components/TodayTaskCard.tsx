@@ -37,7 +37,7 @@ export function TodayTaskCard({ task }: TodayTaskCardProps) {
         shadowOpacity: 0.06,
         shadowRadius: 10,
 
-        elevation: 2,
+        elevation: 1,
       }}
     >
       <View className={`items-center justify-between gap-3 ${dir.row}`}>

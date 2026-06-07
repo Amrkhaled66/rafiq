@@ -1,5 +1,6 @@
 import { router } from "expo-router";
 import { useState } from "react";
+import { View } from "react-native";
 
 import { CurrentPlanCard } from "@/features/plans/components/CurrentPlanCard";
 import { PlansSection } from "@/features/plans/components/PlansSection";
@@ -27,16 +28,18 @@ export function PlansScreen() {
 
   return (
     <TabPageLayout>
-      <PageTitle title="الخطط" />
-      <PageDateBadge dateLabel={PLANS_DATE_LABEL} />
-      {currentPlan ? (
-        <CurrentPlanCard plan={currentPlan} onPress={handlePlanPress} />
-      ) : null}
-      <PlanStatusFilterTabs
-        value={selectedStatus}
-        onChange={setSelectedStatus}
-      />
-      <PlansSection plans={visiblePlans} onPlanPress={handlePlanPress} />
+      <View className="gap-4 md:gap-5">
+        <PageTitle title="الخطط" />
+        <PageDateBadge dateLabel={PLANS_DATE_LABEL} />
+        {currentPlan ? (
+          <CurrentPlanCard plan={currentPlan} onPress={handlePlanPress} />
+        ) : null}
+        <PlanStatusFilterTabs
+          value={selectedStatus}
+          onChange={setSelectedStatus}
+        />
+        <PlansSection plans={visiblePlans} onPlanPress={handlePlanPress} />
+      </View>
     </TabPageLayout>
   );
 }

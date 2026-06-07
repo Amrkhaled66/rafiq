@@ -35,8 +35,8 @@ export function SegmentedFilterTabs<T extends string>({
       style={{
         shadowColor: "#000",
         shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.03,
-        shadowRadius: 8,
+        shadowOpacity: 0.04,
+        shadowRadius: 10,
         elevation: 1,
       }}
     >

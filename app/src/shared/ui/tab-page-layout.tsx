@@ -1,7 +1,7 @@
 import type { PropsWithChildren } from "react";
 import { ScrollView, View, useWindowDimensions } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { StatusBar } from "expo-status-bar";
+import { FocusedStatusBar } from "@/shared/ui/focused-status-bar";
 
 export function TabPageLayout({ children }: PropsWithChildren) {
   const insets = useSafeAreaInsets();
@@ -10,12 +10,12 @@ export function TabPageLayout({ children }: PropsWithChildren) {
 
   return (
     <View className="flex-1 bg-background">
-      <StatusBar style="dark" />
+      <FocusedStatusBar style="dark" />
 
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{
-          paddingTop: isTablet ? 16 : 45,
+          paddingTop: 45,
           paddingBottom: insets.bottom + 50,
           paddingHorizontal: isTablet ? 28 : 18,
         }}

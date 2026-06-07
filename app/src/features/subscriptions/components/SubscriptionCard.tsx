@@ -40,7 +40,7 @@ export function SubscriptionCard({
         shadowOffset: { width: 0, height: 4 },
         shadowOpacity: isActive ? 0.08 : 0.04,
         shadowRadius: 10,
-        elevation: 2,
+        elevation: 1,
       }}
     >
       <View className={`items-start gap-3 ${dir.rowReverse}`}>
@@ -90,7 +90,7 @@ export function SubscriptionCard({
             {formatSubscriptionDateRange(subscription)}
           </AppText>
 
-          <View className="flex-row items-center  gap-1">
+          <View className="flex-row items-center gap-1">
             <AppText
               className={`text-sm md:text-base ${dir.textAlign}`}
               weight="medium"

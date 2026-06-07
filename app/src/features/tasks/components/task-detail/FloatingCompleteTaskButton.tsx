@@ -1,6 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
 import { useRef, useState } from "react";
-import { Animated, Pressable, View } from "react-native";
+import { Animated, Pressable, View, useWindowDimensions } from "react-native";
 
 import { Colors } from "@/shared/theme/theme";
 import { AppText } from "@/shared/ui/app-text";
@@ -25,10 +25,19 @@ export function FloatingCompleteTaskButton({
   disabled = false,
   onConfirm,
 }: FloatingCompleteTaskButtonProps) {
+  const { width } = useWindowDimensions();
+  const isTablet = width >= 768;
   const [isConfirming, setIsConfirming] = useState(false);
 
   const shellProgress = useRef(new Animated.Value(0)).current;
   const contentOpacity = useRef(new Animated.Value(0)).current;
+
+  const collapsedWidth = isTablet ? 148 : 126;
+  const expandedWidth = isTablet ? 388 : 332;
+  const collapsedHeight = isTablet ? 62 : 56;
+  const expandedHeight = isTablet ? 154 : 136;
+  const collapsedRadius = 999;
+  const expandedRadius = isTablet ? 32 : 28;
 
   const openConfirm = () => {
     if (disabled) return;
@@ -80,19 +89,19 @@ export function FloatingCompleteTaskButton({
     closeConfirm();
   };
 
-  const width = shellProgress.interpolate({
+  const widthAnimated = shellProgress.interpolate({
     inputRange: [0, 1],
-    outputRange: [126, 332],
+    outputRange: [collapsedWidth, expandedWidth],
   });
 
-  const height = shellProgress.interpolate({
+  const heightAnimated = shellProgress.interpolate({
     inputRange: [0, 1],
-    outputRange: [56, 136],
+    outputRange: [collapsedHeight, expandedHeight],
   });
 
   const borderRadius = shellProgress.interpolate({
     inputRange: [0, 1],
-    outputRange: [999, 28],
+    outputRange: [collapsedRadius, expandedRadius],
   });
 
   const collapsedOpacity = shellProgress.interpolate({
@@ -118,17 +127,17 @@ export function FloatingCompleteTaskButton({
       pointerEvents="box-none"
       style={{
         position: "absolute",
-        right: 18,
-        left: 18,
-        bottom: 20,
+        right: isTablet ? 28 : 18,
+        left: isTablet ? 28 : 18,
+        bottom: isTablet ? 28 : 20,
         zIndex: 60,
         alignItems: "flex-end",
       }}
     >
       <Animated.View
         style={{
-          width,
-          height,
+          width: widthAnimated,
+          height: heightAnimated,
           borderRadius,
           overflow: "hidden",
           backgroundColor: PALETTE.white,
@@ -136,10 +145,9 @@ export function FloatingCompleteTaskButton({
           shadowOpacity: 0.12,
           shadowRadius: 16,
           shadowOffset: { width: 0, height: 8 },
-          elevation: 8,
+          elevation: 1,
         }}
       >
-        {/* Collapsed button */}
         <Animated.View
           pointerEvents={isConfirming ? "none" : "auto"}
           style={{
@@ -152,20 +160,27 @@ export function FloatingCompleteTaskButton({
           <Pressable
             disabled={disabled}
             onPress={openConfirm}
-            className="h-full w-full flex-row items-center justify-center gap-2 rounded-full px-5 active:opacity-90"
+            className="h-full w-full flex-row items-center justify-center gap-2 rounded-full px-5 active:opacity-90 md:gap-2.5 md:px-6"
             style={{
               backgroundColor: disabled ? "#D1D5DB" : PALETTE.brand,
             }}
           >
-            <Ionicons name="checkmark-circle" size={20} color={PALETTE.white} />
+            <Ionicons
+              name="checkmark-circle"
+              size={isTablet ? 22 : 20}
+              color={PALETTE.white}
+            />
 
-            <AppText className="text-base" tone="inverse" weight="bold">
+            <AppText
+              className="text-base md:text-[17px]"
+              tone="inverse"
+              weight="bold"
+            >
               خلصت؟
             </AppText>
           </Pressable>
         </Animated.View>
 
-        {/* Confirmation content */}
         <Animated.View
           pointerEvents={isConfirming ? "auto" : "none"}
           style={{
@@ -176,23 +191,27 @@ export function FloatingCompleteTaskButton({
           }}
         >
           <View
-            className="h-full w-full border px-4 py-3.5"
+            className="h-full w-full items-center justify-center border px-4 py-3.5 md:px-5"
             style={{
               backgroundColor: PALETTE.white,
               borderColor: PALETTE.border,
             }}
           >
-            <View className="mb-3 flex-row-reverse items-center gap-2.5">
+            <View className="mb-3 flex-row-reverse items-center gap-2.5 md:gap-3">
               <View
-                className="h-9 w-9 items-center justify-center rounded-full"
+                className="size-9 items-center justify-center rounded-full md:size-14"
                 style={{ backgroundColor: PALETTE.brandSoft }}
               >
-                <Ionicons name="checkmark" size={18} color={PALETTE.success} />
+                <Ionicons
+                  name="checkmark"
+                  size={isTablet ? 30 : 18}
+                  color={PALETTE.textMuted}
+                />
               </View>
 
               <View className="flex-1 items-end">
                 <AppText
-                  className="text-right text-[15px]"
+                  className="text-right text-[15px] md:text-xl"
                   weight="bold"
                   style={{ color: PALETTE.textPrimary }}
                 >
@@ -200,7 +219,7 @@ export function FloatingCompleteTaskButton({
                 </AppText>
 
                 <AppText
-                  className="mt-0.5 text-right text-[11px]"
+                  className="mt-0.5 text-right text-[11px] md:text-base"
                   weight="medium"
                   style={{ color: PALETTE.textMuted }}
                 >
@@ -209,27 +228,31 @@ export function FloatingCompleteTaskButton({
               </View>
             </View>
 
-            <View className="flex-row-reverse gap-2">
+            <View className="flex-row-reverse gap-2 md:gap-2.5">
               <Pressable
                 onPress={confirmAndClose}
-                className="h-11 flex-1 flex-row items-center justify-center gap-2 rounded-full px-5 active:opacity-90"
+                className="h-11 flex-1 flex-row items-center justify-center gap-2 rounded-full px-5 active:opacity-90 md:h-12 md:px-6"
                 style={{ backgroundColor: PALETTE.brand }}
               >
-                <AppText className="text-sm" tone="inverse" weight="bold">
+                <AppText
+                  className="text-sm md:text-[15px]"
+                  tone="inverse"
+                  weight="bold"
+                >
                   أيوه خلصت
                 </AppText>
               </Pressable>
 
               <Pressable
                 onPress={closeConfirm}
-                className="h-11 flex-1 flex-row items-center justify-center gap-2 rounded-full border px-5 active:opacity-90"
+                className="h-11 flex-1 flex-row items-center justify-center gap-2 rounded-full border px-5 active:opacity-90 md:h-12 md:px-6"
                 style={{
                   backgroundColor: PALETTE.white,
                   borderColor: PALETTE.brandMuted,
                 }}
               >
                 <AppText
-                  className="text-sm"
+                  className="text-sm md:text-[15px]"
                   tone="tint"
                   weight="bold"
                   style={{ color: PALETTE.brand }}
