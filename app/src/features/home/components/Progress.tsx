@@ -32,9 +32,10 @@ export function Progress({
     <HomePageSection
       title="تقدمك النهاردة"
       icon="sparkles-outline"
-      className="rounded-[28px] bg-white px-4 py-4 md:px-7 md:py-6"
+      contentClassName="gap-0"
+      className="rounded-[28px] bg-white px-4 pt-4 md:px-7 md:py-6"
     >
-      <View className={`items-center justify-between gap-5 ${dir.rowReverse}`}>
+      <View className={`items-center justify-between ${dir.rowReverse}`}>
         <View className="flex-1 gap-3">
           <View className="gap-1">
             <AppHeading className="text-right text-xl md:text-[26px]">

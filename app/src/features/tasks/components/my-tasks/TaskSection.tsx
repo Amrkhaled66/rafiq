@@ -1,7 +1,7 @@
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { Pressable, View } from "react-native";
 
-import { MyTaskCard } from "@/features/tasks/components/MyTaskCard";
+import { MyTaskCard } from "@/features/tasks/components/my-tasks/MyTaskCard";
 import type { MyTaskItem } from "@/features/tasks/types";
 import { useDirection } from "@/shared/hooks/use-direction";
 import { AppText } from "@/shared/ui/app-text";

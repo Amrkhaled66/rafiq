@@ -1,10 +1,10 @@
-import { Pressable, View } from "react-native";
-
 import type { PlanStatusFilterKey } from "@/features/plans/types";
-import { useDirection } from "@/shared/hooks/use-direction";
-import { AppText } from "@/shared/ui/app-text";
+import {
+  SegmentedFilterTabs,
+  type SegmentedFilterOption,
+} from "@/shared/ui/segmented-filter-tabs";
 
-const PLAN_STATUS_OPTIONS: { key: PlanStatusFilterKey; label: string }[] = [
+const PLAN_STATUS_OPTIONS: SegmentedFilterOption<PlanStatusFilterKey>[] = [
   { key: "all", label: "الكل" },
   { key: "active", label: "نشطة" },
   { key: "upcoming", label: "قادمة" },
@@ -20,35 +20,14 @@ export function PlanStatusFilterTabs({
   value,
   onChange,
 }: PlanStatusFilterTabsProps) {
-  const dir = useDirection();
-
   return (
-    <View
-      className={`rounded-2xl border border-card-border bg-card p-1.5 ${dir.rowReverse}`}
-    >
-      {PLAN_STATUS_OPTIONS.map((option) => {
-        const isSelected = option.key === value;
-
-        return (
-          <Pressable
-            key={option.key}
-            className={`flex-1 items-center justify-center rounded-2xl px-2 py-3 active:opacity-90 ${
-              isSelected ? "bg-brand-primary-soft" : "bg-white"
-            }`}
-            onPress={() => onChange(option.key)}
-          >
-            <AppText
-              className={`text-sm md:text-base ${
-                isSelected ? "text-brand-primary" : "text-text"
-              }`}
-              tone={isSelected ? "default" : "muted"}
-              weight="semibold"
-            >
-              {option.label}
-            </AppText>
-          </Pressable>
-        );
-      })}
-    </View>
+    <SegmentedFilterTabs
+      options={PLAN_STATUS_OPTIONS}
+      value={value}
+      onChange={onChange}
+      selectedClassName="bg-brand-primary-soft"
+      selectedTextClassName="text-brand-primary"
+      unselectedTextClassName="text-text"
+    />
   );
 }

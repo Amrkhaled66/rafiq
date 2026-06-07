@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 import { LessonProgressCard } from "@/features/lessons/components/LessonProgressCard";
-import { LessonSection } from "@/features/tasks/components/LessonSection";
+import { LessonSection } from "@/features/lessons/components/LessonSection";
 import { MY_TASKS_DAY_DATA } from "@/features/tasks/data/mock-my-tasks-data";
 import type { MyLessonItem, MyTasksProgress } from "@/features/tasks/types";
 import { PageDateBadge } from "@/shared/ui/page-date-badge";

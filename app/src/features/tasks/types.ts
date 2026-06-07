@@ -38,3 +38,27 @@ export type MyTasksDayData = {
   tasks: MyTaskItem[];
   lessons: MyLessonItem[];
 };
+
+export type TaskDetailStatus = MyTaskStatus;
+
+export type TaskSessionStatus =
+  | "running"
+  | "completed"
+  | "cancelled"
+  | "paused";
+
+export type TaskSessionItem = {
+  id: string;
+  startedAt: string;
+  durationSeconds: number;
+  status: TaskSessionStatus;
+};
+
+export type TaskDetailItem = {
+  id: string;
+  title: string;
+  subject: string;
+  status: TaskDetailStatus;
+  focusDurationMinutes: number;
+  sessions: TaskSessionItem[];
+};

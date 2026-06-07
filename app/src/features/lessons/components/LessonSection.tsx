@@ -1,7 +1,7 @@
 import { Pressable, View } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 
-import { LessonChecklistRow } from "@/features/tasks/components/LessonChecklistRow";
+import { LessonChecklistRow } from "@/features/lessons/components/LessonChecklistRow";
 import type { MyLessonItem } from "@/features/tasks/types";
 import { useDirection } from "@/shared/hooks/use-direction";
 import { AppText } from "@/shared/ui/app-text";

@@ -1,3 +1,4 @@
+import { router } from "expo-router";
 import { useState } from "react";
 
 import { CurrentPlanCard } from "@/features/plans/components/CurrentPlanCard";
@@ -20,8 +21,8 @@ export function PlansScreen() {
       ? plans
       : plans.filter((plan) => plan.status === selectedStatus);
 
-  const handlePlanPress = (_plan: StudyPlan) => {
-    // Placeholder until the plan details route is implemented.
+  const handlePlanPress = (plan: StudyPlan) => {
+    router.push(`/plans/${plan.id}`);
   };
 
   return (

@@ -1,11 +1,12 @@
+import { router } from "expo-router";
 import { useState } from "react";
 
-import { TaskProgressCard } from "@/features/tasks/components/TaskProgressCard";
-import { TaskSection } from "@/features/tasks/components/TaskSection";
+import { TaskProgressCard } from "@/features/tasks/components/my-tasks/TaskProgressCard";
+import { TaskSection } from "@/features/tasks/components/my-tasks/TaskSection";
 import {
   TaskStatusFilterTabs,
   type TaskStatusFilterKey,
-} from "@/features/tasks/components/TaskStatusFilterTabs";
+} from "@/features/tasks/components/my-tasks/TaskStatusFilterTabs";
 import { MY_TASKS_DAY_DATA } from "@/features/tasks/data/mock-my-tasks-data";
 import type { MyTaskItem, MyTaskStatus } from "@/features/tasks/types";
 import { PageDateBadge } from "@/shared/ui/page-date-badge";
@@ -36,8 +37,8 @@ export function MyTasksScreen() {
       ? dayData.tasks
       : dayData.tasks.filter((task) => task.status === selectedStatus);
 
-  const handleTaskPress = (_task: MyTaskItem) => {
-    // Placeholder until the task details entrypoint is implemented.
+  const handleTaskPress = (task: MyTaskItem) => {
+    router.push(`/tasks/${task.id}`);
   };
 
   return (
