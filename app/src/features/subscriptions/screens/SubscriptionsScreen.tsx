@@ -17,8 +17,8 @@ import {
   getSubscriptionStatus,
 } from "@/features/subscriptions/utils/subscription-ui";
 import { BackButton } from "@/shared/ui/back-button";
-import { PageTitle } from "@/shared/ui/page-title";
 import { AppText } from "@/shared/ui/app-text";
+import { PageTitle } from "@/shared/ui/page-title";
 
 function sortSubscriptions(items: SubscriptionItem[]) {
   const statusPriority = {
@@ -41,6 +41,7 @@ function sortSubscriptions(items: SubscriptionItem[]) {
 }
 
 export function SubscriptionsScreen() {
+  const isLoading = false;
   const [selectedStatus, setSelectedStatus] =
     useState<SubscriptionFilterKey>("all");
 
@@ -61,16 +62,28 @@ export function SubscriptionsScreen() {
   };
 
   return (
-    <FlatList
-      data={visibleSubscriptions}
-      keyExtractor={(item) => item.id.toString()}
-      renderItem={({ item }) => (
-        <SubscriptionCard
-          subscription={item}
-          isActive={getSubscriptionStatus(item) === "active"}
-          onPress={handleSubscriptionPress}
-        />
-      )}
+    <FlatList<SubscriptionItem | number>
+      data={isLoading ? [0, 1, 2] : visibleSubscriptions}
+      keyExtractor={(item, index) =>
+        typeof item === "number"
+          ? `subscription-skeleton-${index}`
+          : item.id.toString()
+      }
+      renderItem={({ item }) =>
+        typeof item === "number" ? (
+          <SubscriptionCard
+            isLoading
+            subscription={MOCK_SUBSCRIPTIONS[0]}
+            isActive={false}
+          />
+        ) : (
+          <SubscriptionCard
+            subscription={item}
+            isActive={getSubscriptionStatus(item) === "active"}
+            onPress={handleSubscriptionPress}
+          />
+        )
+      }
       showsVerticalScrollIndicator={false}
       contentContainerStyle={{
         paddingTop: 45,
@@ -95,37 +108,43 @@ export function SubscriptionsScreen() {
           </View>
 
           <SubscriptionFilterTabs
+            isLoading={isLoading}
             value={selectedStatus}
             onChange={setSelectedStatus}
           />
 
-          <SubscriptionSection subscriptions={visibleSubscriptions} />
+          <SubscriptionSection
+            isLoading={isLoading}
+            subscriptions={visibleSubscriptions}
+          />
         </View>
       }
       ListEmptyComponent={
-        <View
-          className="border-card-border bg-card items-center gap-3 rounded-3xl border px-5 py-7"
-          style={{
-            shadowColor: "#000",
-            shadowOffset: { width: 0, height: 4 },
-            shadowOpacity: 0.04,
-            shadowRadius: 10,
-            elevation: 1,
-          }}
-        >
-          <AppText className="text-base md:text-lg" weight="bold">
-            لا توجد اشتراكات
-          </AppText>
-          <AppText
-            className="text-center text-sm md:text-base"
-            tone="muted"
-            weight="medium"
+        isLoading ? null : (
+          <View
+            className="border-card-border bg-card items-center gap-3 rounded-3xl border px-5 py-7"
+            style={{
+              shadowColor: "#000",
+              shadowOffset: { width: 0, height: 4 },
+              shadowOpacity: 0.04,
+              shadowRadius: 10,
+              elevation: 1,
+            }}
           >
-            {`لن تظهر هنا إلا الاشتراكات المتاحة حتى ${formatArabicDate(
-              SUBSCRIPTIONS_REFERENCE_DATE,
-            )}`}
-          </AppText>
-        </View>
+            <AppText className="text-base md:text-lg" weight="bold">
+              لا توجد اشتراكات
+            </AppText>
+            <AppText
+              className="text-center text-sm md:text-base"
+              tone="muted"
+              weight="medium"
+            >
+              {`لن تظهر هنا إلا الاشتراكات المتاحة حتى ${formatArabicDate(
+                SUBSCRIPTIONS_REFERENCE_DATE,
+              )}`}
+            </AppText>
+          </View>
+        )
       }
     />
   );

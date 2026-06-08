@@ -1,16 +1,25 @@
 import { View } from "react-native";
 
 import type { TaskSessionItem } from "@/features/tasks/types";
+import { TaskSessionsSectionSkeleton } from "@/features/tasks/components/task-detail/skeletons";
 import { TaskSessionRow } from "@/features/tasks/components/task-detail/TaskSessionRow";
 import { useDirection } from "@/shared/hooks/use-direction";
 import { AppText } from "@/shared/ui/app-text";
 
 type TaskSessionsSectionProps = {
   sessions: TaskSessionItem[];
+  isLoading?: boolean;
 };
 
-export function TaskSessionsSection({ sessions }: TaskSessionsSectionProps) {
+export function TaskSessionsSection({
+  sessions,
+  isLoading = false,
+}: TaskSessionsSectionProps) {
   const dir = useDirection();
+
+  if (isLoading) {
+    return <TaskSessionsSectionSkeleton />;
+  }
 
   return (
     <View className="gap-3 md:gap-4">

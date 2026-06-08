@@ -1,4 +1,5 @@
 import type { PlanStatusFilterKey } from "@/features/plans/types";
+import { PlanStatusFilterTabsSkeleton } from "@/features/plans/components/skeletons";
 import {
   SegmentedFilterTabs,
   type SegmentedFilterOption,
@@ -14,12 +15,18 @@ const PLAN_STATUS_OPTIONS: SegmentedFilterOption<PlanStatusFilterKey>[] = [
 type PlanStatusFilterTabsProps = {
   value: PlanStatusFilterKey;
   onChange: (value: PlanStatusFilterKey) => void;
+  isLoading?: boolean;
 };
 
 export function PlanStatusFilterTabs({
   value,
   onChange,
+  isLoading = false,
 }: PlanStatusFilterTabsProps) {
+  if (isLoading) {
+    return <PlanStatusFilterTabsSkeleton />;
+  }
+
   return (
     <SegmentedFilterTabs
       options={PLAN_STATUS_OPTIONS}

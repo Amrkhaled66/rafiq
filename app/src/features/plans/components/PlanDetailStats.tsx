@@ -1,18 +1,25 @@
 import { View } from "react-native";
 
+import { PlanDetailStatsSkeleton } from "@/features/plans/components/skeletons";
 import { PlanStatCard } from "@/features/plans/components/PlanStatCard";
 
 type PlanDetailStatsProps = {
   totalDays: number;
   totalTasks: number;
   progressPercentage: number;
+  isLoading?: boolean;
 };
 
 export function PlanDetailStats({
   totalDays,
   totalTasks,
   progressPercentage,
+  isLoading = false,
 }: PlanDetailStatsProps) {
+  if (isLoading) {
+    return <PlanDetailStatsSkeleton />;
+  }
+
   return (
     <View className="flex-row flex-wrap gap-3 md:gap-4">
       <PlanStatCard

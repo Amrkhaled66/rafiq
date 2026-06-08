@@ -1,6 +1,7 @@
 import { LinearGradient } from "expo-linear-gradient";
 import { View } from "react-native";
 
+import { ProfileHeroCardSkeleton } from "@/features/profile/components/skeletons";
 import { useDirection } from "@/shared/hooks/use-direction";
 import { AppText } from "@/shared/ui/app-text";
 import { Ionicons } from "@expo/vector-icons";
@@ -9,14 +10,20 @@ type ProfileHeroCardProps = {
   fullName: string;
   gradeLabel: string;
   initial: string;
+  isLoading?: boolean;
 };
 
 export function ProfileHeroCard({
   fullName,
   gradeLabel,
   initial,
+  isLoading = false,
 }: ProfileHeroCardProps) {
   const dir = useDirection();
+
+  if (isLoading) {
+    return <ProfileHeroCardSkeleton />;
+  }
 
   return (
     <LinearGradient

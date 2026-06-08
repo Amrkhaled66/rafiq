@@ -1,17 +1,24 @@
 import { View } from "react-native";
 
+import { SubscriptionSectionSkeleton } from "@/features/subscriptions/components/skeletons";
 import type { SubscriptionItem } from "@/features/subscriptions/types";
 import { useDirection } from "@/shared/hooks/use-direction";
 import { AppText } from "@/shared/ui/app-text";
 
 type SubscriptionSectionProps = {
   subscriptions: SubscriptionItem[];
+  isLoading?: boolean;
 };
 
 export function SubscriptionSection({
   subscriptions,
+  isLoading = false,
 }: SubscriptionSectionProps) {
   const dir = useDirection();
+
+  if (isLoading) {
+    return <SubscriptionSectionSkeleton />;
+  }
 
   return (
     <View className={`items-center justify-between ${dir.rowReverse}`}>
@@ -27,4 +34,3 @@ export function SubscriptionSection({
     </View>
   );
 }
-

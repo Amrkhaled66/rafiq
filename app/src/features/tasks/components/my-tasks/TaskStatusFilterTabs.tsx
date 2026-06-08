@@ -1,4 +1,5 @@
 import type { MyTaskStatus } from "@/features/tasks/types";
+import { TaskStatusFilterTabsSkeleton } from "@/features/tasks/components/my-tasks/skeletons";
 import {
   SegmentedFilterTabs,
   type SegmentedFilterOption,
@@ -16,12 +17,18 @@ const STATUS_OPTIONS: SegmentedFilterOption<TaskStatusFilterKey>[] = [
 type TaskStatusFilterTabsProps = {
   value: TaskStatusFilterKey;
   onChange: (value: TaskStatusFilterKey) => void;
+  isLoading?: boolean;
 };
 
 export function TaskStatusFilterTabs({
   value,
   onChange,
+  isLoading = false,
 }: TaskStatusFilterTabsProps) {
+  if (isLoading) {
+    return <TaskStatusFilterTabsSkeleton />;
+  }
+
   return (
     <SegmentedFilterTabs
       options={STATUS_OPTIONS}

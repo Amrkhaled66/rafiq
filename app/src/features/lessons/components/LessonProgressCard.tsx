@@ -5,11 +5,13 @@ import type { MyTasksProgress } from "@/features/tasks/types";
 import { useDirection } from "@/shared/hooks/use-direction";
 import { Colors } from "@/shared/theme/theme";
 import { AppText } from "@/shared/ui/app-text";
+import { ProgressSummaryCardSkeleton } from "@/shared/ui/skeletons";
 
 type LessonProgressCardProps = {
   progress: MyTasksProgress;
   attendedCount: number;
   remainingCount: number;
+  isLoading?: boolean;
 };
 
 const STATUS_SUMMARY = [
@@ -31,8 +33,13 @@ export function LessonProgressCard({
   progress,
   attendedCount,
   remainingCount,
+  isLoading = false,
 }: LessonProgressCardProps) {
   const dir = useDirection();
+
+  if (isLoading) {
+    return <ProgressSummaryCardSkeleton summaryItemsCount={2} />;
+  }
 
   return (
     <View

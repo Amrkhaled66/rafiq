@@ -3,18 +3,19 @@ import { useMemo } from "react";
 import { ScrollView, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { MOCK_TASK_DETAILS } from "@/features/tasks/data/mock-task-detail-data";
 import { FloatingCompleteTaskButton } from "@/features/tasks/components/task-detail/FloatingCompleteTaskButton";
 import { PomodoroCard } from "@/features/tasks/components/task-detail/PomodoroCard";
 import { TaskDetailHeader } from "@/features/tasks/components/task-detail/TaskDetailHeader";
 import { TaskNote } from "@/features/tasks/components/task-detail/TaskNote";
 import { TaskSessionsSection } from "@/features/tasks/components/task-detail/TaskSessionsSection";
 import { TaskSessionsStatsCard } from "@/features/tasks/components/task-detail/TaskSessionsStatsCard";
+import { MOCK_TASK_DETAILS } from "@/features/tasks/data/mock-task-detail-data";
 import { useTaskPomodoro } from "@/features/tasks/hooks/useTaskPomodoro";
 import { AppText } from "@/shared/ui/app-text";
 import { FocusedStatusBar } from "@/shared/ui/focused-status-bar";
 
 export function TaskDetailScreen() {
+  const isLoading = false;
   const insets = useSafeAreaInsets();
   const params = useLocalSearchParams<{ taskId?: string }>();
   const taskId = params.taskId ?? "t-chemistry";
@@ -62,10 +63,14 @@ export function TaskDetailScreen() {
         }}
       >
         <View className="gap-4 md:gap-5">
-          <TaskDetailHeader title={taskDetail.title} />
-          <TaskNote note="هنحل من اول سوال 15 لحد سوال 45 في كتاب الامتحان" />
+          <TaskDetailHeader isLoading={isLoading} title={taskDetail.title} />
+          <TaskNote
+            isLoading={isLoading}
+            note="هنحل من اول سؤال 15 لحد سؤال 45 في كتاب الامتحان"
+          />
 
           <PomodoroCard
+            isLoading={isLoading}
             taskTitle={taskDetail.title}
             taskStatus={taskDetail.status}
             soundEnabled={soundEnabled}
@@ -81,19 +86,22 @@ export function TaskDetailScreen() {
           />
 
           <TaskSessionsStatsCard
+            isLoading={isLoading}
             totalFocusMinutes={stats.totalFocusMinutes}
             totalSessions={stats.totalSessions}
             completedSessions={stats.completedSessions}
           />
 
-          <TaskSessionsSection sessions={sessions} />
+          <TaskSessionsSection isLoading={isLoading} sessions={sessions} />
         </View>
       </ScrollView>
 
-      <FloatingCompleteTaskButton
-        disabled={taskDetail.status === "completed"}
-        onConfirm={() => {}}
-      />
+      {!isLoading && (
+        <FloatingCompleteTaskButton
+          disabled={taskDetail.status === "completed"}
+          onConfirm={() => {}}
+        />
+      )}
     </View>
   );
 }

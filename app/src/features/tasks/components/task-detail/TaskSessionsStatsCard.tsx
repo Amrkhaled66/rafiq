@@ -1,12 +1,14 @@
 import { Ionicons } from "@expo/vector-icons";
 import { View } from "react-native";
 
+import { TaskSessionsStatsCardSkeleton } from "@/features/tasks/components/task-detail/skeletons";
 import { AppText } from "@/shared/ui/app-text";
 
 type TaskSessionsStatsCardProps = {
   totalFocusMinutes: number;
   totalSessions: number;
   completedSessions: number;
+  isLoading?: boolean;
 };
 
 type MiniStatCardProps = {
@@ -102,7 +104,12 @@ export function TaskSessionsStatsCard({
   totalFocusMinutes,
   totalSessions,
   completedSessions,
+  isLoading = false,
 }: TaskSessionsStatsCardProps) {
+  if (isLoading) {
+    return <TaskSessionsStatsCardSkeleton />;
+  }
+
   return (
     <View className="mb-5 flex-row-reverse gap-3 md:mb-6 md:gap-4">
       <MiniStatCard

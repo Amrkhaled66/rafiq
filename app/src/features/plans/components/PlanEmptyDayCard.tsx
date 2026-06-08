@@ -1,12 +1,23 @@
 import { Ionicons } from "@expo/vector-icons";
 import { View } from "react-native";
 
+import { PlanCardSkeleton } from "@/features/plans/components/skeletons";
 import { useDirection } from "@/shared/hooks/use-direction";
 import { Colors } from "@/shared/theme/theme";
 import { AppText } from "@/shared/ui/app-text";
 
-export function PlanEmptyDayCard() {
+type PlanEmptyDayCardProps = {
+  isLoading?: boolean;
+};
+
+export function PlanEmptyDayCard({
+  isLoading = false,
+}: PlanEmptyDayCardProps) {
   const dir = useDirection();
+
+  if (isLoading) {
+    return <PlanCardSkeleton />;
+  }
 
   return (
     <View

@@ -1,13 +1,22 @@
 import { Ionicons } from "@expo/vector-icons";
 import { View } from "react-native";
 
+import { TaskNoteSkeleton } from "@/features/tasks/components/task-detail/skeletons";
 import { AppText } from "@/shared/ui/app-text";
 
 type TaskNoteProps = {
   note?: string | null;
+  isLoading?: boolean;
 };
 
-export function TaskNote({ note }: TaskNoteProps) {
+export function TaskNote({
+  note,
+  isLoading = false,
+}: TaskNoteProps) {
+  if (isLoading) {
+    return <TaskNoteSkeleton />;
+  }
+
   if (!note) return null;
 
   return (

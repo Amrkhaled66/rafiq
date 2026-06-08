@@ -1,6 +1,7 @@
 import { Ionicons } from "@expo/vector-icons";
 import { Pressable, View } from "react-native";
 
+import { SupportSectionCardSkeleton } from "@/features/profile/components/skeletons";
 import { useDirection } from "@/shared/hooks/use-direction";
 import { Colors } from "@/shared/theme/theme";
 import { AppText } from "@/shared/ui/app-text";
@@ -8,6 +9,7 @@ import { AppText } from "@/shared/ui/app-text";
 type SupportSectionCardProps = {
   onSupportPress: () => void;
   onLogoutPress: () => void;
+  isLoading?: boolean;
 };
 
 type SupportRowProps = {
@@ -67,7 +69,12 @@ function SupportRow({
 export function SupportSectionCard({
   onSupportPress,
   onLogoutPress,
+  isLoading = false,
 }: SupportSectionCardProps) {
+  if (isLoading) {
+    return <SupportSectionCardSkeleton />;
+  }
+
   return (
     <View
       className="border-card-border bg-card overflow-hidden rounded-[26px] border"

@@ -5,6 +5,7 @@ import type { MyLessonItem } from "@/features/tasks/types";
 import { useDirection } from "@/shared/hooks/use-direction";
 import { AppText } from "@/shared/ui/app-text";
 import { LessonChecklistRow } from "@/shared/ui/lesson-checklist-row";
+import { LessonChecklistCardSkeleton } from "@/shared/ui/skeletons";
 
 type LessonSectionProps = {
   lessons: MyLessonItem[];
@@ -13,6 +14,7 @@ type LessonSectionProps = {
   onToggleExpanded?: () => void;
   showToggle?: boolean;
   previewCount?: number;
+  isLoading?: boolean;
 };
 
 export function LessonSection({
@@ -22,9 +24,14 @@ export function LessonSection({
   onToggleExpanded,
   showToggle = false,
   previewCount = 3,
+  isLoading = false,
 }: LessonSectionProps) {
   const dir = useDirection();
   const visibleLessons = isExpanded ? lessons : lessons.slice(0, previewCount);
+
+  if (isLoading) {
+    return <LessonChecklistCardSkeleton rowsCount={3} />;
+  }
 
   return (
     <View className="gap-2.5 md:gap-3">

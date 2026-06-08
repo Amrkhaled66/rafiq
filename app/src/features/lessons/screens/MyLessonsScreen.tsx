@@ -27,6 +27,7 @@ function buildLessonsProgress(lessons: MyLessonItem[]): MyTasksProgress {
 }
 
 export function MyLessonsScreen() {
+  const isLoading = false;
   const [lessons, setLessons] = useState(cloneTodayLessons);
 
   const handleToggleLesson = (lessonId: string) => {
@@ -51,11 +52,16 @@ export function MyLessonsScreen() {
         <PageTitle title="حصصي" />
         <PageDateBadge dateLabel={MY_TASKS_DAY_DATA.today.dateLabel} />
         <LessonProgressCard
+          isLoading={isLoading}
           progress={lessonsProgress}
           attendedCount={lessonsProgress.completedCount}
           remainingCount={remainingLessonsCount}
         />
-        <LessonSection lessons={lessons} onToggleLesson={handleToggleLesson} />
+        <LessonSection
+          isLoading={isLoading}
+          lessons={lessons}
+          onToggleLesson={handleToggleLesson}
+        />
       </View>
     </TabPageLayout>
   );

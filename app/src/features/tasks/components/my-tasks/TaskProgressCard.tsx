@@ -5,10 +5,12 @@ import type { MyTaskStatus, MyTasksProgress } from "@/features/tasks/types";
 import { useDirection } from "@/shared/hooks/use-direction";
 import { Colors } from "@/shared/theme/theme";
 import { AppText } from "@/shared/ui/app-text";
+import { ProgressSummaryCardSkeleton } from "@/shared/ui/skeletons";
 
 type TaskProgressCardProps = {
   progress: MyTasksProgress;
   statusCounts: Record<MyTaskStatus, number>;
+  isLoading?: boolean;
 };
 
 const STATUS_SUMMARY: {
@@ -40,8 +42,13 @@ const STATUS_SUMMARY: {
 export function TaskProgressCard({
   progress,
   statusCounts,
+  isLoading = false,
 }: TaskProgressCardProps) {
   const dir = useDirection();
+
+  if (isLoading) {
+    return <ProgressSummaryCardSkeleton summaryItemsCount={3} />;
+  }
 
   return (
     <View

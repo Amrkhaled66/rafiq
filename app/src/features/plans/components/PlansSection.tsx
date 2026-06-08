@@ -2,6 +2,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { View } from "react-native";
 
 import { PlanCard } from "@/features/plans/components/PlanCard";
+import { PlansSectionSkeleton } from "@/features/plans/components/skeletons";
 import type { StudyPlan } from "@/features/plans/types";
 import { useDirection } from "@/shared/hooks/use-direction";
 import { Colors } from "@/shared/theme/theme";
@@ -10,10 +11,19 @@ import { AppText } from "@/shared/ui/app-text";
 type PlansSectionProps = {
   plans: StudyPlan[];
   onPlanPress?: (plan: StudyPlan) => void;
+  isLoading?: boolean;
 };
 
-export function PlansSection({ plans, onPlanPress }: PlansSectionProps) {
+export function PlansSection({
+  plans,
+  onPlanPress,
+  isLoading = false,
+}: PlansSectionProps) {
   const dir = useDirection();
+
+  if (isLoading) {
+    return <PlansSectionSkeleton />;
+  }
 
   return (
     <View className="gap-3 md:gap-4">

@@ -20,7 +20,7 @@ export function ShimmerBlock({
   width,
   height,
   borderRadius,
-  backgroundColor = "#EEF1F4",
+  backgroundColor = "#ECEFF3",
   style,
 }: ShimmerBlockProps) {
   const progress = useRef(new Animated.Value(0)).current;

@@ -1,6 +1,7 @@
 import { useMemo } from "react";
 import { Pressable, ScrollView, View } from "react-native";
 
+import { PlanDaysCarouselSkeleton } from "@/features/plans/components/skeletons";
 import type { PlanDetailDay } from "@/features/plans/types";
 import {
   getArabicPlanDayLabel,
@@ -15,6 +16,7 @@ type PlanDaysCarouselProps = {
   selectedDate: string | null;
   onSelect: (date: string) => void;
   parentHorizontalPadding?: number;
+  isLoading?: boolean;
 };
 
 export function PlanDaysCarousel({
@@ -22,12 +24,17 @@ export function PlanDaysCarousel({
   selectedDate,
   onSelect,
   parentHorizontalPadding = 16,
+  isLoading = false,
 }: PlanDaysCarouselProps) {
   const dir = useDirection();
   const orderedDays = useMemo(
     () => [...days].sort((left, right) => left.date.localeCompare(right.date)),
     [days],
   );
+
+  if (isLoading) {
+    return <PlanDaysCarouselSkeleton />;
+  }
 
   return (
     <View className="gap-3 md:gap-4">

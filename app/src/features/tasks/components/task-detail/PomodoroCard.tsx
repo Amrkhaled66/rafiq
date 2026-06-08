@@ -3,6 +3,7 @@ import { Image, Pressable, View } from "react-native";
 
 import timerPanner from "@assets/images/timer-banner.png";
 import { CircularTimer } from "@/features/tasks/components/task-detail/CircularTimer";
+import { PomodoroCardSkeleton } from "@/features/tasks/components/task-detail/skeletons";
 import type { TaskDetailStatus } from "@/features/tasks/types";
 import { AppText } from "@/shared/ui/app-text";
 
@@ -21,6 +22,7 @@ type PomodoroCardProps = {
   onPause: () => void;
   onResume: () => void;
   onStop: () => void;
+  isLoading?: boolean;
 };
 
 const CARD_COLORS = {
@@ -40,7 +42,12 @@ export function PomodoroCard({
   onPause,
   onResume,
   onStop,
+  isLoading = false,
 }: PomodoroCardProps) {
+  if (isLoading) {
+    return <PomodoroCardSkeleton />;
+  }
+
   const isTaskCompleted = taskStatus === "completed";
 
   const ctaAppearance = (() => {

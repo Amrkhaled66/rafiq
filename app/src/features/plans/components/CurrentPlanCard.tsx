@@ -1,6 +1,7 @@
 import { ImageBackground, Pressable, View } from "react-native";
 
 import plansBg from "@assets/images/plans-bg.png";
+import { CurrentPlanCardSkeleton } from "@/features/plans/components/skeletons";
 import type { StudyPlan } from "@/features/plans/types";
 import {
   formatPlanDateRange,
@@ -13,11 +14,20 @@ import { AppText } from "@/shared/ui/app-text";
 type CurrentPlanCardProps = {
   plan: StudyPlan;
   onPress?: (plan: StudyPlan) => void;
+  isLoading?: boolean;
 };
 
-export function CurrentPlanCard({ plan, onPress }: CurrentPlanCardProps) {
+export function CurrentPlanCard({
+  plan,
+  onPress,
+  isLoading = false,
+}: CurrentPlanCardProps) {
   const dir = useDirection();
   const statusAppearance = getPlanStatusAppearance(plan.status);
+
+  if (isLoading) {
+    return <CurrentPlanCardSkeleton />;
+  }
 
   return (
     <ImageBackground

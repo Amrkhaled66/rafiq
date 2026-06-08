@@ -31,6 +31,7 @@ function buildTaskStatusCounts(
 }
 
 export function MyTasksScreen() {
+  const isLoading = false;
   const dayData = MY_TASKS_DAY_DATA.today;
   const [selectedStatus, setSelectedStatus] =
     useState<TaskStatusFilterKey>("all");
@@ -50,14 +51,20 @@ export function MyTasksScreen() {
         <PageTitle title="مهامي" />
         <PageDateBadge dateLabel={dayData.dateLabel} />
         <TaskProgressCard
+          isLoading={isLoading}
           progress={dayData.progress}
           statusCounts={buildTaskStatusCounts(dayData.tasks)}
         />
         <TaskStatusFilterTabs
+          isLoading={isLoading}
           value={selectedStatus}
           onChange={setSelectedStatus}
         />
-        <TaskSection tasks={visibleTasks} onTaskPress={handleTaskPress} />
+        <TaskSection
+          isLoading={isLoading}
+          tasks={visibleTasks}
+          onTaskPress={handleTaskPress}
+        />
       </View>
     </TabPageLayout>
   );

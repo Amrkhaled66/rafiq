@@ -1,4 +1,4 @@
-import { useLocalSearchParams } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import { useEffect, useMemo, useState } from "react";
 import { ScrollView, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -6,18 +6,22 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { PlanDaysCarousel } from "@/features/plans/components/PlanDaysCarousel";
 import { PlanDetailHeader } from "@/features/plans/components/PlanDetailHeader";
 import { PlanDetailStats } from "@/features/plans/components/PlanDetailStats";
-import { PlanDetailTaskCard } from "@/features/plans/components/PlanDetailTaskCard";
 import { PlanEmptyDayCard } from "@/features/plans/components/PlanEmptyDayCard";
+import { PlanCardSkeleton } from "@/features/plans/components/skeletons";
 import { MOCK_PLAN_DETAILS } from "@/features/plans/data/mock-plan-detail-data";
 import {
   calculateInclusivePlanDays,
   formatPlanDateRangeFromValues,
   getDefaultSelectedPlanDay,
+  getPlanTaskStatusAppearance,
+  mapPlanTaskToTaskCard,
 } from "@/features/plans/utils/plan-ui";
 import { AppText } from "@/shared/ui/app-text";
 import { FocusedStatusBar } from "@/shared/ui/focused-status-bar";
+import { TaskCard } from "@/shared/ui/task-card";
 
 export function PlanDetailScreen() {
+  const isLoading = false;
   const insets = useSafeAreaInsets();
   const params = useLocalSearchParams<{ planId?: string }>();
   const planId = params.planId ? Number(params.planId) : null;
@@ -76,6 +80,7 @@ export function PlanDetailScreen() {
       >
         <View className="gap-5 md:gap-6">
           <PlanDetailHeader
+            isLoading={isLoading}
             title={data.plan.name}
             dateRangeLabel={formatPlanDateRangeFromValues(
               data.plan.startsOn,
@@ -84,6 +89,7 @@ export function PlanDetailScreen() {
           />
 
           <PlanDetailStats
+            isLoading={isLoading}
             totalDays={calculateInclusivePlanDays(
               data.plan.startsOn,
               data.plan.endsOn,
@@ -93,16 +99,39 @@ export function PlanDetailScreen() {
           />
 
           <PlanDaysCarousel
+            isLoading={isLoading}
             days={data.days}
             selectedDate={selectedDate}
             onSelect={setSelectedDate}
           />
 
           <View className="gap-2.5 md:gap-3">
-            {selectedDay?.tasks.length ? (
-              selectedDay.tasks.map((task) => (
-                <PlanDetailTaskCard key={task.id} task={task} />
-              ))
+            {isLoading ? (
+              <>
+                <PlanCardSkeleton />
+                <PlanCardSkeleton />
+                <PlanCardSkeleton />
+              </>
+            ) : selectedDay?.tasks.length ? (
+              selectedDay.tasks.map((task) => {
+                const taskCardData = mapPlanTaskToTaskCard(task);
+                const statusAppearance = getPlanTaskStatusAppearance(task.status);
+
+                return (
+                  <TaskCard
+                    key={task.id}
+                    title={task.title}
+                    subject={taskCardData.subject}
+                    icon={taskCardData.icon}
+                    iconBackgroundColor={taskCardData.iconBackgroundColor}
+                    iconColor={taskCardData.iconColor}
+                    statusLabel={statusAppearance.label}
+                    statusBackgroundColor={statusAppearance.backgroundColor}
+                    statusTextColor={statusAppearance.textColor}
+                    onPress={() => router.push(`/tasks/${task.id}`)}
+                  />
+                );
+              })
             ) : (
               <PlanEmptyDayCard />
             )}

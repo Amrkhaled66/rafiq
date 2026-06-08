@@ -1,6 +1,7 @@
 import { Ionicons } from "@expo/vector-icons";
 import { Pressable, View } from "react-native";
 
+import { SubscriptionCardSkeleton } from "@/features/subscriptions/components/skeletons";
 import type { SubscriptionItem } from "@/features/subscriptions/types";
 import {
   formatSubscriptionAmount,
@@ -17,14 +18,21 @@ type SubscriptionCardProps = {
   subscription: SubscriptionItem;
   isActive: boolean;
   onPress?: (subscription: SubscriptionItem) => void;
+  isLoading?: boolean;
 };
 
 export function SubscriptionCard({
   subscription,
   isActive,
   onPress,
+  isLoading = false,
 }: SubscriptionCardProps) {
   const dir = useDirection();
+
+  if (isLoading) {
+    return <SubscriptionCardSkeleton />;
+  }
+
   const status = getSubscriptionStatus(subscription);
   const appearance = getSubscriptionStatusAppearance(status, isActive);
 

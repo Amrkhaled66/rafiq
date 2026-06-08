@@ -1,6 +1,7 @@
 import { Ionicons } from "@expo/vector-icons";
 import { Pressable, View } from "react-native";
 
+import { ProfileActionCardSkeleton } from "@/features/profile/components/skeletons";
 import { useDirection } from "@/shared/hooks/use-direction";
 import { Colors } from "@/shared/theme/theme";
 import { AppText } from "@/shared/ui/app-text";
@@ -9,14 +10,20 @@ type ProfileActionCardProps = {
   title: string;
   icon: keyof typeof Ionicons.glyphMap;
   onPress: () => void;
+  isLoading?: boolean;
 };
 
 export function ProfileActionCard({
   title,
   icon,
   onPress,
+  isLoading = false,
 }: ProfileActionCardProps) {
   const dir = useDirection();
+
+  if (isLoading) {
+    return <ProfileActionCardSkeleton />;
+  }
 
   return (
     <Pressable

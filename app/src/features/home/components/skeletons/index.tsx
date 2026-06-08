@@ -1,55 +1,37 @@
 import { View, useWindowDimensions } from "react-native";
 
-import { ElevatedView } from "@/shared/ui/elevated-view";
-import { ShimmerBlock } from "@/shared/ui/shimmer-block";
-
-function SkeletonCard({
-  children,
-  isTablet,
-}: {
-  children: React.ReactNode;
-  isTablet: boolean;
-}) {
-  return (
-    <ElevatedView
-      className="rounded-[28px] bg-white"
-      style={{
-        paddingHorizontal: isTablet ? 24 : 20,
-        paddingVertical: isTablet ? 24 : 20,
-      }}
-    >
-      {children}
-    </ElevatedView>
-  );
-}
+import {
+  LessonChecklistCardSkeleton,
+  ShimmerBlock,
+  SkeletonSurface,
+} from "@/shared/ui/skeletons";
 
 function SectionHeaderSkeleton({ isTablet }: { isTablet: boolean }) {
   return (
     <View className="flex-row items-center justify-between">
       <View className="flex-row-reverse items-center gap-1">
         <ShimmerBlock
-          width={isTablet ? 64 : 56}
-          height={isTablet ? 16 : 14}
+          width={isTablet ? 70 : 58}
+          height={isTablet ? 18 : 15}
           borderRadius={999}
         />
         <ShimmerBlock
-          width={isTablet ? 18 : 16}
-          height={isTablet ? 18 : 16}
+          width={isTablet ? 20 : 16}
+          height={isTablet ? 20 : 16}
           borderRadius={999}
         />
       </View>
 
       <View className="flex-row items-center gap-2">
         <ShimmerBlock
-          width={isTablet ? 132 : 112}
-          height={isTablet ? 24 : 20}
+          width={isTablet ? 140 : 118}
+          height={isTablet ? 26 : 22}
           borderRadius={999}
         />
         <ShimmerBlock
-          width={isTablet ? 44 : 40}
-          height={isTablet ? 44 : 40}
+          width={isTablet ? 40 : 36}
+          height={isTablet ? 40 : 36}
           borderRadius={999}
-          backgroundColor="#F3E6E6"
         />
       </View>
     </View>
@@ -59,63 +41,53 @@ function SectionHeaderSkeleton({ isTablet }: { isTablet: boolean }) {
 export function ProgressSkeleton() {
   const { width } = useWindowDimensions();
   const isTablet = width >= 768;
-  const ringSize = isTablet ? 132 : 110;
-  const innerRingSize = isTablet ? 102 : 86;
+  const ringSize = isTablet ? 140 : 110;
+  const innerRingSize = isTablet ? 104 : 82;
+  const ringStroke = isTablet ? 14 : 12;
 
   return (
-    <SkeletonCard isTablet={isTablet}>
-      <View className="flex-row-reverse items-center justify-between">
-        <View className="items-end gap-3">
-          <View className="flex-row items-start gap-2">
+    <SkeletonSurface className="px-4 pt-4 md:px-7 md:py-6">
+      <View className="gap-4 md:gap-5">
+        <SectionHeaderSkeleton isTablet={isTablet} />
+
+        <View className="flex-row-reverse items-center justify-between">
+          <View className="flex-1 gap-3">
             <View className="items-end gap-2">
               <ShimmerBlock
-                width={isTablet ? 140 : 112}
-                height={isTablet ? 28 : 24}
+                width={isTablet ? 240 : 176}
+                height={isTablet ? 30 : 24}
                 borderRadius={999}
               />
               <ShimmerBlock
-                width={isTablet ? 190 : 160}
-                height={isTablet ? 18 : 16}
-                borderRadius={999}
-                backgroundColor="#F3E6E6"
-              />
-              <ShimmerBlock
-                width={isTablet ? 130 : 96}
-                height={isTablet ? 18 : 16}
+                width={isTablet ? 140 : 104}
+                height={isTablet ? 20 : 16}
                 borderRadius={999}
               />
             </View>
+          </View>
+
+          <View
+            className="items-center justify-center"
+            style={{ width: ringSize, height: ringSize }}
+          >
             <ShimmerBlock
-              width={isTablet ? 52 : 44}
-              height={isTablet ? 52 : 44}
+              width={ringSize}
+              height={ringSize}
               borderRadius={999}
-              backgroundColor="#F3E6E6"
+            />
+            <View
+              className="absolute rounded-full bg-card"
+              style={{
+                width: innerRingSize,
+                height: innerRingSize,
+                borderWidth: ringStroke,
+                borderColor: "#E6EAF0",
+              }}
             />
           </View>
         </View>
-
-        <View
-          className="items-center justify-center"
-          style={{ width: ringSize, height: ringSize }}
-        >
-          <ShimmerBlock
-            width={ringSize}
-            height={ringSize}
-            borderRadius={999}
-            backgroundColor="#F8F5F4"
-          />
-          <View
-            className="absolute rounded-full bg-white"
-            style={{
-              width: innerRingSize,
-              height: innerRingSize,
-              borderWidth: isTablet ? 12 : 10,
-              borderColor: "#EEF1F4",
-            }}
-          />
-        </View>
       </View>
-    </SkeletonCard>
+    </SkeletonSurface>
   );
 }
 
@@ -124,47 +96,38 @@ export function TodayTasksSkeleton() {
   const isTablet = width >= 768;
 
   return (
-    <SkeletonCard isTablet={isTablet}>
-      <View className="gap-4">
-        <SectionHeaderSkeleton isTablet={isTablet} />
+    <View className="gap-4">
+      <SectionHeaderSkeleton isTablet={isTablet} />
 
-        <View className="flex-row flex-wrap justify-between gap-y-3">
-          {[0, 1, 2, 3].map((item) => (
-            <View
-              key={item}
-              className="w-[40%] rounded-2xl border border-[#F0E1E1] bg-[#FAF7F6]"
-              style={{
-                width: isTablet ? "100%" : "48.5%",
-                paddingHorizontal: isTablet ? 18 : 16,
-                paddingVertical: isTablet ? 18 : 16,
-              }}
-            >
-              <View className="flex-row items-center gap-3">
-                <View className="flex-1 items-end gap-2">
-                  <ShimmerBlock
-                    width={isTablet ? 96 : 60}
-                    height={isTablet ? 18 : 16}
-                    borderRadius={999}
-                  />
-                  <ShimmerBlock
-                    width={isTablet ? 140 : 70}
-                    height={isTablet ? 16 : 12}
-                    borderRadius={999}
-                    backgroundColor="#F3E6E6"
-                  />
-                </View>
+      <View className="flex-row flex-wrap items-start justify-between gap-y-2 md:gap-y-3">
+        {[0, 1, 2, 3].map((item) => (
+          <SkeletonSurface
+            key={item}
+            className="w-[48.5%] rounded-2xl px-3 py-4 md:px-4.5 md:py-4.5"
+          >
+            <View className="flex-row items-center justify-between gap-3">
+              <View className="hidden md:flex">
+                <ShimmerBlock width={20} height={20} borderRadius={999} />
+              </View>
+
+              <View className="flex-1 items-end">
                 <ShimmerBlock
-                  width={isTablet ? 48 : 44}
-                  height={isTablet ? 48 : 44}
+                  width={isTablet ? 140 : 96}
+                  height={isTablet ? 22 : 16}
                   borderRadius={999}
-                  backgroundColor="#F3E6E6"
                 />
               </View>
+
+              <ShimmerBlock
+                width={isTablet ? 60 : 40}
+                height={isTablet ? 60 : 40}
+                borderRadius={14}
+              />
             </View>
-          ))}
-        </View>
+          </SkeletonSurface>
+        ))}
       </View>
-    </SkeletonCard>
+    </View>
   );
 }
 
@@ -173,54 +136,9 @@ export function TodayLessonsSkeleton() {
   const isTablet = width >= 768;
 
   return (
-    <SkeletonCard isTablet={isTablet}>
-      <View className="gap-4">
-        <SectionHeaderSkeleton isTablet={isTablet} />
-
-        <View className="gap-3">
-          {[0, 1].map((item) => (
-            <View
-              key={item}
-              className="flex-row-reverse items-center rounded-[22px] bg-[#FAF7F6]"
-              style={{
-                paddingHorizontal: isTablet ? 18 : 16,
-                paddingVertical: isTablet ? 18 : 16,
-              }}
-            >
-              <ShimmerBlock
-                width={isTablet ? 28 : 24}
-                height={isTablet ? 28 : 24}
-                borderRadius={8}
-                backgroundColor="#FFFFFF"
-              />
-              <View className="mr-3 flex-1 items-end gap-2">
-                <ShimmerBlock
-                  width={isTablet ? 110 : 96}
-                  height={isTablet ? 18 : 16}
-                  borderRadius={999}
-                />
-                <ShimmerBlock
-                  width={isTablet ? 92 : 80}
-                  height={isTablet ? 16 : 12}
-                  borderRadius={999}
-                  backgroundColor="#F3E6E6"
-                />
-                <ShimmerBlock
-                  width={isTablet ? 152 : 112}
-                  height={isTablet ? 16 : 12}
-                  borderRadius={999}
-                />
-              </View>
-              <ShimmerBlock
-                width={isTablet ? 52 : 48}
-                height={isTablet ? 52 : 48}
-                borderRadius={999}
-                backgroundColor="#F3E6E6"
-              />
-            </View>
-          ))}
-        </View>
-      </View>
-    </SkeletonCard>
+    <View className="gap-4">
+      <SectionHeaderSkeleton isTablet={isTablet} />
+      <LessonChecklistCardSkeleton rowsCount={3} />
+    </View>
   );
 }

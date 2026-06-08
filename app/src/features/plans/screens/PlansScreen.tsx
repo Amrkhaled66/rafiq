@@ -5,13 +5,17 @@ import { View } from "react-native";
 import { CurrentPlanCard } from "@/features/plans/components/CurrentPlanCard";
 import { PlansSection } from "@/features/plans/components/PlansSection";
 import { PlanStatusFilterTabs } from "@/features/plans/components/PlanStatusFilterTabs";
-import { MOCK_PLANS, PLANS_DATE_LABEL } from "@/features/plans/data/mock-plans-data";
+import {
+  MOCK_PLANS,
+  PLANS_DATE_LABEL,
+} from "@/features/plans/data/mock-plans-data";
 import type { PlanStatusFilterKey, StudyPlan } from "@/features/plans/types";
 import { PageDateBadge } from "@/shared/ui/page-date-badge";
 import { PageTitle } from "@/shared/ui/page-title";
 import { TabPageLayout } from "@/shared/ui/tab-page-layout";
 
 export function PlansScreen() {
+  const isLoading = false;
   const plans = MOCK_PLANS;
   const [selectedStatus, setSelectedStatus] =
     useState<PlanStatusFilterKey>("all");
@@ -32,13 +36,22 @@ export function PlansScreen() {
         <PageTitle title="الخطط" />
         <PageDateBadge dateLabel={PLANS_DATE_LABEL} />
         {currentPlan ? (
-          <CurrentPlanCard plan={currentPlan} onPress={handlePlanPress} />
+          <CurrentPlanCard
+            isLoading={isLoading}
+            plan={currentPlan}
+            onPress={handlePlanPress}
+          />
         ) : null}
         <PlanStatusFilterTabs
+          isLoading={isLoading}
           value={selectedStatus}
           onChange={setSelectedStatus}
         />
-        <PlansSection plans={visiblePlans} onPlanPress={handlePlanPress} />
+        <PlansSection
+          isLoading={isLoading}
+          plans={visiblePlans}
+          onPlanPress={handlePlanPress}
+        />
       </View>
     </TabPageLayout>
   );

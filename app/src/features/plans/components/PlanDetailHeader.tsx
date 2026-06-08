@@ -1,5 +1,6 @@
 import { View } from "react-native";
 
+import { PlanDetailHeaderSkeleton } from "@/features/plans/components/skeletons";
 import { useDirection } from "@/shared/hooks/use-direction";
 import { BackButton } from "@/shared/ui/back-button";
 import { AppText } from "@/shared/ui/app-text";
@@ -8,13 +9,19 @@ import { PageTitle } from "@/shared/ui/page-title";
 type PlanDetailHeaderProps = {
   title: string;
   dateRangeLabel: string;
+  isLoading?: boolean;
 };
 
 export function PlanDetailHeader({
   title,
   dateRangeLabel,
+  isLoading = false,
 }: PlanDetailHeaderProps) {
   const dir = useDirection();
+
+  if (isLoading) {
+    return <PlanDetailHeaderSkeleton />;
+  }
 
   return (
     <View className="relative items-center gap-2 md:gap-2.5">
