@@ -1,5 +1,10 @@
 import { router } from "expo-router";
-import { ScrollView, View, useWindowDimensions } from "react-native";
+import {
+  RefreshControl,
+  ScrollView,
+  View,
+  useWindowDimensions,
+} from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { useAuth } from "@/features/auth/context/AuthProvider";
@@ -8,107 +13,9 @@ import { HomeStateCard } from "@/features/home/components/HomeStateCard";
 import { Progress } from "@/features/home/components/Progress";
 import { TodayLessons } from "@/features/home/components/TodayLessons";
 import { TodayTasks } from "@/features/home/components/TodayTasks";
-import type { TaskItem } from "@/features/home/components/TodayTaskCard";
+import { useStudentHome } from "@/features/home/queries/homeQueries";
+import { mapStudentHomeToViewModel } from "@/features/home/utils/homeMappers";
 import { FocusedStatusBar } from "@/shared/ui/focused-status-bar";
-import type { LessonChecklistItem as LessonItem } from "@/shared/ui/lesson-checklist-row";
-import { getSubjectUi } from "@/shared/utils/subject-ui";
-
-const TASKS: TaskItem[] = [
-  {
-    subject: "رياضيات",
-    title: "حل واجب الدوال",
-    icon: "calculator-outline",
-    iconBackgroundClassName: "bg-[#F3E8FF]",
-    iconColor: "#8B5CF6",
-  },
-  {
-    subject: "كيمياء",
-    title: "مراجعة الباب الثالث",
-    icon: "flask-outline",
-    iconBackgroundClassName: "bg-[#DBEAFE]",
-    iconColor: "#2563EB",
-  },
-  {
-    subject: "تاريخ",
-    title: "تلخيص الوحدة الثانية",
-    icon: "book-outline",
-    iconBackgroundClassName: "bg-[#DCFCE7]",
-    iconColor: "#16A34A",
-  },
-  {
-    subject: "عربي",
-    title: "تدريب على النصوص",
-    icon: "language-outline",
-    iconBackgroundClassName: "bg-[#FFEDD5]",
-    iconColor: "#EA580C",
-  },
-  {
-    subject: "فيزياء",
-    title: "حل مسائل الحركة",
-    icon: "speedometer-outline",
-    iconBackgroundClassName: "bg-[#CCFBF1]",
-    iconColor: "#0F766E",
-  },
-];
-
-const LESSONS: LessonItem[] = [
-  {
-    id: "home-lesson-math",
-    subject: "الرياضيات",
-    icon: getSubjectUi("math").icon,
-    iconBackgroundColor: getSubjectUi("math").iconBackgroundColor,
-    iconColor: getSubjectUi("math").iconColor,
-    checked: true,
-  },
-  {
-    id: "home-lesson-chemistry",
-    subject: "الكيمياء",
-    icon: getSubjectUi("chemistry").icon,
-    iconBackgroundColor: getSubjectUi("chemistry").iconBackgroundColor,
-    iconColor: getSubjectUi("chemistry").iconColor,
-  },
-  {
-    id: "home-lesson-arabic",
-    subject: "اللغة العربية",
-    icon: getSubjectUi("arabic").icon,
-    iconBackgroundColor: getSubjectUi("arabic").iconBackgroundColor,
-    iconColor: getSubjectUi("arabic").iconColor,
-  },
-];
-
-type HomeProgress = {
-  progress: number;
-  completedCount: number;
-  totalCount: number;
-};
-
-type HomeViewModel = {
-  progress: HomeProgress;
-  tasks: TaskItem[];
-  lessons: LessonItem[];
-  isLoadingProgress: boolean;
-  isLoadingTasks: boolean;
-  isLoadingLessons: boolean;
-  isError: boolean;
-  retry: () => void;
-};
-
-function useHomeViewModel(): HomeViewModel {
-  return {
-    progress: {
-      progress: 40,
-      completedCount: 3,
-      totalCount: 7,
-    },
-    tasks: TASKS,
-    lessons: LESSONS,
-    isLoadingProgress: false,
-    isLoadingTasks: false,
-    isLoadingLessons: false,
-    isError: false,
-    retry: () => {},
-  };
-}
 
 function getFirstName(fullName?: string | null) {
   if (!fullName) return "أحمد";
@@ -120,21 +27,21 @@ export function HomeScreen() {
   const { width } = useWindowDimensions();
   const isTablet = width >= 768;
   const { user } = useAuth();
-  const {
-    progress,
-    tasks,
-    lessons,
-    isLoadingProgress,
-    isLoadingTasks,
-    isLoadingLessons,
-    isError,
-    retry,
-  } = useHomeViewModel();
-
+  const { data, isLoading, isError, isRefetching, refetch } = useStudentHome();
+  const home = data ? mapStudentHomeToViewModel(data) : null;
+ console.log(data)
   return (
     <View className="bg-background flex-1">
       <FocusedStatusBar style="light" />
-      <ScrollView showsVerticalScrollIndicator={false}>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl
+            refreshing={isRefetching && !isLoading}
+            onRefresh={() => void refetch()}
+          />
+        }
+      >
         <HomeHeader firstName={getFirstName(user?.fullName)} />
         <View
           style={{
@@ -150,26 +57,26 @@ export function HomeScreen() {
               title="حصل مشكلة في تحميل الصفحة"
               description="مش قادرين نعرض بيانات الصفحة الرئيسية دلوقتي. حاول مرة تانية."
               actionLabel="إعادة المحاولة"
-              onAction={retry}
+              onAction={() => void refetch()}
             />
           ) : (
             <>
               <Progress
-                progress={progress.progress}
-                completedCount={progress.completedCount}
-                totalCount={progress.totalCount}
-                isLoading={isLoadingProgress}
+                progress={home?.progress.progress ?? 0}
+                completedCount={home?.progress.completedCount ?? 0}
+                totalCount={home?.progress.totalCount ?? 0}
+                isLoading={isLoading}
               />
 
               <View className="gap-6 md:gap-5">
                 <View className="flex-1">
-                  <TodayTasks tasks={tasks} isLoading={isLoadingTasks} />
+                  <TodayTasks tasks={home?.tasks ?? []} isLoading={isLoading} />
                 </View>
 
                 <View className="flex-1">
                   <TodayLessons
-                    lessons={lessons}
-                    isLoading={isLoadingLessons}
+                    lessons={home?.lessons ?? []}
+                    isLoading={isLoading}
                     onViewAll={() => router.push("/(tabs)/my-lessons")}
                   />
                 </View>

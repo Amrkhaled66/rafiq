@@ -41,7 +41,7 @@ export function CurrentPlanCard({
       }}
     >
       <Pressable
-        className="border-card-border border px-4 py-4 active:opacity-90 md:px-5 md:py-5"
+        className="px-4 py-4 active:opacity-90 md:px-5 md:py-5"
         onPress={() => onPress?.(plan)}
         style={{
           shadowColor: "#000",

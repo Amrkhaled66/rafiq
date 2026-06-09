@@ -246,11 +246,11 @@ export default function NewPlanPage() {
       if (isEditMode) {
         await updatePlanMutation.mutateAsync(payload);
         appToast.success("تم تحديث الخطة بنجاح.");
-        navigate(`/students/${studentId}/plans/${numericPlanId}`);
+        navigate(`/dash-dash-207/students/${studentId}/plans/${numericPlanId}`);
       } else {
         await createPlanMutation.mutateAsync(payload);
         appToast.success("تم حفظ الخطة بنجاح.");
-        navigate(`/students/${studentId}/plans`);
+        navigate(`/dash-dash-207/students/${studentId}/plans`);
       }
     } catch (error) {
       showApiErrorToast(

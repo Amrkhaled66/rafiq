@@ -1,9 +1,18 @@
 import type { PropsWithChildren } from "react";
-import { ScrollView, View, useWindowDimensions } from "react-native";
+import {
+  ScrollView,
+  type ScrollViewProps,
+  View,
+  useWindowDimensions,
+} from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { FocusedStatusBar } from "@/shared/ui/focused-status-bar";
 
-export function TabPageLayout({ children }: PropsWithChildren) {
+type TabPageLayoutProps = PropsWithChildren<{
+  scrollProps?: ScrollViewProps;
+}>;
+
+export function TabPageLayout({ children, scrollProps }: TabPageLayoutProps) {
   const insets = useSafeAreaInsets();
   const { width } = useWindowDimensions();
   const isTablet = width >= 768;
@@ -19,6 +28,7 @@ export function TabPageLayout({ children }: PropsWithChildren) {
           paddingBottom: insets.bottom + 50,
           paddingHorizontal: isTablet ? 28 : 18,
         }}
+        {...scrollProps}
       >
         <View className="w-full max-w-260 gap-4 self-center md:gap-5">
           {children}

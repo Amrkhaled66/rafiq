@@ -66,7 +66,7 @@ export default function LoginForm({ language, onSubmit }: LoginFormProps) {
     isPending || !form.values.phone.trim() || !form.values.password;
 
   return (
-    <View className="z-10 flex-1 gap-6 rounded-t-4xl bg-white px-4 py-6 sm:gap-8 sm:rounded-t-[40px] sm:px-8 sm:py-8">
+    <View className="z-100! flex-1 gap-6 rounded-t-4xl bg-white px-4 py-6 sm:gap-8 sm:rounded-t-[40px] sm:px-8 sm:py-8">
       <View>
         <Text
           style={{

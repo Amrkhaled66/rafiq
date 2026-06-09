@@ -32,6 +32,12 @@ export class LessonsController {
     return this.lessonsService.listLessons(studentId, user);
   }
 
+  @Get('students/:studentId/lessons/today')
+  @RequirePolicy('lessons.today_by_student')
+  getTodayLessons(@Param('studentId', ParseIntPipe) studentId: number) {
+    return this.lessonsService.getTodayLessons(studentId);
+  }
+
   @Post('students/:studentId/lessons')
   @RequirePolicy('lessons.create_by_student')
   createLesson(
@@ -71,5 +77,15 @@ export class LessonsController {
     @CurrentUser() user: AuthenticatedUser,
   ) {
     return this.lessonsService.markLessonWatched(studentId, lessonId, user);
+  }
+
+  @Delete('students/:studentId/lessons/:lessonId/watch')
+  @RequirePolicy('lessons.unwatch_by_student')
+  unmarkLessonWatched(
+    @Param('studentId', ParseIntPipe) studentId: number,
+    @Param('lessonId', ParseIntPipe) lessonId: number,
+    @CurrentUser() user: AuthenticatedUser,
+  ) {
+    return this.lessonsService.unmarkLessonWatched(studentId, lessonId, user);
   }
 }

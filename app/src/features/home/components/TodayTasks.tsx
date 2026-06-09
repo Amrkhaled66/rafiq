@@ -1,5 +1,5 @@
 import { Ionicons } from "@expo/vector-icons";
-import { router } from "expo-router";
+import { RelativePathString, router } from "expo-router";
 import { Pressable, View } from "react-native";
 
 import { HomeStateCard } from "@/features/home/components/HomeStateCard";
@@ -23,6 +23,10 @@ const ENDPREVIEWINDEX = 4;
 export function TodayTasks({ tasks, isLoading = false }: TodayTasksProps) {
   const dir = useDirection();
   const previewTasks = tasks.slice(0, ENDPREVIEWINDEX);
+
+  const handleTaskPress = (task: TaskItem) => {
+    router.push(`/tasks/${task.id}` as RelativePathString);
+  };
 
   if (isLoading) {
     return <TodayTasksSkeleton />;
@@ -55,12 +59,13 @@ export function TodayTasks({ tasks, isLoading = false }: TodayTasksProps) {
         <SectionTitle title="مهامك النهاردة" icon="list-outline" />
       </View>
 
-      <View className="flex-row flex-wrap items-start justify-between gap-y-2 md:gap-y-3">
+      <View className="flex-row flex-wrap items-center justify-end gap-y-2 md:gap-y-3">
         {previewTasks.map((task, index) => (
           <TodayTaskCard
             isLast={index === ENDPREVIEWINDEX - 1}
-            key={task.subject}
+            key={task.id}
             task={task}
+            onPress={handleTaskPress}
           />
         ))}
       </View>

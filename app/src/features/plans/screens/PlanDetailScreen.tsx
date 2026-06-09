@@ -3,12 +3,13 @@ import { useEffect, useMemo, useState } from "react";
 import { ScrollView, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
+import { HomeStateCard } from "@/features/home/components/HomeStateCard";
 import { PlanDaysCarousel } from "@/features/plans/components/PlanDaysCarousel";
 import { PlanDetailHeader } from "@/features/plans/components/PlanDetailHeader";
 import { PlanDetailStats } from "@/features/plans/components/PlanDetailStats";
 import { PlanEmptyDayCard } from "@/features/plans/components/PlanEmptyDayCard";
+import { useStudentPlanDetail } from "@/features/plans/queries/planQueries";
 import { PlanCardSkeleton } from "@/features/plans/components/skeletons";
-import { MOCK_PLAN_DETAILS } from "@/features/plans/data/mock-plan-detail-data";
 import {
   calculateInclusivePlanDays,
   formatPlanDateRangeFromValues,
@@ -16,17 +17,18 @@ import {
   getPlanTaskStatusAppearance,
   mapPlanTaskToTaskCard,
 } from "@/features/plans/utils/plan-ui";
-import { AppText } from "@/shared/ui/app-text";
 import { FocusedStatusBar } from "@/shared/ui/focused-status-bar";
 import { TaskCard } from "@/shared/ui/task-card";
 
 export function PlanDetailScreen() {
-  const isLoading = false;
   const insets = useSafeAreaInsets();
   const params = useLocalSearchParams<{ planId?: string }>();
-  const planId = params.planId ? Number(params.planId) : null;
-  const data =
-    (planId ? MOCK_PLAN_DETAILS[planId] : null) ?? MOCK_PLAN_DETAILS[1];
+  const parsedPlanId = params.planId ? Number(params.planId) : null;
+  const planId =
+    parsedPlanId && Number.isInteger(parsedPlanId) && parsedPlanId > 0
+      ? parsedPlanId
+      : null;
+  const { data, isLoading, isError, refetch } = useStudentPlanDetail(planId);
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
 
   useEffect(() => {
@@ -49,20 +51,21 @@ export function PlanDetailScreen() {
     [data, selectedDate],
   );
 
-  if (!data) {
+  if (!planId || isError) {
     return (
       <View className="flex-1 items-center justify-center bg-background px-6">
         <FocusedStatusBar style="dark" />
-        <AppText className="text-lg md:text-xl" weight="bold">
-          تعذر تحميل الخطة
-        </AppText>
-        <AppText
-          className="mt-2 text-center text-sm md:text-base"
-          tone="muted"
-          weight="medium"
-        >
-          حاول مرة أخرى بعد قليل.
-        </AppText>
+        <HomeStateCard
+          icon="alert-circle-outline"
+          title="تعذر تحميل الخطة"
+          description={
+            planId
+              ? "مش قادرين نعرض تفاصيل الخطة دلوقتي. حاول مرة تانية."
+              : "رابط الخطة غير صالح أو رقم الخطة غير موجود."
+          }
+          actionLabel={planId ? "إعادة المحاولة" : undefined}
+          onAction={planId ? () => void refetch() : undefined}
+        />
       </View>
     );
   }
@@ -81,26 +84,26 @@ export function PlanDetailScreen() {
         <View className="gap-5 md:gap-6">
           <PlanDetailHeader
             isLoading={isLoading}
-            title={data.plan.name}
+            title={data?.plan.name ?? ""}
             dateRangeLabel={formatPlanDateRangeFromValues(
-              data.plan.startsOn,
-              data.plan.endsOn,
+              data?.plan.startsOn ?? "",
+              data?.plan.endsOn ?? "",
             )}
           />
 
           <PlanDetailStats
             isLoading={isLoading}
             totalDays={calculateInclusivePlanDays(
-              data.plan.startsOn,
-              data.plan.endsOn,
+              data?.plan.startsOn ?? "",
+              data?.plan.endsOn ?? "",
             )}
-            totalTasks={data.stats.totalTasks}
-            progressPercentage={data.stats.progressPercent}
+            totalTasks={data?.stats.totalTasks ?? 0}
+            progressPercentage={data?.stats.progressPercent ?? 0}
           />
 
           <PlanDaysCarousel
             isLoading={isLoading}
-            days={data.days}
+            days={data?.days ?? []}
             selectedDate={selectedDate}
             onSelect={setSelectedDate}
           />

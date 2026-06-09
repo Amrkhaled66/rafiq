@@ -10,6 +10,7 @@ import { LessonChecklistCardSkeleton } from "@/shared/ui/skeletons";
 type LessonSectionProps = {
   lessons: MyLessonItem[];
   onToggleLesson: (lessonId: string) => void;
+  disabledLessonId?: string | null;
   isExpanded?: boolean;
   onToggleExpanded?: () => void;
   showToggle?: boolean;
@@ -20,6 +21,7 @@ type LessonSectionProps = {
 export function LessonSection({
   lessons,
   onToggleLesson,
+  disabledLessonId,
   isExpanded = true,
   onToggleExpanded,
   showToggle = false,
@@ -63,6 +65,7 @@ export function LessonSection({
             lesson={lesson}
             isLast={index === visibleLessons.length - 1}
             onPress={onToggleLesson}
+            disabled={disabledLessonId === lesson.id}
           />
         ))}
       </View>

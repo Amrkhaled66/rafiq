@@ -50,7 +50,7 @@ export const namedAuthorizationPolicies: NamedAuthorizationPolicy[] = [
     name: 'plans.list_by_student',
     lookup: { key: 'studentId', kind: 'studentId', source: 'params' },
     requirements: [
-      requireAnyRole(['coach', 'super_admin']),
+      requireAnyRole(['coach', 'super_admin', 'student']),
       requireStudentResourceAccess('student_profile'),
     ],
   },
@@ -87,10 +87,34 @@ export const namedAuthorizationPolicies: NamedAuthorizationPolicy[] = [
     ],
   },
   {
+    name: 'lessons.today_by_student',
+    lookup: { key: 'studentId', kind: 'studentId', source: 'params' },
+    requirements: [
+      requireAnyRole(['student', 'coach', 'super_admin']),
+      requireStudentResourceAccess('student_profile'),
+    ],
+  },
+  {
+    name: 'lessons.unwatch_by_student',
+    lookup: { key: 'studentId', kind: 'studentId', source: 'params' },
+    requirements: [
+      requireAnyRole(['student', 'coach', 'super_admin']),
+      requireStudentResourceAccess('student_profile'),
+    ],
+  },
+  {
+    name: 'home.read_by_student',
+    lookup: { key: 'studentId', kind: 'studentId', source: 'params' },
+    requirements: [
+      requireAnyRole(['student', 'coach', 'super_admin']),
+      requireStudentResourceAccess('student_profile'),
+    ],
+  },
+  {
     name: 'plans.read_by_student',
     lookup: { key: 'studentId', kind: 'studentId', source: 'params' },
     requirements: [
-      requireAnyRole(['coach', 'super_admin']),
+      requireAnyRole(['coach', 'super_admin', 'student']),
       requireStudentResourceAccess('student_profile'),
     ],
   },
@@ -183,11 +207,27 @@ export const namedAuthorizationPolicies: NamedAuthorizationPolicy[] = [
     requirements: [requireRole('super_admin')],
   },
   {
+    name: 'subscriptions.list_by_student',
+    lookup: { key: 'studentId', kind: 'studentId', source: 'params' },
+    requirements: [
+      requireAnyRole(['student', 'coach', 'super_admin']),
+      requireStudentResourceAccess('student_profile'),
+    ],
+  },
+  {
     name: 'subscriptions.create',
     requirements: [requireRole('super_admin')],
   },
   {
     name: 'task_sessions.list',
     requirements: [requireAnyRole(['coach', 'super_admin'])],
+  },
+  {
+    name: 'tasks.list_today_by_student',
+    lookup: { key: 'studentId', kind: 'studentId', source: 'params' },
+    requirements: [
+      requireAnyRole(['student', 'coach', 'super_admin']),
+      requireStudentResourceAccess('student_profile'),
+    ],
   },
 ];

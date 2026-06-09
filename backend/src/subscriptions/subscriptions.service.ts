@@ -4,6 +4,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import type { AuthenticatedUser } from '../authorization/types/authenticated-user.type';
+import { StudentsRepository } from '../students/students.repository';
 import { UsersService } from '../users/users.service';
 import { CreateSubscriptionPackageDto } from './dto/create-subscription-package.dto';
 import { CreateSubscriptionDto } from './dto/create-subscription.dto';
@@ -14,6 +15,7 @@ import { SubscriptionsRepository } from './subscriptions.repository';
 export class SubscriptionsService {
   constructor(
     private readonly subscriptionsRepository: SubscriptionsRepository,
+    private readonly studentsRepository: StudentsRepository,
     private readonly usersService: UsersService,
   ) {}
 
@@ -45,6 +47,19 @@ export class SubscriptionsService {
       limit: list.limit,
       total: list.total,
     };
+  }
+
+  async getStudentSubscriptions(studentId: number) {
+    const student = await this.studentsRepository.findByUserId(studentId);
+
+    if (!student) {
+      throw new NotFoundException('Student not found');
+    }
+
+    const items =
+      await this.subscriptionsRepository.listStudentSubscriptions(studentId);
+
+    return { items };
   }
 
   async createSubscription(
@@ -98,5 +113,4 @@ export class SubscriptionsService {
     utc.setUTCDate(utc.getUTCDate() + days);
     return utc.toISOString().slice(0, 10);
   }
-
 }

@@ -17,6 +17,16 @@ const LESSON_WEEKDAY_ORDER = [
 
 type LessonWeekday = (typeof LESSON_WEEKDAY_ORDER)[number];
 
+const JS_DAY_TO_LESSON_WEEKDAY: Record<number, LessonWeekday> = {
+  0: 'sunday',
+  1: 'monday',
+  2: 'tuesday',
+  3: 'wednesday',
+  4: 'thursday',
+  5: 'friday',
+  6: 'saturday',
+};
+
 @Injectable()
 export class LessonsService {
   constructor(
@@ -28,6 +38,35 @@ export class LessonsService {
     await this.findStudentOrThrow(studentId);
 
     return this.lessonsRepository.listLessonsByStudent(studentId);
+  }
+
+  async getTodayLessons(studentId: number) {
+    await this.findStudentOrThrow(studentId);
+
+    const cairoNow = this.getCairoNow();
+    const today = this.formatDateAsIso(cairoNow);
+    const weekday = this.getLessonWeekdayFromDate(cairoNow);
+    const lessons = await this.lessonsRepository.listTodayLessonsByStudent(
+      studentId,
+      weekday,
+      today,
+    );
+
+    const attendedCount = lessons.filter((lesson) => lesson.checked).length;
+    const totalCount = lessons.length;
+
+    return {
+      dateLabel: this.formatArabicDateLabel(cairoNow),
+      progress: {
+        percentage:
+          totalCount === 0 ? 0 : Math.round((attendedCount / totalCount) * 100),
+        completedCount: attendedCount,
+        totalCount,
+      },
+      attendedCount,
+      remainingCount: Math.max(totalCount - attendedCount, 0),
+      lessons,
+    };
   }
 
   async createLesson(
@@ -170,6 +209,41 @@ export class LessonsService {
     };
   }
 
+  async unmarkLessonWatched(
+    studentId: number,
+    lessonId: number,
+    _actor: AuthenticatedUser,
+  ) {
+    await this.findStudentOrThrow(studentId);
+    const lesson = await this.findLessonOrThrow(lessonId, studentId);
+
+    const cairoNow = this.getCairoNow();
+    const currentWeekday = this.getLessonWeekdayFromDate(cairoNow);
+    const currentWeekdayIndex = LESSON_WEEKDAY_ORDER.indexOf(currentWeekday);
+    const lessonWeekdayIndex = LESSON_WEEKDAY_ORDER.indexOf(lesson.weekday);
+
+    if (lessonWeekdayIndex === -1) {
+      throw new BadRequestException('Lesson weekday is invalid');
+    }
+
+    const startOfWeek = new Date(cairoNow);
+    startOfWeek.setDate(cairoNow.getDate() - currentWeekdayIndex);
+    const scheduledForDateObject = new Date(startOfWeek);
+    scheduledForDateObject.setDate(startOfWeek.getDate() + lessonWeekdayIndex);
+    const scheduledForDate = this.formatDateAsIso(scheduledForDateObject);
+
+    const removed = await this.lessonsRepository.deleteWatchByLessonAndScheduledDate(
+      lessonId,
+      studentId,
+      scheduledForDate,
+    );
+
+    return {
+      ok: true as const,
+      removed,
+    };
+  }
+
   private getCairoNow() {
     return new Date(
       new Date().toLocaleString('en-US', {
@@ -179,7 +253,7 @@ export class LessonsService {
   }
 
   private getLessonWeekdayFromDate(date: Date): LessonWeekday {
-    return LESSON_WEEKDAY_ORDER[date.getDay()];
+    return JS_DAY_TO_LESSON_WEEKDAY[date.getDay()];
   }
 
   private formatDateAsIso(date: Date): string {
@@ -194,6 +268,16 @@ export class LessonsService {
     const day = parts.find((part) => part.type === 'day')?.value;
 
     return `${year}-${month}-${day}`;
+  }
+
+  private formatArabicDateLabel(date: Date) {
+    return new Intl.DateTimeFormat('ar-EG', {
+      weekday: 'long',
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric',
+      timeZone: 'Africa/Cairo',
+    }).format(date);
   }
 
   private async findStudentOrThrow(studentId: number) {

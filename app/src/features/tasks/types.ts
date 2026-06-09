@@ -10,7 +10,7 @@ export type MyTaskItem = {
   id: string;
   title: string;
   subject: string;
-  estimatedTime: string;
+  estimatedTime?: string;
   status: MyTaskStatus;
   icon: keyof typeof Ionicons.glyphMap;
   iconBackgroundColor: string;
@@ -37,6 +37,37 @@ export type MyTasksDayData = {
   progress: MyTasksProgress;
   tasks: MyTaskItem[];
   lessons: MyLessonItem[];
+};
+
+export type TaskApiStatus = "pending" | "in_progress" | "done" | "missed";
+
+export type StudentTodayTasksResponse = {
+  dateLabel: string;
+  progress: MyTasksProgress;
+  statusCounts: Record<MyTaskStatus, number>;
+  tasks: {
+    id: number;
+    title: string;
+    subject: string;
+    status: TaskApiStatus;
+    dueAt: string;
+    planId: number;
+  }[];
+};
+
+export type StudentTodayLessonsResponse = {
+  dateLabel: string;
+  progress: MyTasksProgress;
+  attendedCount: number;
+  remainingCount: number;
+  lessons: {
+    id: number;
+    name: string;
+    subject: string;
+    weekday: string;
+    checked: boolean;
+    watchedOn: string | null;
+  }[];
 };
 
 export type TaskDetailStatus = MyTaskStatus;

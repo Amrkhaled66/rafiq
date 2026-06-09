@@ -1,18 +1,19 @@
 import { useQuery } from "@tanstack/react-query";
 
 import { useAuth } from "@/features/auth/context/AuthProvider";
-import type { PlanDetailResponse } from "@/features/plans/types";
-import { api } from "@/lib/api";
+import {
+  getStudentPlanDetail,
+  getStudentPlans,
+} from "@/features/plans/services/planService";
 
-export async function getStudentPlanDetail(
-  studentId: number,
-  planId: number,
-): Promise<PlanDetailResponse> {
-  const { data } = await api.get<PlanDetailResponse>(
-    `/students/${studentId}/plans/${planId}`,
-  );
+export function useStudentPlans() {
+  const { user } = useAuth();
 
-  return data;
+  return useQuery({
+    queryKey: ["student-plans", user?.id],
+    queryFn: () => getStudentPlans(user!.id),
+    enabled: Boolean(user?.id),
+  });
 }
 
 export function useStudentPlanDetail(planId: number | null) {

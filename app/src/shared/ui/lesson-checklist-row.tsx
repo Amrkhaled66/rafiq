@@ -18,12 +18,14 @@ type LessonChecklistRowProps = {
   lesson: LessonChecklistItem;
   isLast?: boolean;
   onPress?: (lessonId: string) => void;
+  disabled?: boolean;
 };
 
 export function LessonChecklistRow({
   lesson,
   isLast = false,
   onPress,
+  disabled = false,
 }: LessonChecklistRowProps) {
   const dir = useDirection();
 
@@ -32,8 +34,9 @@ export function LessonChecklistRow({
       className={`rounded-[24px] bg-card px-4 py-4 active:opacity-90 md:px-5 md:py-4.5 ${
         !isLast ? "border-b border-b-card-border" : ""
       }`}
-      disabled={!onPress}
+      disabled={!onPress || disabled}
       onPress={() => onPress?.(lesson.id)}
+      style={{ opacity: disabled ? 0.6 : 1 }}
     >
       <View className={`items-center gap-3 md:gap-3.5 ${dir.row}`}>
         <View

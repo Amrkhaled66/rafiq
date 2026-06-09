@@ -12,6 +12,8 @@ import { StudentsRepository } from '../students/students.repository';
 import { CoachesRepository } from '../coaches/coaches.repository';
 import { UpdateStudentPlanDto } from './dto/update-student-plan.dto';
 
+type StudentPlanStatus = 'active' | 'upcoming' | 'ended';
+
 @Injectable()
 export class PlansService {
   constructor(
@@ -29,6 +31,7 @@ export class PlansService {
 
     const stats = await this.plansRepository.getStudentPlansStats(studentId);
     const list = await this.plansRepository.listStudentPlans(studentId, query);
+    const today = this.formatDateAsIso(this.getCairoNow());
 
     return {
       student,
@@ -39,6 +42,7 @@ export class PlansService {
           plan.totalTasks > 0
             ? Math.round((plan.completedTasks / plan.totalTasks) * 100)
             : 0,
+        status: this.getStudentPlanStatus(plan.startsOn, plan.endsOn, today),
       })),
       page: list.page,
       limit: list.limit,
@@ -315,5 +319,43 @@ export class PlansService {
       weekday: 'long',
       timeZone: 'Africa/Cairo',
     }).format(new Date(date));
+  }
+
+  private getCairoNow() {
+    return new Date(
+      new Date().toLocaleString('en-US', {
+        timeZone: 'Africa/Cairo',
+      }),
+    );
+  }
+
+  private formatDateAsIso(date: Date): string {
+    const parts = new Intl.DateTimeFormat('en-GB', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+    }).formatToParts(date);
+
+    const year = parts.find((part) => part.type === 'year')?.value;
+    const month = parts.find((part) => part.type === 'month')?.value;
+    const day = parts.find((part) => part.type === 'day')?.value;
+
+    return `${year}-${month}-${day}`;
+  }
+
+  private getStudentPlanStatus(
+    startsOn: string,
+    endsOn: string,
+    today: string,
+  ): StudentPlanStatus {
+    if (today < startsOn) {
+      return 'upcoming';
+    }
+
+    if (today > endsOn) {
+      return 'ended';
+    }
+
+    return 'active';
   }
 }

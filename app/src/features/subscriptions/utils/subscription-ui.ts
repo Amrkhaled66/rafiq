@@ -1,4 +1,3 @@
-import { SUBSCRIPTIONS_REFERENCE_DATE } from "@/features/subscriptions/data/mock-subscriptions-data";
 import type {
   SubscriptionItem,
   SubscriptionStatus,
@@ -20,23 +19,8 @@ const MONTH_NAMES_AR = [
   "ديسمبر",
 ];
 
-export function getSubscriptionStatus(
-  subscription: SubscriptionItem,
-  today = SUBSCRIPTIONS_REFERENCE_DATE,
-): SubscriptionStatus {
-  if (subscription.cancelledAt) {
-    return "cancelled";
-  }
-
-  if (today > subscription.endsAt) {
-    return "ended";
-  }
-
-  if (today >= subscription.startsAt && today <= subscription.endsAt) {
-    return "active";
-  }
-
-  return "upcoming";
+export function getSubscriptionStatus(subscription: SubscriptionItem) {
+  return subscription.status;
 }
 
 export function getSubscriptionStatusLabel(status: SubscriptionStatus) {
@@ -45,10 +29,8 @@ export function getSubscriptionStatusLabel(status: SubscriptionStatus) {
       return "نشط";
     case "upcoming":
       return "قادم";
-    case "ended":
-      return "منتهي";
     default:
-      return "ملغي";
+      return "منتهي";
   }
 }
 
@@ -95,24 +77,12 @@ export function getSubscriptionStatusAppearance(
         cardBackgroundColor: Colors.light.card,
         cardBorderColor: Colors.light.border,
       };
-    case "ended":
+    default:
       return {
         badgeBackgroundColor: "#F3F4F6",
         badgeTextColor: "#6B7280",
         iconBackgroundColor: "#F3F4F6",
         iconColor: "#6B7280",
-        titleColor: Colors.light.text,
-        secondaryColor: Colors.light.icon,
-        chevronColor: Colors.light.icon,
-        cardBackgroundColor: Colors.light.card,
-        cardBorderColor: Colors.light.border,
-      };
-    default:
-      return {
-        badgeBackgroundColor: "#FEE2E2",
-        badgeTextColor: "#DC2626",
-        iconBackgroundColor: "#FEE2E2",
-        iconColor: "#DC2626",
         titleColor: Colors.light.text,
         secondaryColor: Colors.light.icon,
         chevronColor: Colors.light.icon,

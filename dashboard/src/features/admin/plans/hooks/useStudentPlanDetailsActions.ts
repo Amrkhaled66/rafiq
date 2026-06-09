@@ -24,7 +24,7 @@ export function useStudentPlanDetailsActions(studentId: number, planId: number) 
   }
 
   function handleEdit() {
-    navigate(`/students/${studentId}/plans/${planId}/edit`);
+    navigate(`edit`);
   }
 
   async function handleConfirmDelete() {

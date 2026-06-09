@@ -7,6 +7,15 @@ import { lessons, lessonWatches } from '../db';
 type LessonRow = typeof lessons.$inferSelect;
 type LessonWatchRow = typeof lessonWatches.$inferSelect;
 
+export type TodayLessonRow = {
+  id: number;
+  name: string;
+  subject: string;
+  weekday: string;
+  checked: boolean;
+  watchedOn: string | null;
+};
+
 @Injectable()
 export class LessonsRepository {
   constructor(@Inject(db) private readonly database: Database) {}
@@ -25,6 +34,41 @@ export class LessonsRepository {
       where: eq(lessons.studentId, studentId),
       orderBy: [lessons.weekday, desc(lessons.id)],
     });
+  }
+
+  async listTodayLessonsByStudent(
+    studentId: number,
+    weekday: LessonRow['weekday'],
+    scheduledForDate: string,
+  ): Promise<TodayLessonRow[]> {
+    const rows = await this.database
+      .select({
+        id: lessons.id,
+        name: lessons.name,
+        subject: lessons.subject,
+        weekday: lessons.weekday,
+        watchedOn: lessonWatches.watchedOn,
+      })
+      .from(lessons)
+      .leftJoin(
+        lessonWatches,
+        and(
+          eq(lessonWatches.lessonId, lessons.id),
+          eq(lessonWatches.studentId, studentId),
+          eq(lessonWatches.scheduledForDate, scheduledForDate),
+        ),
+      )
+      .where(and(eq(lessons.studentId, studentId), eq(lessons.weekday, weekday)))
+      .orderBy(desc(lessons.id));
+
+    return rows.map((row) => ({
+      id: row.id,
+      name: row.name,
+      subject: row.subject,
+      weekday: row.weekday,
+      checked: Boolean(row.watchedOn),
+      watchedOn: row.watchedOn,
+    }));
   }
 
   async createLesson(input: {
@@ -111,6 +155,25 @@ export class LessonsRepository {
       .returning({ id: lessonWatches.id });
 
     return inserted.length > 0;
+  }
+
+  async deleteWatchByLessonAndScheduledDate(
+    lessonId: number,
+    studentId: number,
+    scheduledForDate: string,
+  ): Promise<boolean> {
+    const deleted = await this.database
+      .delete(lessonWatches)
+      .where(
+        and(
+          eq(lessonWatches.lessonId, lessonId),
+          eq(lessonWatches.studentId, studentId),
+          eq(lessonWatches.scheduledForDate, scheduledForDate),
+        ),
+      )
+      .returning({ id: lessonWatches.id });
+
+    return deleted.length > 0;
   }
 
   async listWatchedLessonsInRange(
@@ -218,4 +281,3 @@ export class LessonsRepository {
     };
   }
 }
-

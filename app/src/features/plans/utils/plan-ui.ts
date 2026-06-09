@@ -163,6 +163,16 @@ export function getTodayCairoDateString() {
   return formatter.format(new Date());
 }
 
+export function formatArabicTodayDateLabel() {
+  return new Intl.DateTimeFormat("ar-EG", {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+    timeZone: "Africa/Cairo",
+  }).format(new Date());
+}
+
 export function getDefaultSelectedPlanDay(days: { date: string }[]) {
   const today = getTodayCairoDateString();
   return days.find((day) => day.date === today)?.date ?? days[0]?.date ?? null;

@@ -4,16 +4,42 @@ export type PlanStatus = "active" | "upcoming" | "ended";
 export type PlanStatusFilterKey = "all" | PlanStatus;
 export type PlanTaskStatus = "pending" | "in_progress" | "done" | "missed";
 
+export type StudentPlanListItem = {
+  id: number;
+  name: string;
+  startsOn: string;
+  endsOn: string;
+  createdAt: string;
+  totalTasks: number;
+  completedTasks: number;
+  missedTasks: number;
+  progressPercent: number;
+  status: PlanStatus;
+};
+
+export type StudentPlansResponse = {
+  student: {
+    id: number;
+    fullName?: string;
+  };
+  stats: {
+    totalPlans: number;
+    activePlans: number;
+    completedPlans: number;
+    missedTasks: number;
+    upcomingTasks: number;
+  };
+  items: StudentPlanListItem[];
+  page: number;
+  limit: number;
+  total: number;
+};
+
 export type StudyPlan = {
   id: number;
   name: string;
-  studentId: number;
-  coachId: number;
   startsOn: string;
   endsOn: string;
-  notes: string | null;
-  createdAt: string;
-  updatedAt: string;
   status: PlanStatus;
   icon: keyof typeof Ionicons.glyphMap;
 };

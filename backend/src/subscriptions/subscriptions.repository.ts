@@ -27,6 +27,19 @@ export type SubscriptionListRow = {
   status: 'active' | 'upcoming' | 'ended' | 'cancelled';
 };
 
+export type StudentSubscriptionRow = {
+  id: number;
+  studentId: number;
+  packageId: number;
+  packageName: string;
+  startsAt: string;
+  endsAt: string;
+  amountPaid: number;
+  createdAt: Date;
+  updatedAt: Date;
+  status: 'active' | 'upcoming' | 'ended';
+};
+
 @Injectable()
 export class SubscriptionsRepository {
   constructor(@Inject(db) private readonly database: Database) {}
@@ -151,6 +164,55 @@ export class SubscriptionsRepository {
       limit,
       total: Number(total ?? 0),
     };
+  }
+
+  async listStudentSubscriptions(
+    studentId: number,
+  ): Promise<StudentSubscriptionRow[]> {
+    const rows = await this.database
+      .select({
+        id: subscriptions.id,
+        studentId: subscriptions.studentId,
+        packageId: subscriptions.packageId,
+        packageName: subscriptionPackages.name,
+        startsAt: subscriptions.startsAt,
+        endsAt: subscriptions.endsAt,
+        amountPaid: subscriptions.amountPaid,
+        createdAt: subscriptions.createdAt,
+        updatedAt: subscriptions.updatedAt,
+        status: sql<'active' | 'upcoming' | 'ended'>`
+          case
+            when current_date < ${subscriptions.startsAt} then 'upcoming'
+            when current_date > ${subscriptions.endsAt} then 'ended'
+            else 'active'
+          end
+        `,
+      })
+      .from(subscriptions)
+      .innerJoin(
+        subscriptionPackages,
+        eq(subscriptions.packageId, subscriptionPackages.id),
+      )
+      .where(
+        and(
+          eq(subscriptions.studentId, studentId),
+          isNull(subscriptions.cancelledAt),
+        ),
+      );
+
+    const statusPriority = {
+      active: 0,
+      upcoming: 1,
+      ended: 2,
+    } as const;
+
+    return (rows as StudentSubscriptionRow[]).sort((left, right) => {
+      if (statusPriority[left.status] !== statusPriority[right.status]) {
+        return statusPriority[left.status] - statusPriority[right.status];
+      }
+
+      return right.startsAt.localeCompare(left.startsAt);
+    });
   }
 
   async getSubscriptionStats() {

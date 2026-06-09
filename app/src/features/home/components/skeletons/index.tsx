@@ -46,7 +46,7 @@ export function ProgressSkeleton() {
   const ringStroke = isTablet ? 14 : 12;
 
   return (
-    <SkeletonSurface className="px-4 pt-4 md:px-7 md:py-6">
+    <SkeletonSurface className="p-4 md:px-7 md:py-6">
       <View className="gap-4 md:gap-5">
         <SectionHeaderSkeleton isTablet={isTablet} />
 
@@ -75,7 +75,7 @@ export function ProgressSkeleton() {
               height={ringSize}
               borderRadius={999}
             />
-            <View
+            {/* <View
               className="absolute rounded-full bg-card"
               style={{
                 width: innerRingSize,
@@ -83,7 +83,7 @@ export function ProgressSkeleton() {
                 borderWidth: ringStroke,
                 borderColor: "#E6EAF0",
               }}
-            />
+            /> */}
           </View>
         </View>
       </View>

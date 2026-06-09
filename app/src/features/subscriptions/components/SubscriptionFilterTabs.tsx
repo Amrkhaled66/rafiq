@@ -11,7 +11,6 @@ const SUBSCRIPTION_STATUS_OPTIONS: SegmentedFilterOption<SubscriptionFilterKey>[
     { key: "active", label: "نشطة" },
     { key: "upcoming", label: "قادمة" },
     { key: "ended", label: "منتهية" },
-    { key: "cancelled", label: "ملغية" },
   ];
 
 type SubscriptionFilterTabsProps = {

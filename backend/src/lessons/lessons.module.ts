@@ -11,6 +11,6 @@ import { LessonsService } from './lessons.service';
   imports: [AuthModule, AuthorizationModule, DbModule, StudentsModule],
   controllers: [LessonsController],
   providers: [LessonsRepository, LessonsService],
+  exports: [LessonsRepository, LessonsService],
 })
 export class LessonsModule {}
-

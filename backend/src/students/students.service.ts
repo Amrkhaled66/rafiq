@@ -1,5 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import type { AuthenticatedUser } from '../authorization/types/authenticated-user.type';
+import { TasksRepository } from '../tasks/tasks.repository';
 import { UsersService } from '../users/users.service';
 import { CreateUserDto } from '../users/dto/create-user.dto';
 import { CreateStudentDto } from './dto/create-student.dto';
@@ -24,7 +25,8 @@ export interface StudentOverviewTask {
   title: string;
   subject: string;
   status: string;
-  sessionsCount: number;
+  dueAt: string;
+  planId: number;
 }
 
 export interface StudentOverviewLesson {
@@ -45,13 +47,21 @@ export interface StudentOverview {
 export class StudentsService {
   constructor(
     private readonly studentsRepository: StudentsRepository,
+    private readonly tasksRepository: TasksRepository,
     private readonly usersService: UsersService,
   ) {}
 
   async getStudentOverview(id: number): Promise<StudentOverview> {
     const student = await this.findStudentByIdOrThrow(id);
     const assignedCoaches = await this.studentsRepository.listAssignedCoaches(id);
-    const todayTasks = await this.studentsRepository.listTodayTasks(id);
+    const today = this.formatDateAsIso(
+      new Date(
+        new Date().toLocaleString('en-US', {
+          timeZone: 'Africa/Cairo',
+        }),
+      ),
+    );
+    const todayTasks = await this.tasksRepository.listTodayTasksByStudent(id, today);
 
     return {
       student,
@@ -68,7 +78,8 @@ export class StudentsService {
         title: t.title,
         subject: t.subject,
         status: t.status,
-        sessionsCount: t.sessionsCount,
+        dueAt: t.dueAt,
+        planId: t.planId,
       })),
       todayLessons: [],
     };
@@ -189,5 +200,19 @@ export class StudentsService {
     }
 
     return student;
+  }
+
+  private formatDateAsIso(date: Date): string {
+    const parts = new Intl.DateTimeFormat('en-GB', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+    }).formatToParts(date);
+
+    const year = parts.find((part) => part.type === 'year')?.value;
+    const month = parts.find((part) => part.type === 'month')?.value;
+    const day = parts.find((part) => part.type === 'day')?.value;
+
+    return `${year}-${month}-${day}`;
   }
 }

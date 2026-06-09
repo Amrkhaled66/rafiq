@@ -1,16 +1,19 @@
-export type SubscriptionStatus = "active" | "upcoming" | "ended" | "cancelled";
+export type SubscriptionStatus = "active" | "upcoming" | "ended";
 export type SubscriptionFilterKey = "all" | SubscriptionStatus;
 
 export type SubscriptionItem = {
   id: number;
   studentId: number;
   packageId: number;
-  packageName?: string;
+  packageName: string;
   startsAt: string;
   endsAt: string;
   amountPaid: number;
-  cancelledAt?: string | null;
-  cancellationReason?: string | null;
+  status: SubscriptionStatus;
   createdAt: string;
   updatedAt: string;
+};
+
+export type StudentSubscriptionsResponse = {
+  items: SubscriptionItem[];
 };

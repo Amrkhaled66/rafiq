@@ -111,16 +111,6 @@ export function SubscriptionCard({
               name="wallet-outline"
             />
           </View>
-
-          {subscription.cancelledAt && subscription.cancellationReason ? (
-            <AppText
-              className={`text-sm ${dir.textAlign}`}
-              weight="semibold"
-              style={{ color: "#DC2626" }}
-            >
-              {`سبب الإلغاء: ${subscription.cancellationReason}`}
-            </AppText>
-          ) : null}
         </View>
       </View>
     </Pressable>

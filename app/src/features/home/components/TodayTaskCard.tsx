@@ -1,30 +1,34 @@
 import { Ionicons } from "@expo/vector-icons";
-import { View, useWindowDimensions } from "react-native";
+import { Pressable, View, useWindowDimensions } from "react-native";
 
 import { useDirection } from "@/shared/hooks/use-direction";
 import { AppText } from "@/shared/ui/app-text";
 
 export type TaskItem = {
+  id: string;
   subject: string;
   title: string;
   icon: keyof typeof Ionicons.glyphMap;
-  iconBackgroundClassName: string;
+  iconBackgroundColor: string;
   iconColor: string;
 };
 
 type TodayTaskCardProps = {
   task: TaskItem;
   isLast?: boolean;
+  onPress?: (task: TaskItem) => void;
 };
 
-export function TodayTaskCard({ task }: TodayTaskCardProps) {
+export function TodayTaskCard({ task, onPress }: TodayTaskCardProps) {
   const { width } = useWindowDimensions();
   const dir = useDirection();
   const isTablet = width >= 768;
 
   return (
-    <View
+    <Pressable
       className="w-[48.5%] rounded-2xl bg-white px-3 py-4 md:w-[48.5%] md:px-4.5 md:py-4.5"
+      onPress={() => onPress?.(task)}
+      disabled={!onPress}
       style={{
         borderWidth: 1,
         borderColor: "#F1F1F1",
@@ -61,7 +65,8 @@ export function TodayTaskCard({ task }: TodayTaskCardProps) {
         </View>
 
         <View
-          className={`size-10 items-center justify-center rounded-xl md:size-15 ${task.iconBackgroundClassName}`}
+          className="size-10 items-center justify-center rounded-xl md:size-15"
+          style={{ backgroundColor: task.iconBackgroundColor }}
         >
           <Ionicons
             name={task.icon}
@@ -70,6 +75,6 @@ export function TodayTaskCard({ task }: TodayTaskCardProps) {
           />
         </View>
       </View>
-    </View>
+    </Pressable>
   );
 }

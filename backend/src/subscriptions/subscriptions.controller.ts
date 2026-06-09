@@ -2,6 +2,8 @@ import {
   Body,
   Controller,
   Get,
+  Param,
+  ParseIntPipe,
   Post,
   Query,
   UseGuards,
@@ -37,6 +39,14 @@ export class SubscriptionsController {
   @RequirePolicy('subscriptions.list')
   listSubscriptions(@Query() query: ListSubscriptionsQueryDto) {
     return this.subscriptionsService.listSubscriptions(query);
+  }
+
+  @Get('students/:studentId/subscriptions')
+  @RequirePolicy('subscriptions.list_by_student')
+  getStudentSubscriptions(
+    @Param('studentId', ParseIntPipe) studentId: number,
+  ) {
+    return this.subscriptionsService.getStudentSubscriptions(studentId);
   }
 
   @Post('subscriptions')

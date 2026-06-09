@@ -8,16 +8,8 @@ import {
   isNotNull,
   isNull,
   type SQL,
-  sql,
 } from 'drizzle-orm';
-import {
-  coachAssignments,
-  plans,
-  studentProfiles,
-  taskSessions,
-  tasks,
-  users,
-} from '../db';
+import { coachAssignments, studentProfiles, users } from '../db';
 import { db } from '../db/db.module';
 import type { Database } from '../db/db.module';
 import type { AppRole } from '../authorization/types/authenticated-user.type';
@@ -50,14 +42,6 @@ export type AssignedCoachRow = {
   id: number;
   fullName: string;
   phone: string;
-};
-
-export type TodayTaskRow = {
-  id: number;
-  title: string;
-  subject: string;
-  status: string;
-  sessionsCount: number;
 };
 
 @Injectable()
@@ -133,36 +117,6 @@ export class StudentsRepository {
       );
 
     return { ok: true };
-  }
-
-  async listTodayTasks(studentId: number): Promise<TodayTaskRow[]> {
-    // "Today" is based on the DB server timezone via current_date.
-    // This is consistent and cheap; we can refine to Cairo-local later if needed.
-    const rows = await this.database
-      .select({
-        id: tasks.id,
-        title: tasks.title,
-        subject: tasks.subject,
-        status: tasks.status,
-        sessionsCount: sql<number>`count(${taskSessions.id})`,
-      })
-      .from(tasks)
-      .innerJoin(plans, eq(tasks.planId, plans.id))
-      .leftJoin(taskSessions, eq(taskSessions.taskId, tasks.id))
-      .where(
-        and(
-          eq(plans.studentId, studentId),
-          isNotNull(tasks.dueAt),
-          eq(tasks.dueAt, sql`current_date`)
-        ),
-      )
-      .groupBy(tasks.id)
-      .orderBy(desc(tasks.dueAt), desc(tasks.id));
-
-    return rows.map((r) => ({
-      ...r,
-      sessionsCount: Number(r.sessionsCount),
-    }));
   }
 
   async listStudents(page: number, limit: number, filters: StudentListFilters) {

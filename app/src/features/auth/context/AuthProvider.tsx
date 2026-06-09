@@ -5,10 +5,10 @@ import React, {
   useEffect,
   useState,
 } from "react";
-import { setAuthToken } from "@/lib/api";
 import * as authStorage from "@/features/auth/storage/authStorage";
 import type { AuthUser } from "@/features/auth/types";
 import { router } from "expo-router";
+import { useAxiosInterceptor } from "@/shared/hooks/useAxiosInterceptor";
 type AuthState = {
   user: AuthUser | null;
   token: string | null;
@@ -17,6 +17,11 @@ type AuthState = {
 };
 
 const AuthContext = createContext<AuthState | null>(null);
+
+function AuthInterceptorBridge() {
+  useAxiosInterceptor();
+  return null;
+}
 
 export function AuthProvider({ children }: PropsWithChildren) {
   const [user, setUser] = useState<AuthUser | null>(null);
@@ -27,7 +32,6 @@ export function AuthProvider({ children }: PropsWithChildren) {
       const savedToken = await authStorage.getToken();
       const savedUserJson = await authStorage.getUser();
       if (savedToken) {
-        setAuthToken(savedToken);
         setToken(savedToken);
       }
       if (savedUserJson) {
@@ -43,7 +47,6 @@ export function AuthProvider({ children }: PropsWithChildren) {
   async function login(nextUser: AuthUser, nextToken: string) {
     await authStorage.setToken(nextToken);
     await authStorage.setUser(JSON.stringify(nextUser));
-    setAuthToken(nextToken);
     setToken(nextToken);
     setUser(nextUser);
   }
@@ -51,7 +54,6 @@ export function AuthProvider({ children }: PropsWithChildren) {
   async function logout() {
     await authStorage.clearToken();
     await authStorage.clearUser();
-    setAuthToken(null);
     setToken(null);
     setUser(null);
     router.push("/login");
@@ -59,6 +61,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
 
   return (
     <AuthContext.Provider value={{ user, token, login, logout }}>
+      <AuthInterceptorBridge />
       {children}
     </AuthContext.Provider>
   );
