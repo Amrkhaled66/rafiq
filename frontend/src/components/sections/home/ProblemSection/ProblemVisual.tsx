@@ -7,8 +7,8 @@ import calenderIcon from "@/src/assets/calender-icon.png";
 import clockIcon from "@/src/assets/clock.png";
 const problemCards = [
   {
-    title: "مش عارف تبدأ منين",
-    description: "كل يوم فيه حاجات كتير ومفيش أولويات واضحة",
+    title: "مفيش التزام",
+    description: "بتزاكر لوحدك ومفيش التزام بالمزاكرة...",
     icon: targetIcon,
     iconType: "image",
     accentClassName: "bg-[rgba(208,5,7,0.08)] text-brand-primary",
@@ -23,8 +23,8 @@ const problemCards = [
     positionClassName: "ml-0",
   },
   {
-    title: "مهامك مشتتة",
-    description: "جزء في الشات وجزء في دماغك وجزء مكتوب في كذا مكان",
+    title: "مش عارف تبدأ منين",
+    description: "كل يوم فيه حاجات كتير، بس مفيش أولوية واضحة.",
     icon: "solar:share-circle-bold-duotone",
     iconType: "icon",
     accentClassName: "bg-[rgba(251,146,60,0.14)] text-[#ea580c]",

@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Icon } from "@iconify/react";
 import Image from "next/image";
 import Logo1 from "@/public/logo1.svg";
-import Button from "../shared/Button";
+import LeadModalTrigger from "../shared/LeadModalTrigger";
 
 const sectionItems = [
   { text: "الرئيسية", href: "#" },
@@ -52,14 +52,13 @@ export default function Footer() {
               </p>
             </div>
 
-            <Button
-              type="button"
-              variant="outline"
-              className="flex items-center gap-2 px-6 py-3 rounded-2xl!"
+            <LeadModalTrigger
+              containerClassName="flex"
+              buttonClassName="flex items-center gap-2 rounded-2xl border border-brand-primary bg-white w-fit! px-6 py-3 font-bold text-brand-primary! transition hover:bg-brand-primary hover:text-white"
             >
               <Icon icon="solar:calendar-linear" className="size-5 shrink-0" />
-              <span>احجز جلسة البداية</span>
-            </Button>
+              <span>خليك جزء من رفيق</span>
+            </LeadModalTrigger>
           </section>
 
           {/* Sections */}

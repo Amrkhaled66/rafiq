@@ -2,6 +2,7 @@ import { Icon } from "@iconify/react";
 import Image from "next/image";
 import InfoBadge from "@/src/components/shared/InfoBedge";
 import ctaAvatar from "@/src/assets/cta-avatr.png";
+import LeadModalTrigger from "@/src/components/shared/LeadModalTrigger";
 
 export default function CTASection() {
   return (
@@ -50,21 +51,21 @@ export default function CTASection() {
                   جاهز تبدأ بخطة واضحة؟
                 </h2>
                 <p className="mx-auto max-w-2xl text-sm leading-7 text-white/90 sm:text-lg sm:leading-8">
-                  احجز جلسة البداية، ونفهم وضعك ونجهز لك خطة مناسبة مع كوتش
+                  خليك جزء من رفيق، ونفهم وضعك ونجهز لك خطة مناسبة مع كوتش
                   يتابعك خطوة بخطوة.
                 </p>
               </div>
 
-              <button
-                type="button"
-                className="inline-flex min-h-12 w-full max-w-[70%] items-center justify-center gap-3 rounded-full bg-white px-6 py-3 text-base font-bold text-brand-primary shadow-[0_18px_40px_rgba(107,12,16,0.18)] transition-transform duration-200 hover:-translate-y-0.5 hover:bg-[#fff5f5] sm:min-h-16 sm:w-auto sm:min-w-xs sm:px-8 sm:text-lg"
+              <LeadModalTrigger
+                containerClassName="inline-flex"
+                buttonClassName="inline-flex min-h-12 w-full max-w-[70%] items-center justify-center gap-3  rounded-full bg-white px-6 py-3 text-base font-bold text-brand-primary! shadow-[0_18px_40px_rgba(107,12,16,0.18)] hover:-translate-y-0.5 hover:bg-[#fff5f5]! sm:min-h-16 sm:w-auto sm:min-w-xs sm:px-8 sm:text-lg"
               >
                 <Icon
                   icon="solar:calendar-linear"
                   className="order-first size-6 shrink-0"
                 />
-                <span>احجز جلسة البداية</span>
-              </button>
+                <span>خليك جزء من رفيق</span>
+              </LeadModalTrigger>
 
               <ul className="hidden sm:flex items-center justify-center gap-3 text-xs  font-medium text-white sm:flex-row sm:flex-wrap sm:gap-6 sm:text-base">
                 <li>

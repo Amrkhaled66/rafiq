@@ -1,6 +1,7 @@
 Create the CTA section of an Arabic landing page in a clean, modern style that closely matches the uploaded reference image.
 
 Before implementing, review the existing project files:
+
 - `globals.css`
 - `src/components/sections/home/ProblemSection`
 
@@ -50,19 +51,18 @@ Main heading:
 `جاهز تبدأ بخطة واضحة؟`
 
 Description:
-`احجز جلسة البداية، ونفهم وضعك ونجهز لك خطة مناسبة مع كوتش يتابعك خطوة بخطوة.`
+`خليك جزء من رفيق، ونفهم وضعك ونجهز لك خطة مناسبة مع كوتش يتابعك خطوة بخطوة.`
 
 Primary button:
 Create a large centered white pill-shaped CTA button with the text:
 
-`احجز جلسة البداية`
+`خليك جزء من رفيق`
 
 Inside the button, include a red calendar icon using Iconify:
 
 `solar:calendar-linear`
 
 Because the page is RTL, place the calendar icon on the right side of the text. The text should also be red, matching the main CTA color. Keep the button spacious, rounded, modern, and visually similar to the reference image.
-
 
 Feature bullets:
 `خطة واضحة`
@@ -81,3 +81,4 @@ Use a structure similar to:
 
   <div>{/* red CTA card */}</div>
 </section>
+```

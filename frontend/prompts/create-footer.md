@@ -1,6 +1,7 @@
 Create the footer section of an Arabic landing page in a clean, modern style that matches the uploaded reference image.
 
 Before implementing, review the existing project files:
+
 - `globals.css`
 - Existing shared components, especially buttons, badges, containers, typography, and icon usage
 - Any existing section components to follow the same spacing and responsive behavior
@@ -18,10 +19,12 @@ The footer should be RTL and visually similar to the reference image, but simple
 ## Important Content Requirement
 
 Do NOT include:
+
 - Pages column
 - Services column
 
 Only include:
+
 1. Brand / logo section
 2. Contact us section
 3. Bottom copyright / policies row
@@ -48,9 +51,10 @@ Description:
 `رفيق يساعدك تنظم يومك، تلتزم بخطتك، وتحقق أهدافك خطوة بخطوة.`
 
 CTA button:
-`احجز جلسة البداية`
+`خليك جزء من رفيق`
 
 Button details:
+
 - Outlined pill-shaped button
 - Red border
 - Red text
@@ -69,16 +73,19 @@ Heading:
 Add a small red underline below the heading, like the reference.
 
 Contact items:
+
 - WhatsApp with icon: `واتساب`
 - Email with icon: `hello@rafiq.study`
 - Location with icon: `القاهرة، مصر`
 
 Use Iconify icons:
+
 - WhatsApp: `ic:baseline-whatsapp`
 - Email: `solar:letter-linear`
 - Location: `solar:map-point-linear`
 
 Social icons below the contact items:
+
 - Instagram: `mdi:instagram`
 - WhatsApp: `ic:baseline-whatsapp`
 - YouTube: `mdi:youtube`
@@ -90,6 +97,7 @@ Social icons should be gray by default and turn red on hover.
 Add a horizontal divider line.
 
 Bottom row content:
+
 - On the right side:
   `© 2026 رفيق. كل الحقوق محفوظة.`
 - On the left side:
@@ -102,6 +110,7 @@ The bottom row should stack nicely on mobile.
 ## Visual Style
 
 Match the reference image:
+
 - Soft white/off-white background
 - Rounded top corners or a large rounded footer card
 - Generous spacing
@@ -114,11 +123,13 @@ Match the reference image:
 ## Responsive Behavior
 
 Desktop:
+
 - Brand section on the right
 - Contact section on the left
 - Bottom row split between copyright and policies
 
 Mobile:
+
 - Stack all content vertically
 - Keep text centered or neatly aligned for RTL
 - Contact section should remain readable
@@ -142,3 +153,4 @@ Mobile:
 
   <div>{/* copyright and policies row */}</div>
 </footer>
+```

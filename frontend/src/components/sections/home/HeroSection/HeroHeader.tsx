@@ -1,8 +1,7 @@
 import { Icon } from "@iconify/react";
 import InfoBadge from "../../../shared/InfoBedge";
-import Button from "@/src/components/shared/Button";
 import AnimatedWord from "./AnimateWord";
-
+import HeroLeadModalTrigger from "./HeroLeadModalTrigger";
 export default function HeroHeader() {
   return (
     <div className="relative z-10 mx-auto flex max-w-3xl flex-col items-center text-center">
@@ -26,13 +25,9 @@ export default function HeroHeader() {
         يساعدك توصّل لهدفك خطوة بخطوة
       </p>
 
-      <div className="mt-8 flex w-full flex-col items-center justify-center gap-3 sm:w-auto sm:flex-row">
-        <Button className="px-22 py-3 text-xl  rounded-2xl!" variant="primary">
-          ابدأ الآن
-        </Button>
-      </div>
+      <HeroLeadModalTrigger />
 
-      <div className="absolute top-28 right-[19%] hidden text-(--brand-primary-muted) lg:block">
+      <div className="absolute top-28 right-[19%] hidden text-brand-primary-muted lg:block">
         <Icon icon="solar:star-fall-bold-duotone" className="h-7 w-7" />
       </div>
     </div>

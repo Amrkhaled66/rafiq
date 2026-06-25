@@ -32,7 +32,7 @@ export function useStudentPlanDetailsActions(studentId: number, planId: number) 
       await deletePlanMutation.mutateAsync();
       setIsDeleteModalOpen(false);
       appToast.success("تم حذف الخطة بنجاح.");
-      navigate(`/students/${studentId}/plans`);
+      navigate(-1);
     } catch (error) {
       showApiErrorToast(error, "تعذر حذف الخطة.");
     }

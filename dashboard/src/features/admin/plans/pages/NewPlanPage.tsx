@@ -32,7 +32,11 @@ function buildEditableDays(
   const from = new Date(startsOn);
   const to = new Date(endsOn);
 
-  if (!Number.isFinite(from.getTime()) || !Number.isFinite(to.getTime()) || to < from) {
+  if (
+    !Number.isFinite(from.getTime()) ||
+    !Number.isFinite(to.getTime()) ||
+    to < from
+  ) {
     return [];
   }
 
@@ -76,7 +80,10 @@ export default function NewPlanPage() {
     useNewPlanBuilder();
 
   const createPlanMutation = useCreateStudentPlanMutation(studentId);
-  const updatePlanMutation = useUpdateStudentPlanMutation(studentId, numericPlanId);
+  const updatePlanMutation = useUpdateStudentPlanMutation(
+    studentId,
+    numericPlanId,
+  );
   const detailQuery = useStudentPlanDetailQuery(studentId, numericPlanId);
   const hydratedPlanIdRef = useRef<number | null>(null);
 
@@ -151,7 +158,9 @@ export default function NewPlanPage() {
 
     if (isAdminPlanner) {
       if (assignedCoaches.length === 0) {
-        errors.push("لا يوجد مدربون معينون لهذا الطالب. قم بتعيين مدرب قبل حفظ الخطة.");
+        errors.push(
+          "لا يوجد مدربون معينون لهذا الطالب. قم بتعيين مدرب قبل حفظ الخطة.",
+        );
       } else if (!coachId) {
         errors.push("اختيار المدرب مطلوب.");
       }
@@ -260,7 +269,8 @@ export default function NewPlanPage() {
     }
   }
 
-  const isSubmitting = createPlanMutation.isPending || updatePlanMutation.isPending;
+  const isSubmitting =
+    createPlanMutation.isPending || updatePlanMutation.isPending;
 
   return (
     <div className="space-y-6">
@@ -276,7 +286,10 @@ export default function NewPlanPage() {
             <Button variant="outline" onClick={() => navigate(-1)}>
               رجوع
             </Button>
-            <Button onClick={handleSubmit} disabled={!validation.isValid || isSubmitting}>
+            <Button
+              onClick={handleSubmit}
+              disabled={!validation.isValid || isSubmitting}
+            >
               {isEditMode ? "حفظ التعديلات" : "حفظ الخطة"}
             </Button>
           </div>
@@ -325,16 +338,20 @@ export default function NewPlanPage() {
         )}
       </section>
 
-      {selectedDay ? (
+      {selectedDayDate && selectedDay ? (
         <PlanDayEditorModal
           isOpen={isDayModalOpen}
           day={selectedDay}
-          onClose={() => setSelectedDayDate(null)}
+          onClose={() => {
+            setSelectedDayDate(null);
+          }}
           onUpdateTask={(taskId, patch) =>
             actions.updateTask(selectedDay.date, taskId, patch)
           }
           onAddTask={() => actions.addTask(selectedDay.date)}
-          onDeleteTask={(taskId) => actions.deleteTask(selectedDay.date, taskId)}
+          onDeleteTask={(taskId) =>
+            actions.deleteTask(selectedDay.date, taskId)
+          }
         />
       ) : null}
     </div>

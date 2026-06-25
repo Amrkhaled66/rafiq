@@ -10,15 +10,14 @@ export default function ProblemHeader() {
       />
 
       <h2 className="section-title">
-        <span className="block">المشكلة مش في المذاكرة...</span>
+        <span className="block">المشكلة مش فيك...</span>
         <span className="mt-2 block">
-          المشكلة في <span className="text-brand-primary">التشتت.</span>
+          المشكلة انك <span className="text-brand-primary">لوحدك.</span>
         </span>
       </h2>
 
       <p className="section-subTitle">
-        كتير من الطلاب بيكونوا عايزين يذاكروا ولكن بيضيعوا <br />
-        وقتهم بين التشتت و ان مفيش خطة واضحة ماشي عليها
+      مواد كتير، واجبات، مواعيد، ومش عارف تبدأ منين ولا تتابع تقدمك إزاي.
       </p>
     </div>
   );

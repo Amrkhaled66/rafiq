@@ -1,8 +1,8 @@
 import { type ReactElement } from "react";
-import { createBrowserRouter, Outlet } from "react-router-dom";
+import { createBrowserRouter, Navigate, Outlet } from "react-router-dom";
 
 import { AppProviders } from "@/app/providers";
-import SigninPage from "@/features/admin/auth/SigninPage";
+import { authRoutes } from "@/features/admin/auth/routes";
 import { coachesRoutes } from "@/features/admin/coaches/routes";
 import DashboardHomePage from "@/features/admin/home/pages/DashboardHomePage";
 import DashBoardLayout from "@/features/admin/layouts/DashBoardLayout";
@@ -15,14 +15,26 @@ import { useAxiosInterceptor } from "@/shared/hooks/useAxiosInterceptor";
 import useScrollToTop from "@/shared/hooks/useScrollToTop";
 import RequireAdminAuth from "@/shared/routes/RequireAdminAuth";
 import RequireAdminGuest from "@/shared/routes/RequireAdminGuest";
+import { useAuth } from "@/shared/context/authContext";
 
 function RouterProvidersLayout(): ReactElement {
   useScrollToTop();
   useAxiosInterceptor();
+
   return (
     <AppProviders>
       <Outlet />
     </AppProviders>
+  );
+}
+
+function DashboardIndexRedirect(): ReactElement {
+  const { isAuthenticated } = useAuth();
+
+  return isAuthenticated ? (
+    <Navigate to="home" replace />
+  ) : (
+    <Navigate to="signin" replace />
   );
 }
 
@@ -34,14 +46,17 @@ export const router = createBrowserRouter([
         path: urls.dashBoardUrl,
         children: [
           {
+            index: true,
+            element: <DashboardIndexRedirect />,
+          },
+
+          {
             element: <RequireAdminGuest />,
             children: [
-              {
-                path: "signin",
-                element: <SigninPage />,
-              },
+              authRoutes,
             ],
           },
+
           {
             element: <RequireAdminAuth />,
             children: [
@@ -49,7 +64,7 @@ export const router = createBrowserRouter([
                 element: <DashBoardLayout />,
                 children: [
                   {
-                    index: true,
+                    path: "home",
                     element: <DashboardHomePage />,
                   },
                   coachesRoutes,
@@ -62,6 +77,11 @@ export const router = createBrowserRouter([
             ],
           },
         ],
+      },
+
+      {
+        path: "*",
+        element: <Navigate to={urls.dashBoardUrl} replace />,
       },
     ],
   },

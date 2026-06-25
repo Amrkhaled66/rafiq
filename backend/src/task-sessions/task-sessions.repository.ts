@@ -47,20 +47,20 @@ export class TaskSessionsRepository {
     let itemsQuery = this.database
       .select({
         id: taskSessions.id,
-        studentId: plans.studentId,
+        studentId: taskSessions.studentId,
         studentName: users.fullName,
         taskId: tasks.id,
         taskName: tasks.title,
-        planId: plans.id,
+        planId: tasks.planId,
         planName: plans.name,
         startedAt: taskSessions.startedAt,
         endedAt: taskSessions.endedAt,
         status: taskSessions.status,
       })
       .from(taskSessions)
+      .innerJoin(users, eq(taskSessions.studentId, users.id))
       .innerJoin(tasks, eq(taskSessions.taskId, tasks.id))
-      .innerJoin(plans, eq(tasks.planId, plans.id))
-      .innerJoin(users, eq(plans.studentId, users.id))
+      .leftJoin(plans, eq(tasks.planId, plans.id))
       .where(and(...conditions))
       .orderBy(desc(taskSessions.startedAt), desc(taskSessions.id))
       .limit(input.limit)
@@ -70,7 +70,7 @@ export class TaskSessionsRepository {
       itemsQuery = itemsQuery.leftJoin(
         coachAssignments,
         and(
-          eq(coachAssignments.studentId, plans.studentId),
+          eq(coachAssignments.studentId, taskSessions.studentId),
           eq(coachAssignments.coachId, input.userId),
         ),
       );
@@ -81,16 +81,14 @@ export class TaskSessionsRepository {
     let totalQuery = this.database
       .select({ total: count(taskSessions.id) })
       .from(taskSessions)
-      .innerJoin(tasks, eq(taskSessions.taskId, tasks.id))
-      .innerJoin(plans, eq(tasks.planId, plans.id))
-      .innerJoin(users, eq(plans.studentId, users.id))
+      .innerJoin(users, eq(taskSessions.studentId, users.id))
       .where(and(...conditions));
 
     if (input.role === 'coach') {
       totalQuery = totalQuery.leftJoin(
         coachAssignments,
         and(
-          eq(coachAssignments.studentId, plans.studentId),
+          eq(coachAssignments.studentId, taskSessions.studentId),
           eq(coachAssignments.coachId, input.userId),
         ),
       );
@@ -128,16 +126,14 @@ export class TaskSessionsRepository {
         stoppedSessions: sql<number>`count(${taskSessions.id}) filter (where ${taskSessions.status} = 'stopped')`,
       })
       .from(taskSessions)
-      .innerJoin(tasks, eq(taskSessions.taskId, tasks.id))
-      .innerJoin(plans, eq(tasks.planId, plans.id))
-      .innerJoin(users, eq(plans.studentId, users.id))
+      .innerJoin(users, eq(taskSessions.studentId, users.id))
       .where(and(...conditions));
 
     if (input.role === 'coach') {
       statsQuery = statsQuery.leftJoin(
         coachAssignments,
         and(
-          eq(coachAssignments.studentId, plans.studentId),
+          eq(coachAssignments.studentId, taskSessions.studentId),
           eq(coachAssignments.coachId, input.userId),
         ),
       );

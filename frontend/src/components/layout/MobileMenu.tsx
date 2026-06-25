@@ -3,6 +3,7 @@
 import Link from "next/link";
 import Button from "@/src/components/shared/Button";
 import { useMobileMenuAnimation } from "@/src/hooks/useMobileMenuAnimation";
+import LeadModalTrigger from "../shared/LeadModalTrigger";
 
 type NavLink = {
   label: string;
@@ -41,13 +42,12 @@ export default function MobileMenu({
         ))}
 
         <div ref={ctaRef} className="pt-2">
-          <Button
-            variant="primary"
-            className="w-full rounded-full! px-6 py-3"
-            onClick={onClose}
+          <LeadModalTrigger
+            buttonClassName="rounded-full border w-full border-brand-primary bg-brand-primary px-6 py-3 font-bold text-white transition"
           >
-            احجز جلسة البداية
-          </Button>
+            خليك جزء من رفيق
+          </LeadModalTrigger>
+
         </div>
       </div>
     </div>

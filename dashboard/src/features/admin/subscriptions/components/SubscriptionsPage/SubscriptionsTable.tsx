@@ -5,6 +5,7 @@ import AdminServerTable from "@/features/admin/shared/components/AdminServerTabl
 import SubscriptionStatusBadge from "@/features/admin/subscriptions/components/SubscriptionsPage/SubscriptionStatusBadge";
 import type { SubscriptionRow } from "@/features/admin/subscriptions/services/subscriptionService";
 import { formatDateArShort } from "@/shared/utils/dates";
+import { getRemainingDays } from "@/shared/utils/getReminingDays";
 
 export default function SubscriptionsTable({
   items,
@@ -42,6 +43,20 @@ export default function SubscriptionsTable({
       {
         name: "النهاية",
         selector: (row) => formatDateArShort(row.endsAt),
+      },
+      {
+        name: "الأيام المتبقية",
+        sortable: true,
+        sortFunction: (a, b) => getRemainingDays(a) - getRemainingDays(b),
+        cell: (row) => {
+          const remainingDays = getRemainingDays(row);
+
+          return (
+            <div>
+              {remainingDays}
+            </div>
+          );
+        },
       },
       {
         name: "الحالة",

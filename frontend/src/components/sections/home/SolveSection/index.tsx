@@ -3,7 +3,7 @@ import SolveVisual from "./SolveVisual";
 
 export default function SolveSection() {
   return (
-    <section id="solve" className="section">
+    <section id="how-it-works" className="section">
       <div className="flex flex-col gap-6 md:gap-8 lg:gap-12">
         <SolveHeader />
         <SolveVisual />

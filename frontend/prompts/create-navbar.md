@@ -27,7 +27,7 @@ CTA Button
 
 Use this button text:
 
-احجز جلسة البداية
+خليك جزء من رفيق
 Design Style
 Clean and elegant
 Modern landing page style
