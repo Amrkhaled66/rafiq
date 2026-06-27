@@ -25,7 +25,7 @@ jobs:
       - name: Build Docker image
         run: | 
           docker build \
-            -f frontend/Dockerfile \
+            -f frontend/DockerFile \
             --build-arg NEXT_PUBLIC_HUBSPOT_PORTAL_ID="${{ secrets.HUBSPOT_PORTAL_ID }}" \
             --build-arg NEXT_PUBLIC_HUBSPOT_FORM_GUID="${{ secrets.HUBSPOT_FORM_GUID }}" \
             -t amrse912553/rafiq-frontend:latest \
