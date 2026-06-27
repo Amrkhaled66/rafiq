@@ -11,7 +11,6 @@ import { sessionsRoutes } from "@/features/admin/sessions/routes";
 import { studentsRoutes } from "@/features/admin/students/routes";
 import { subscriptionsRoutes } from "@/features/admin/subscriptions/routes";
 import { urls } from "@/shared/const/urls";
-import { useAxiosInterceptor } from "@/shared/hooks/useAxiosInterceptor";
 import useScrollToTop from "@/shared/hooks/useScrollToTop";
 import RequireAdminAuth from "@/shared/routes/RequireAdminAuth";
 import RequireAdminGuest from "@/shared/routes/RequireAdminGuest";
@@ -19,7 +18,7 @@ import { useAuth } from "@/shared/context/authContext";
 
 function RouterProvidersLayout(): ReactElement {
   useScrollToTop();
-  useAxiosInterceptor();
+  
 
   return (
     <AppProviders>

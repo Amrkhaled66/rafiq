@@ -32,7 +32,6 @@ export class PlansController {
     @Param('studentId', ParseIntPipe) studentId: number,
     @Query() query: ListStudentPlansQueryDto,
   ) {
-    console.log(studentId)
     return this.plansService.getStudentPlans(studentId, query);
   }
 

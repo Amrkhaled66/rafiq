@@ -29,7 +29,6 @@ export function HomeScreen() {
   const { user } = useAuth();
   const { data, isLoading, isError, isRefetching, refetch } = useStudentHome();
   const home = data ? mapStudentHomeToViewModel(data) : null;
- console.log(data)
   return (
     <View className="bg-background flex-1">
       <FocusedStatusBar style="light" />

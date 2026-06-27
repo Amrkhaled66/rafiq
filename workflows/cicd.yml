@@ -1,0 +1,64 @@
+name: Deploy rafiq-frontend
+
+on:
+  push:
+    branches: ["master"]
+    paths:
+      - "frontend/**"
+      - ".github/workflows/deploy-frontend.yml"
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Source
+        uses: actions/checkout@v4
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build Docker image
+        run: |
+          docker build \
+            -f frontend/Dockerfile \
+            --build-arg NEXT_PUBLIC_HUBSPOT_PORTAL_ID="${{ secrets.HUBSPOT_PORTAL_ID }}" \
+            --build-arg NEXT_PUBLIC_HUBSPOT_FORM_GUID="${{ secrets.HUBSPOT_FORM_GUID }}" \
+            -t amrse912553/rafiq-frontend:latest \
+            ./frontend
+
+      - name: Push Docker image
+        run: docker push amrse912553/rafiq-frontend:latest
+
+  deploy:
+    needs: build
+    runs-on: self-hosted
+
+    steps:
+      - name: Login to Docker Hub
+        run: |
+          echo "${{ secrets.DOCKER_PASSWORD }}" | sudo docker login \
+            -u "${{ secrets.DOCKER_USERNAME }}" \
+            --password-stdin
+
+      - name: Pull latest image
+        run: sudo docker pull amrse912553/rafiq-frontend:latest
+
+      - name: Stop and remove old container
+        run: sudo docker rm -f rafiq-frontend-container || true
+
+      - name: Run new container
+        run: |
+          sudo docker run -d \
+            -p 4001:3001 \
+            --name rafiq-frontend-container \
+            --restart unless-stopped \
+            --env-file /opt/rafiq/frontend.env \
+            amrse912553/rafiq-frontend:latest
+
+      - name: Clean Docker system
+        run: sudo docker system prune -af

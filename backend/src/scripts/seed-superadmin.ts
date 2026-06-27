@@ -46,7 +46,6 @@ async function main() {
         })
         .where(eq(users.id, existingUser.id));
 
-      console.log(`Updated super admin for phone ${phone}`);
       return;
     }
 
@@ -57,7 +56,6 @@ async function main() {
       role: 'super_admin',
     });
 
-    console.log(`Created super admin for phone ${phone}`);
   } finally {
     await pool.end();
   }

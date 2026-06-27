@@ -51,6 +51,6 @@ export function formatDateLocal(date: Date) {
 }
 
 export function getTodayWeekday(): LessonWeekday {
-  const day = new Date().getDay();
+  const day = new Date().getDay() + 1;
   return LESSON_WEEKDAY_ORDER[day] as LessonWeekday;
 }

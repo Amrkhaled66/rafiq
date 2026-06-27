@@ -58,7 +58,7 @@ export default function CTASection() {
 
               <LeadModalTrigger
                 containerClassName="inline-flex"
-                buttonClassName="inline-flex min-h-12 w-full max-w-[70%] items-center justify-center gap-3  rounded-full bg-white px-6 py-3 text-base font-bold text-brand-primary! shadow-[0_18px_40px_rgba(107,12,16,0.18)] hover:-translate-y-0.5 hover:bg-[#fff5f5]! sm:min-h-16 sm:w-auto sm:min-w-xs sm:px-8 sm:text-lg"
+                buttonClassName="inline-flex min-h-12 w-full max-w-[70%] items-center justify-center gap-3  rounded-full bg-white px-6 py-3 text-base font-bold text-brand-primary! shadow-[0_18px_40px_rgba(107,12,16,0.18)] hover:-translate-y-0.5 hover:bg-[#fff5f5]! sm:min-h-16 sm:w-auto min-w-xs sm:px-8 sm:text-lg"
               >
                 <Icon
                   icon="solar:calendar-linear"

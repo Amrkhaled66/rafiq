@@ -54,7 +54,7 @@ export default function PlanDayEditorModal({
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
-      <div className="dashboard-card max-h-[85vh] overflow-auto text-right">
+      <div className="dashboard-card max-h-[85vh] text-right">
         <div className="flex items-start justify-between gap-3">
           <div className="space-y-1">
             <div className="text-subTitle text-sm">{getDayNameAr(day.date)}</div>

@@ -58,7 +58,7 @@ export default function CoachAssignedStudentsSection({
           <Button
             variant="ghost"
             className="inline-flex items-center gap-2 px-3 py-1.5 text-sm"
-            onClick={() => navigate(`/students/${row.id}`)}
+            onClick={() => navigate(`${row.id}`)}
           >
             <span>شوفني</span>
           </Button>

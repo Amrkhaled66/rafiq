@@ -70,8 +70,8 @@ const Model = ({
 
   return createPortal(
     <>
-      <div className="fixed inset-0 z-90 m-auto flex max-h-[90vh] min-h-fit w-full items-center justify-center overflow-y-auto  p-4 lg:max-w-[50%]">
-        <div ref={modalRef} className=" w-full overflow-visible">
+      <div className="overflow-y-none fixed inset-0 z-90 m-auto  flex max-h-[90vh] min-h-fit w-full items-center justify-center p-4 lg:max-w-[50%]">
+        <div ref={modalRef} className="w-full overflow-visible">
           <div className="w-full overflow-visible">{children}</div>
         </div>
       </div>

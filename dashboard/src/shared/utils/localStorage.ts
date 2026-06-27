@@ -18,6 +18,7 @@ export const setItem = (key: string, value: unknown) => {
   
   export const removeItem = (key: string) => {
     try {
+   
       localStorage.removeItem(key);
     } catch (err) {
       console.error("localStorage removeItem error", err);

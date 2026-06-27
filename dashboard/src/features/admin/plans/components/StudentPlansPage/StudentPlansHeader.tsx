@@ -67,15 +67,7 @@ export default function StudentPlansHeader({
           </div>
         </div>
 
-        <div className="grid grid-cols-2 place-items-end gap-3 lg:min-w-60">
-          <Button
-            variant="outline"
-            onClick={() => navigate(`/students/${student.id}`)}
-            className="w-full text-sm"
-          >
-            الرجوع للطالب
-          </Button>
-
+        <div className="">
           <Link to="new">
             <Button className="w-full text-sm">إضافة خطة جديدة</Button>
           </Link>

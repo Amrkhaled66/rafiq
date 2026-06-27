@@ -6,6 +6,7 @@ import logo from "@/assets/logo1.svg";
 import ReusableSidebar, { type SidebarMenuItem } from "@/shared/components/SideBar";
 import { useAuth } from "@/shared/context/authContext";
 import { can, type Action, type Resource } from "@/shared/auth/can";
+import { useAxiosInterceptor } from "@/shared/hooks/useAxiosInterceptor";
 
 type SidebarItem = SidebarMenuItem & {
   requires?: { resource: Resource; action: Action };
@@ -49,7 +50,7 @@ const SIDEBAR_ITEMS: SidebarItem[] = [
 export default function DashBoardLayout() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const { authData } = useAuth();
-
+useAxiosInterceptor();
   const sidebarItems = useMemo(
     () =>
       SIDEBAR_ITEMS.filter(

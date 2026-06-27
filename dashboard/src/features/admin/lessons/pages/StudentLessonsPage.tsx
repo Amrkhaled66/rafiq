@@ -8,14 +8,17 @@ import StudentLessonsTable from "@/features/admin/lessons/components/StudentLess
 import { useStudentLessonsActions } from "@/features/admin/lessons/hooks/useStudentLessonsActions";
 import { useStudentLessonsQuery } from "@/features/admin/lessons/queries/lessonQueries";
 import type { LessonWeekday } from "@/features/admin/lessons/services/lessonService";
-import { LESSON_WEEKDAY_LABELS, LESSON_WEEKDAY_ORDER } from "@/shared/const/weekdays";
+import {
+  LESSON_WEEKDAY_LABELS,
+  LESSON_WEEKDAY_ORDER,
+} from "@/shared/const/weekdays";
 import { getTodayWeekday } from "@/shared/utils/dates";
-
 
 function getLessonDistanceFromToday(weekday: LessonWeekday) {
   const todayIndex = LESSON_WEEKDAY_ORDER.indexOf(getTodayWeekday());
   const lessonIndex = LESSON_WEEKDAY_ORDER.indexOf(weekday);
 
+  console.log(todayIndex, lessonIndex);
   if (lessonIndex >= todayIndex) {
     return lessonIndex - todayIndex;
   }
