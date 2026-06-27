@@ -23,7 +23,7 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Build Docker image
-        run: |
+        run: | 
           docker build \
             -f frontend/Dockerfile \
             --build-arg NEXT_PUBLIC_HUBSPOT_PORTAL_ID="${{ secrets.HUBSPOT_PORTAL_ID }}" \
