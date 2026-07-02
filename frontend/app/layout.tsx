@@ -6,7 +6,7 @@ import Script from "next/script";
 import { Suspense } from "react";
 import MetaPixelEvents from "@/src/components/shared/MetaPixelEvents";
 
-const pixelId = process.env.NEXT_PUBLIC_META_PIXEL_ID;
+const pixelId = 1860411848298985;
 
 const ibmPlexSansArabic = IBM_Plex_Sans_Arabic({
   variable: "--font-ibm-plex-sans-arabic",
