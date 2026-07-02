@@ -28,6 +28,7 @@ jobs:
             -f frontend/DockerFile \
             --build-arg NEXT_PUBLIC_HUBSPOT_PORTAL_ID="${{ secrets.HUBSPOT_PORTAL_ID }}" \
             --build-arg NEXT_PUBLIC_HUBSPOT_FORM_GUID="${{ secrets.HUBSPOT_FORM_GUID }}" \
+            --build-arg NEXT_PUBLIC_META_PIXEL_ID="${{ secrets.NEXT_PUBLIC_META_PIXEL_ID }}" \
             -t amrse912553/rafiq-frontend:latest \
             ./frontend
 
