@@ -8,7 +8,6 @@ import MetaPixelEvents from "@/src/components/shared/MetaPixelEvents";
 
 const pixelId = process.env.NEXT_PUBLIC_META_PIXEL_ID;
 
-
 const ibmPlexSansArabic = IBM_Plex_Sans_Arabic({
   variable: "--font-ibm-plex-sans-arabic",
   subsets: ["arabic"],
@@ -34,34 +33,27 @@ export default function RootLayout({
     <html
       lang="ar"
       dir="rtl"
-      className={`${ibmPlexSansArabic.variable}  h-full antialiased`}
+      className={`${ibmPlexSansArabic.variable} ${cairo.variable} h-full antialiased`}
     >
       <body className="min-h-full overflow-x-hidden bg-white text-black">
         <Navbar />
+
         {children}
 
         {pixelId && (
           <>
             <Script id="meta-pixel" strategy="afterInteractive">
               {`
-                <!-- Meta Pixel Code -->
-<script>
-!function(f,b,e,v,n,t,s)
-{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-n.queue=[];t=b.createElement(e);t.async=!0;
-t.src=v;s=b.getElementsByTagName(e)[0];
-s.parentNode.insertBefore(t,s)}(window, document,'script',
-'https://connect.facebook.net/en_US/fbevents.js');
-fbq('init', '1642661030298713');
-fbq('track', 'PageView');
-</script>
-<noscript><img height="1" width="1" style="display:none"
-src="https://www.facebook.com/tr?id=1642661030298713&ev=PageView&noscript=1"
-/></noscript>
-<!-- End Meta Pixel Code -->
-                     
+                !function(f,b,e,v,n,t,s)
+                {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+                n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+                if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+                n.queue=[];t=b.createElement(e);t.async=!0;
+                t.src=v;s=b.getElementsByTagName(e)[0];
+                s.parentNode.insertBefore(t,s)}(window, document,'script',
+                'https://connect.facebook.net/en_US/fbevents.js');
+
+                fbq('init', '${pixelId}');
               `}
             </Script>
 
