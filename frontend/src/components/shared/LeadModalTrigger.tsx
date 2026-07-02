@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode, Activity } from "react";
 import NewLeadModal from "./NewLeadModel";
 import { useLeadSubmission } from "../../hooks/useLeadSubmission";
 import Button from "./Button";
@@ -23,12 +23,14 @@ export default function LeadModalTrigger({
 
   useEffect(() => {
     if (!autoOpenDelayMs) return;
+    if (!showModal) {
 
-    const timer = window.setTimeout(() => {
-      setShowModal(true);
-    }, autoOpenDelayMs);
+      const timer = window.setTimeout(() => {
+        setShowModal(true);
+      }, autoOpenDelayMs);
 
-    return () => window.clearTimeout(timer);
+      return () => window.clearTimeout(timer);
+    }
   }, [autoOpenDelayMs]);
 
   return (
@@ -42,12 +44,13 @@ export default function LeadModalTrigger({
           {children}
         </Button>
       </div>
-
-      <NewLeadModal
-        isOpen={showModal}
-        onClose={() => setShowModal(false)}
-        onSubmit={submitLead}
-      />
+      <Activity mode={showModal ? "visible" : "hidden"}>
+        <NewLeadModal
+          isOpen={showModal}
+          onClose={() => setShowModal(false)}
+          onSubmit={submitLead}
+        />
+      </Activity>
     </>
   );
 }
