@@ -49,12 +49,12 @@ const Navbar = () => {
 
           {/* CTA + Burger */}
           <div className="flex flex-1 items-center justify-end gap-3">
-            <LeadModalTrigger
+            {/* <LeadModalTrigger
               containerClassName="hidden md:block"
               buttonClassName="rounded-full border border-brand-primary bg-brand-primary px-6 py-3 font-bold text-white transition"
             >
               خليك جزء من رفيق
-            </LeadModalTrigger>
+            </LeadModalTrigger> */}
 
             <MobileMenuButton
               isOpen={isMenuOpen}
