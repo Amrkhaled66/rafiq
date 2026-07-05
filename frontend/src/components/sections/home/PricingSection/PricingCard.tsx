@@ -3,28 +3,8 @@
 import { useMemo, useState } from "react";
 import { Icon } from "@iconify/react";
 import MonthSelect, { type MonthPlan } from "./MonthSelect";
-
-const plans: MonthPlan[] = [
-    {
-        id: 1,
-        months: 1,
-        price: 199,
-    },
-    {
-        id: 2,
-        months: 2,
-        price: 349,
-        discount: "وفر 50جـ",
-        badge: "الأكثر مبيعًا",
-    },
-    {
-        id: 3,
-        months: 3,
-        price: 519,
-        discount: "وفر 80جـ",
-    },
-];
-
+import plans from "@/src/data/plans";
+import Link from "next/dist/client/link";
 const features = [
     { label: "جلسة بداية", icon: "solar:user-rounded-bold" },
     { label: "خطة مذاكرة مناسبة", icon: "solar:calendar-bold" },
@@ -126,7 +106,8 @@ const FeatureItem = ({ label, icon }: { label: string; icon: string }) => (
 );
 
 const StartButton = () => (
-    <button
+    <Link
+        href="/checkout"
         type="button"
         className="group mt-5 flex w-full items-center justify-center gap-3 rounded-full bg-brand-primary px-4 sm:px-5 py-3 sm:py-3.5 text-sm sm:text-base font-extrabold text-white shadow-[0_14px_30px_rgba(208,5,7,0.26)] transition duration-300 hover:-translate-y-0.5 hover:shadow-[0_18px_38px_rgba(208,5,7,0.34)] active:translate-y-0"
     >
@@ -135,7 +116,7 @@ const StartButton = () => (
         <span className="flex h-6 w-6 sm:h-7 sm:w-7 items-center justify-center rounded-full bg-white/95 text-brand-primary transition duration-300 group-hover:-translate-x-1">
             <Icon icon="solar:arrow-left-linear" className="text-sm sm:text-base" />
         </span>
-    </button>
+    </Link>
 );
 
 const TrustNote = () => (

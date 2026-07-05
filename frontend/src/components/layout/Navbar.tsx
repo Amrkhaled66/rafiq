@@ -17,7 +17,7 @@ const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
-    <nav className="container fixed left-0 right-0 top-2 z-50 mx-auto max-w-5xl rounded-full bg-white font-bold! drop-shadow-xl">
+    <nav className="container fixed left-0 right-0 top-2 z-50 mx-auto max-w-3xl rounded-full bg-white font-bold! drop-shadow-xl">
       <div className="mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex h-20 items-center justify-between">
           {/* Logo */}
@@ -49,12 +49,12 @@ const Navbar = () => {
 
           {/* CTA + Burger */}
           <div className="flex flex-1 items-center justify-end gap-3">
-            {/* <LeadModalTrigger
+            <LeadModalTrigger
               containerClassName="hidden md:block"
               buttonClassName="rounded-full border border-brand-primary bg-brand-primary px-6 py-3 font-bold text-white transition"
             >
               خليك جزء من رفيق
-            </LeadModalTrigger> */}
+            </LeadModalTrigger>
 
             <MobileMenuButton
               isOpen={isMenuOpen}

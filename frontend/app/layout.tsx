@@ -5,7 +5,7 @@ import Navbar from "@/src/components/layout/Navbar";
 import Script from "next/script";
 import { Suspense } from "react";
 import MetaPixelEvents from "@/src/components/shared/MetaPixelEvents";
-
+import Footer from "@/src/components/layout/Footer";
 const pixelId = 1860411848298985;
 
 const ibmPlexSansArabic = IBM_Plex_Sans_Arabic({
@@ -36,9 +36,9 @@ export default function RootLayout({
       className={`${ibmPlexSansArabic.variable} ${cairo.variable} h-full antialiased`}
     >
       <body className="min-h-full overflow-x-hidden bg-white text-black">
-        <Navbar />
-
+        {/* <Navbar /> */}
         {children}
+        <Footer />
 
         {pixelId && (
           <>

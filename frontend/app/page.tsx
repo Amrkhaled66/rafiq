@@ -8,8 +8,11 @@ import PricingSection from "@/src/components/sections/home/PricingSection";
 import SeatsSection from "@/src/components/sections/home/SeatsSection";
 import SeatsStatusBarSection from "@/src/components/sections/home/SeatsStatusBarSection";
 import FloatingSeatBadge from "@/src/components/sections/home/FloatingSeatBadge";
+import Navbar from "@/src/components/layout/Navbar";
 export default function Home() {
   return (
+    <>
+      <Navbar />
     <main className="w-full">
       <HeroSection />
       <SeatsStatusBarSection/>
@@ -18,8 +21,9 @@ export default function Home() {
       {/* <SeatsSection /> */}
       <PricingSection />
       <CTASection />
-      <Footer />
+      {/* <Footer /> */}
       <FloatingSeatBadge/>
     </main>
+    </>
   );
 }
