@@ -24,7 +24,7 @@ const PricingCard = () => {
     return (
         <div
             dir="rtl"
-            className="relative mx-auto w-full max-w-[430px] overflow-hidden rounded-[30px] border border-[rgba(208,5,7,0.16)] bg-white px-6 py-6 text-center shadow-[0_24px_70px_rgba(208,5,7,0.13)]"
+            className="relative mx-auto w-full max-w-107.5 overflow-hidden rounded-[30px] border border-[rgba(208,5,7,0.16)] bg-white px-6 py-6 text-center shadow-[0_24px_70px_rgba(208,5,7,0.13)]"
         >
             <CardGlow />
 
@@ -48,8 +48,6 @@ const PricingCard = () => {
                 <FeatureList />
 
                 <StartButton />
-
-                <TrustNote />
             </div>
         </div>
     );
@@ -61,25 +59,38 @@ const CardGlow = () => (
     <div className="pointer-events-none absolute -top-28 left-1/2 h-56 w-56 -translate-x-1/2 rounded-full bg-[rgba(208,5,7,0.08)] blur-3xl" />
 );
 
-const PackageBadge = () => (
-    <div className="mx-auto mb-4 inline-flex items-center gap-2 rounded-full bg-[rgba(208,5,7,0.08)] px-4 py-1.5 text-sm font-bold text-brand-primary">
-        <Icon icon="solar:crown-bold" className="text-base" />
-        <span>الباقة الشهرية</span>
-    </div>
-);
 
 const PriceBlock = ({ plan }: { plan: MonthPlan }) => (
-    <div>
-        <div className="mt-2 flex items-end justify-center gap-2 text-brand-primary">
+    <div className="mt-4">
+        {plan.originalPrice && (
+            <div className="mb-1 flex items-center justify-center gap-2 text-slate-400">
+                <span className="text-xs font-semibold">بدلًا من</span>
+
+                <span className="text-sm sm:text-base font-bold line-through decoration-2">
+                    {plan.originalPrice} جنيه
+                </span>
+            </div>
+        )}
+
+        <div className="flex items-end justify-center gap-2 text-brand-primary">
             <span className="mb-2 text-sm sm:text-base font-bold">جنيه</span>
+
             <span className="text-5xl sm:text-6xl md:text-[64px] font-black leading-none tracking-tight">
                 {plan.price}
             </span>
         </div>
 
-        <p className="mt-1 text-sm sm:text-base font-semibold text-slate-500">
-            {plan.months === 1 ? "شهريًا" : `لمدة ${plan.months} شهور`}
-        </p>
+        <div className="mt-1 flex items-center justify-center gap-2">
+            <p className="text-sm sm:text-base font-semibold text-slate-500">
+                {plan.months === 1 ? "شهريًا" : `لمدة ${plan.months} شهور`}
+            </p>
+
+            {plan.discount && (
+                <span className="rounded-full bg-[rgba(208,5,7,0.08)] px-2.5 py-1 text-xs font-extrabold text-brand-primary">
+                    {plan.discount}
+                </span>
+            )}
+        </div>
     </div>
 );
 
@@ -117,11 +128,4 @@ const StartButton = () => (
             <Icon icon="solar:arrow-left-linear" className="text-sm sm:text-base" />
         </span>
     </Link>
-);
-
-const TrustNote = () => (
-    <div className="mt-3 flex items-center justify-center gap-2 text-xs font-medium text-slate-500">
-        <Icon icon="solar:shield-check-bold" className="text-sm" />
-        <span>بدون تعقيد — هنساعدك تبدأ صح.</span>
-    </div>
 );

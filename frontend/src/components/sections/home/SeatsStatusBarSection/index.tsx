@@ -1,21 +1,17 @@
 "use client";
-
-import React from "react";
 import Image from "next/image";
 import { Icon } from "@iconify/react";
 import calenderImg from "@/src/assets/calender-icon3.png";
 
 const batchData = {
   totalSeats: 100,
-  availableSeats: 30,
+  reservedSeats: 70,
   batchName: "الدفعة الأولى",
 };
 
 const LimitedBatchBar = () => {
-  const reservedSeats = batchData.totalSeats - batchData.availableSeats;
-
   const availableProgress = Math.round(
-    (batchData.availableSeats / batchData.totalSeats) * 100
+    (batchData.reservedSeats / batchData.totalSeats) * 100
   );
 
   return (
@@ -29,8 +25,8 @@ const LimitedBatchBar = () => {
 
             <SeatsProgress
               totalSeats={batchData.totalSeats}
-              availableSeats={batchData.availableSeats}
-              reservedSeats={reservedSeats}
+              reservedSeats={batchData.reservedSeats}
+              availableSeats={batchData.totalSeats - batchData.reservedSeats}
               progress={availableProgress}
             />
 
@@ -77,13 +73,13 @@ const BatchInfo = () => {
 
 const SeatsProgress = ({
   totalSeats,
-  availableSeats,
   reservedSeats,
+  availableSeats,
   progress,
 }: {
   totalSeats: number;
-  availableSeats: number;
   reservedSeats: number;
+  availableSeats: number;
   progress: number;
 }) => {
   return (

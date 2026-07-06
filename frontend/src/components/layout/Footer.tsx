@@ -5,24 +5,22 @@ import { Icon } from "@iconify/react";
 import Image from "next/image";
 import Logo1 from "@/public/logo1.svg";
 import LeadModalTrigger from "../shared/LeadModalTrigger";
-
+import { CONTACT_LINK, FACEBOOK_LINK } from "@/src/data/const";
 const sectionItems = [
   { text: "الرئيسية", href: "#" },
-  { text: "إزاي رفيق بيشتغل؟", href: "#" },
-  { text: "الباقات", href: "#" },
-  { text: "الأسئلة الشائعة", href: "#" },
+  { text: "يعني ايه رفيق؟", href: "#solve" },
+  { text: "الاشتراك", href: "#pricing" },
+  // { text: "الأسئلة الشائعة", href: "#" },
 ];
 
 const contactItems = [
-  { icon: "ic:baseline-whatsapp", text: "واتساب" },
-  { icon: "solar:letter-linear", text: "hello@rafiq.study" },
+  { icon: "ic:baseline-whatsapp", text: "واتساب", to: CONTACT_LINK },
   { icon: "solar:map-point-linear", text: "القاهرة، مصر" },
 ];
 
 const socialItems = [
-  { icon: "mdi:instagram", label: "Instagram" },
-  { icon: "ic:baseline-whatsapp", label: "WhatsApp" },
-  { icon: "mdi:youtube", label: "YouTube" },
+  { icon: "mdi:facebook", label: "facebook", to: FACEBOOK_LINK },
+  { icon: "ic:baseline-whatsapp", label: "WhatsApp", to: CONTACT_LINK },
 ];
 
 export default function Footer() {
@@ -152,11 +150,12 @@ export default function Footer() {
                     {socialItems.map((item) => (
                       <a
                         key={item.label}
-                        href="#"
+                        href={item.to}
+                        target="_blank"
                         aria-label={item.label}
-                        className="inline-flex size-11 items-start transition-all duration-200 hover:-translate-y-0.5 hover:border-brand-primary/30 hover:text-brand-primary hover:shadow-[0_10px_24px_rgba(208,5,7,0.08)]"
+                        className="inline-flex size-11 justify-center rounded-full items-center  transition-all duration-200 hover:-translate-y-0.5 hover:border-brand-primary/30 hover:text-brand-primary hover:shadow-[0_10px_24px_rgba(208,5,7,0.08)]"
                       >
-                        <Icon icon={item.icon} className="size-5" />
+                        <Icon icon={item.icon} className="size-6" />
                       </a>
                     ))}
                   </div>
@@ -167,9 +166,9 @@ export default function Footer() {
         </div>
 
         <div className="border-t border-[#f1e6e6] px-5 py-5 sm:px-8 lg:px-10">
-          <div className="flex flex-col items-center justify-between gap-3 text-center text-sm text-slate-500 lg:flex-row lg:text-right">
+          <div className="flex flex-col items-center justify-center gap-3 text-center text-sm text-slate-500 lg:flex-row lg:text-right">
             <p>© {new Date().getFullYear()} رفيق. كل الحقوق محفوظة.</p>
-
+            {/* 
             <div className="flex flex-wrap items-center justify-center gap-2 lg:justify-start">
               <a
                 href="#"
@@ -184,7 +183,7 @@ export default function Footer() {
               >
                 الشروط والأحكام
               </a>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>

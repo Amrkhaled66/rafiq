@@ -5,28 +5,28 @@ import { Icon } from "@iconify/react";
 
 const faqs = [
   {
-    question: "إزاي أبعت صورة التحويل؟",
+    question: "إيه اللي بيحصل بعد الدفع؟",
     answer:
-      "بعد تأكيد البيانات واختيار طريقة الدفع، هتظهرلك خطوة رفع صورة التحويل مباشرة.",
-    icon: "solar:upload-square-bold",
+      "فريق رفيق بيراجع عملية التحويل، وهيتواصل معاك في أقل من 12 ساعة لتأكيد الدفع وتحديد معاد جلسة البداية.",
+    icon: "solar:shield-check-bold",
   },
   {
-    question: "الاشتراك بيتفعل إمتى؟",
+    question: "إزاي بنبدأ أول خطوة بعد الدفع؟",
     answer:
-      "بيتم تفعيل الاشتراك بعد مراجعة التحويل والتأكيد، وغالبًا خلال وقت قصير.",
-    icon: "solar:clock-circle-bold",
+      "بنحدد معاد جلسة البداية عشان نجهز أول خطة تمشي عليها، وبتستلم حسابك عشان تدخل على الأبلكيشن وتتابع خططك من هناك.",
+    icon: "solar:calendar-mark-bold",
   },
   {
-    question: "ينفع أغير مدة الاشتراك؟",
+    question: "إيه اللي هيحصل لو ملتزمتش بالخطة ولا بالمذاكرة؟",
     answer:
-      "ينفع تختار المدة المناسبة قبل تأكيد الدفع. بعد الدفع، تواصل مع الدعم لو محتاج تعديل.",
-    icon: "solar:refresh-bold",
+      "لو مفيش التزام بالخطة أو المتابعة، الفلوس هترجع لك، ومش هتكون جزء من مجتمع رفيق.",
+    icon: "solar:danger-triangle-bold",
   },
   {
-    question: "لو حصلت مشكلة في الدفع أعمل إيه؟",
+    question: "إيه اللي هيحصل لو محسّتش بأي تغيير؟",
     answer:
-      "تواصل معانا على واتساب، وفريق رفيق هيساعدك تكمل الاشتراك خطوة بخطوة.",
-    icon: "solar:headphones-round-bold",
+      "لو التزمت بالخطة ومتابعة رفيق ومحسّتش بأي فرق حقيقي في مذاكرتك، هنرجع لك فلوسك بالكامل.",
+    icon: "solar:refresh-circle-bold",
   },
 ];
 
@@ -61,10 +61,10 @@ const CheckoutFaq = () => {
         ))}
       </div>
 
-      <div className="mt-6 flex items-center justify-center gap-2 text-sm font-bold text-slate-500">
+      {/* <div className="mt-6 flex items-center justify-center gap-2 text-sm font-bold text-slate-500">
         <Icon icon="logos:whatsapp-icon" className="text-lg" />
         <span>لو محتاج مساعدة، تواصل معانا على واتساب.</span>
-      </div>
+      </div> */}
     </section>
   );
 };
@@ -108,11 +108,11 @@ const FaqItem = ({
         />
       </div>
 
-      {isOpen && (
-        <p className="mt-3 border-t border-slate-100 pt-3 text-sm font-medium leading-7 text-slate-500">
+     
+        <p className={` border-t border-slate-100  overflow-hidden text-sm font-medium leading-7 text-slate-500 transition-all duration-300" ${isOpen ? "max-h-200 pt-3 mt-3 " : "max-h-0"}`}>
           {faq.answer}
         </p>
-      )}
+      
     </button>
   );
 };

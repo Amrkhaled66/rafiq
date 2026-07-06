@@ -6,6 +6,7 @@ export type MonthPlan = {
     price: number;
     discount?: string;
     badge?: string;
+    originalPrice?: number;
 };
 
 type MonthSelectProps = {

@@ -9,7 +9,7 @@ import LeadModalTrigger from "../shared/LeadModalTrigger";
 
 const navLinks = [
   { label: "الرئيسية", href: "#" },
-  { label: "يعني ايه رفيق؟", href: "#how-it-works" },
+  { label: "يعني ايه رفيق؟", href: "#solve" },
   { label: "الباقات", href: "#pricing" },
 ];
 
@@ -17,7 +17,7 @@ const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
-    <nav className="container fixed left-0 right-0 top-2 z-50 mx-auto max-w-3xl rounded-full bg-white font-bold! drop-shadow-xl">
+    <nav className="container fixed left-0 right-0 top-2 z-50 mx-auto max-w-5xl rounded-full bg-white font-bold! drop-shadow-xl">
       <div className="mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex h-20 items-center justify-between">
           {/* Logo */}

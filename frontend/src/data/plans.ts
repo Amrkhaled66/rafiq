@@ -14,6 +14,7 @@ const plans: MonthPlan[] = [
         months: 1,
         label: "شهر",
         price: 199,
+        originalPrice: 249,
     },
     {
         id: 2,
