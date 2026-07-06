@@ -2,8 +2,8 @@
 
 import Link from "next/link";
 import { Icon } from "@iconify/react";
-import CheckoutForm from "@/src/components/sections/checkout/CheckoutForm";
-import CheckoutFaq from "@/src/components/sections/checkout/CheckoutFaq";
+import CheckoutForm from "@/src/components/sections/payment/CheckoutForm";
+import CheckoutFaq from "@/src/components/sections/payment/CheckoutFaq";
 
 const CheckoutPage = () => {
   return (

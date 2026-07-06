@@ -7,7 +7,6 @@ import { useDirection } from "@/shared/hooks/use-direction";
 import { useI18n } from "@/shared/i18n/I18nProvider";
 import type { TabConfig } from "@/shared/navigation/tab-config";
 import { AppFonts } from "@/shared/theme/theme";
-import { ElevatedView } from "@/shared/ui/elevated-view";
 
 type AndroidTabBarProps = BottomTabBarProps & {
   tabs: readonly TabConfig[];

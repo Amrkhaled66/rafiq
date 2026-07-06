@@ -1,4 +1,3 @@
-import { Ionicons } from "@expo/vector-icons";
 import {
   ImageBackground,
   Image,
@@ -132,7 +131,7 @@ export function HomeHeader({ firstName }: HomeHeaderProps) {
               }}
               className="mt-2"
             >
-              جاهز تكمل يومك؟
+             يلا نخلص اللي ورانا 
             </Text>
 
             {/* <Text

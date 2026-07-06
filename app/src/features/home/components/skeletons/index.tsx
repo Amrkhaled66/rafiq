@@ -42,9 +42,6 @@ export function ProgressSkeleton() {
   const { width } = useWindowDimensions();
   const isTablet = width >= 768;
   const ringSize = isTablet ? 140 : 110;
-  const innerRingSize = isTablet ? 104 : 82;
-  const ringStroke = isTablet ? 14 : 12;
-
   return (
     <SkeletonSurface className="p-4 md:px-7 md:py-6">
       <View className="gap-4 md:gap-5">

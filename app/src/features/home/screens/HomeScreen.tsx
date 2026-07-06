@@ -36,6 +36,7 @@ export function HomeScreen() {
         showsVerticalScrollIndicator={false}
         refreshControl={
           <RefreshControl
+             progressViewOffset={30}
             refreshing={isRefetching && !isLoading}
             onRefresh={() => void refetch()}
           />

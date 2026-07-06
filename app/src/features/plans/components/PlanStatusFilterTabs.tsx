@@ -32,8 +32,8 @@ export function PlanStatusFilterTabs({
       options={PLAN_STATUS_OPTIONS}
       value={value}
       onChange={onChange}
-      selectedClassName="bg-brand-primary-soft"
-      selectedTextClassName="text-brand-primary"
+      selectedClassName="bg-brand-primary"
+      selectedTextClassName="text-white!"
       unselectedTextClassName="text-text"
     />
   );

@@ -63,6 +63,7 @@ export function PlansScreen() {
       scrollProps={{
         refreshControl: (
           <RefreshControl
+            progressViewOffset={30}
             refreshing={isRefetching && !isLoading}
             onRefresh={() => void refetch()}
           />

@@ -13,6 +13,37 @@ export function useTaskPomodoro(taskDetail: TaskDetailItem) {
   const [sessions, setSessions] = useState<TaskSessionItem[]>(taskDetail.sessions);
   const activeSessionIdRef = useRef<string | null>(null);
 
+  const updateActiveSession = useCallback(
+    (status: TaskSessionItem["status"], durationSeconds?: number) => {
+      if (!activeSessionIdRef.current) {
+        return;
+      }
+
+      setSessions((currentSessions) =>
+        currentSessions.map((session) =>
+          session.id === activeSessionIdRef.current
+            ? {
+                ...session,
+                durationSeconds:
+                  durationSeconds ??
+                  focusDurationSeconds - Math.max(remainingSeconds, 0),
+                status,
+              }
+            : session,
+        ),
+      );
+    },
+    [focusDurationSeconds, remainingSeconds],
+  );
+
+  const finishSession = useCallback(() => {
+    setPomodoroState("idle");
+    setRemainingSeconds(focusDurationSeconds);
+    updateActiveSession("completed", focusDurationSeconds);
+    activeSessionIdRef.current = null;
+  }, [focusDurationSeconds, updateActiveSession]);
+
+
   useEffect(() => {
     setSessions(taskDetail.sessions);
     setPomodoroState("idle");
@@ -57,35 +88,6 @@ export function useTaskPomodoro(taskDetail: TaskDetailItem) {
     return () => clearInterval(interval);
   }, [finishSession, focusDurationSeconds, pomodoroState]);
 
-  const updateActiveSession = useCallback(
-    (status: TaskSessionItem["status"], durationSeconds?: number) => {
-      if (!activeSessionIdRef.current) {
-        return;
-      }
-
-      setSessions((currentSessions) =>
-        currentSessions.map((session) =>
-          session.id === activeSessionIdRef.current
-            ? {
-                ...session,
-                durationSeconds:
-                  durationSeconds ??
-                  focusDurationSeconds - Math.max(remainingSeconds, 0),
-                status,
-              }
-            : session,
-        ),
-      );
-    },
-    [focusDurationSeconds, remainingSeconds],
-  );
-
-  const finishSession = useCallback(() => {
-    setPomodoroState("idle");
-    setRemainingSeconds(focusDurationSeconds);
-    updateActiveSession("completed", focusDurationSeconds);
-    activeSessionIdRef.current = null;
-  }, [focusDurationSeconds, updateActiveSession]);
 
   function startSession() {
     if (taskDetail.status === "completed") {

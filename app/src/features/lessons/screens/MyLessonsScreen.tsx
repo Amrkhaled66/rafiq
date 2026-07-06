@@ -67,8 +67,10 @@ export function MyLessonsScreen() {
   return (
     <TabPageLayout
       scrollProps={{
+        alwaysBounceVertical: true,
         refreshControl: (
           <RefreshControl
+            progressViewOffset={30}
             refreshing={isRefetching && !isLoading}
             onRefresh={() => void refetch()}
           />

@@ -36,7 +36,9 @@ export function MyTasksScreen() {
 
   if (isError) {
     return (
-      <TabPageLayout>
+      <TabPageLayout
+       
+      >
         <View className="gap-4 md:gap-4">
           <PageTitle title="مهامي" />
           <HomeStateCard
@@ -56,6 +58,7 @@ export function MyTasksScreen() {
       scrollProps={{
         refreshControl: (
           <RefreshControl
+            progressViewOffset={30}
             refreshing={isRefetching && !isLoading}
             onRefresh={() => void refetch()}
           />
