@@ -6,6 +6,7 @@ import Button from "@/shared/components/Button";
 import GradeBadge from "@/shared/components/GradeBadge";
 import Table from "@/shared/components/Table";
 import { formatProfileDate } from "@/shared/utils/profile";
+import {urls} from "@/shared/const/urls"
 
 type CoachAssignedStudentsSectionProps = {
   currentPage: number;
@@ -58,7 +59,7 @@ export default function CoachAssignedStudentsSection({
           <Button
             variant="ghost"
             className="inline-flex items-center gap-2 px-3 py-1.5 text-sm"
-            onClick={() => navigate(`${row.id}`)}
+            onClick={() => navigate(`/${urls.dashBoardUrl}/students/${row.id}`)}
           >
             <span>شوفني</span>
           </Button>

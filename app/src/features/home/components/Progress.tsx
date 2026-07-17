@@ -38,20 +38,37 @@ export function Progress({
       <View className={`items-center justify-between ${dir.rowReverse}`}>
         <View className="flex-1 gap-3">
           <View className="gap-1">
-            <AppHeading className="text-right text-xl md:text-[26px]">
-              خلصت <Text className="text-brand-primary">{completedCount} </Text>
-              من
-              <Text className="text-brand-primary"> {totalCount} </Text>
-              مهام
-            </AppHeading>
+            {completedCount === totalCount ? (
+              <AppHeading className="text-right text-xl md:text-[26px]">
+                خلصت كل المهام
+              </AppHeading>
+            ) : (
+              <AppHeading className="text-right text-xl md:text-[26px]">
+                خلصت{" "}
+                <Text className="text-brand-primary">{completedCount} </Text>
+                من
+                <Text className="text-brand-primary"> {totalCount} </Text>
+                مهام
+              </AppHeading>
+            )}
 
-            <AppText
-              className="text-right text-sm md:text-lg"
-              tone="muted"
-              weight="regular"
-            >
-              فاضل {remainingCount} مهمات
-            </AppText>
+            {completedCount === totalCount ? (
+              <AppText
+                className="text-right text-sm md:text-lg"
+                tone="muted"
+                weight="regular"
+              >
+                عاااش! خلصت كل المهام النهاردة
+              </AppText>
+            ) : (
+              <AppText
+                className="text-right text-sm md:text-lg"
+                tone="muted"
+                weight="regular"
+              >
+                فاضل {remainingCount} مهمات
+              </AppText>
+            )}
           </View>
         </View>
 

@@ -8,20 +8,16 @@ import type { TaskDetailStatus } from "@/features/tasks/types";
 import { AppText } from "@/shared/ui/app-text";
 
 type PomodoroCardProps = {
-  taskTitle: string;
   taskStatus: TaskDetailStatus;
-  soundEnabled: boolean;
-  pomodoroState: "idle" | "running" | "paused";
+  state: "idle" | "running" | "paused";
   durationSeconds: number;
   remainingSeconds: number;
   progress: number;
-  currentSession?: number;
-  totalSessions?: number;
-  onToggleSound: () => void;
+  isTransitioning: boolean;
   onStart: () => void;
   onPause: () => void;
   onResume: () => void;
-  onStop: () => void;
+  onCancel: () => void;
   isLoading?: boolean;
 };
 
@@ -34,14 +30,15 @@ const CARD_COLORS = {
 
 export function PomodoroCard({
   taskStatus,
-  pomodoroState,
+  state,
   durationSeconds,
   remainingSeconds,
   progress,
+  isTransitioning,
   onStart,
   onPause,
   onResume,
-  onStop,
+  onCancel,
   isLoading = false,
 }: PomodoroCardProps) {
   if (isLoading) {
@@ -49,6 +46,7 @@ export function PomodoroCard({
   }
 
   const isTaskCompleted = taskStatus === "completed";
+  const showStopButton = state !== "idle" && !isTaskCompleted;
 
   const ctaAppearance = (() => {
     if (isTaskCompleted) {
@@ -60,20 +58,20 @@ export function PomodoroCard({
       };
     }
 
-    if (pomodoroState === "running") {
+    if (state === "running") {
       return {
         label: "إيقاف مؤقت",
         icon: "pause" as const,
-        disabled: false,
+        disabled: isTransitioning,
         onPress: onPause,
       };
     }
 
-    if (pomodoroState === "paused") {
+    if (state === "paused") {
       return {
         label: "كمل الجلسة",
         icon: "play" as const,
-        disabled: false,
+        disabled: isTransitioning,
         onPress: onResume,
       };
     }
@@ -81,14 +79,14 @@ export function PomodoroCard({
     return {
       label: "ابدأ الجلسة",
       icon: "play" as const,
-      disabled: false,
+      disabled: isTransitioning,
       onPress: onStart,
     };
   })();
 
   return (
     <View
-      className="border-card-border relative overflow-hidden rounded-3xl border bg-[#FFFDFB] px-5 py-4 md:px-6 md:py-10"
+      className="border-card-border relative h-fit overflow-hidden rounded-3xl border bg-[#FFFDFB] px-5 py-4 md:px-6 md:py-10"
       style={{
         shadowColor: "#000",
         shadowOpacity: 0.04,
@@ -158,26 +156,28 @@ export function PomodoroCard({
             </AppText>
           </Pressable>
 
-          {pomodoroState !== "idle" && !isTaskCompleted ? (
-            <Pressable
-              className="h-12 flex-row items-center justify-center gap-2 rounded-2xl border bg-white active:opacity-80 md:h-13 md:gap-2.5"
-              style={{ borderColor: CARD_COLORS.red }}
-              onPress={onStop}
-            >
-              <View
-                className="h-3.5 w-3.5 rounded-[4px] md:h-4 md:w-4"
-                style={{ backgroundColor: CARD_COLORS.red }}
-              />
+          <Pressable
+            className="h-12 flex-row items-center justify-center gap-2 rounded-2xl border bg-white active:opacity-80 md:h-13 md:gap-2.5"
+            style={{
+              borderColor: CARD_COLORS.red,
+              opacity: showStopButton ? 1 : 0,
+            }}
+            disabled={!showStopButton || isTransitioning}
+            onPress={onCancel}
+          >
+            <View
+              className="h-3.5 w-3.5 rounded-[4px] md:h-4 md:w-4"
+              style={{ backgroundColor: CARD_COLORS.red }}
+            />
 
-              <AppText
-                className="text-sm md:text-[15px]"
-                weight="bold"
-                style={{ color: CARD_COLORS.red }}
-              >
-                إنهاء الجلسة
-              </AppText>
-            </Pressable>
-          ) : null}
+            <AppText
+              className="text-sm md:text-[15px]"
+              weight="bold"
+              style={{ color: CARD_COLORS.red }}
+            >
+              إنهاء الجلسة
+            </AppText>
+          </Pressable>
         </View>
       </View>
     </View>

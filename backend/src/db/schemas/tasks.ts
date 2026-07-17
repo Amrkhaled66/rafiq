@@ -31,7 +31,10 @@ export const tasks = pgTable(
       .defaultNow()
       .notNull(),
   },
-  (table) => [index('tasks_plan_status_idx').on(table.planId, table.status)],
+  (table) => [
+    index('tasks_plan_status_idx').on(table.planId, table.status),
+    index('tasks_status_due_at_idx').on(table.status, table.dueAt),
+  ],
 );
 
 export const tasksRelations = relations(tasks, ({ many, one }) => ({

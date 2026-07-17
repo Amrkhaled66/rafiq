@@ -65,6 +65,9 @@ export function HomeHeader({ firstName }: HomeHeaderProps) {
   const curveHeight = isTablet ? 70 : 56;
   const textAlign = isRTL ? "right" : "left";
 
+   const currentHour = new Date().getHours();
+  const greeting =
+    currentHour >= 5 && currentHour < 12 ? "صباح الخير" : "مساء الخير";
   return (
     <View
       className="overflow-hidden"
@@ -118,7 +121,7 @@ export function HomeHeader({ firstName }: HomeHeaderProps) {
                 color: "#FFFFFF",
               }}
             >
-              صباح الخير يا {firstName} 👋
+              {greeting} يا {firstName} 👋
             </Text>
 
             <Text

@@ -3,15 +3,21 @@ import type { AuthenticatedUser } from '../authorization/types/authenticated-use
 import { ListMissedTasksQueryDto } from './dto/list-missed-tasks-query.dto';
 import { ResolveMissedTaskDto } from './dto/resolve-missed-task.dto';
 import { MissedTasksRepository } from './missed-tasks.repository';
+import { TasksService } from '../tasks/tasks.service';
 
 @Injectable()
 export class MissedTasksService {
-  constructor(private readonly missedTasksRepository: MissedTasksRepository) {}
+  constructor(
+    private readonly missedTasksRepository: MissedTasksRepository,
+    private readonly tasksService: TasksService,
+  ) {}
 
   async listMissedTasks(
     query: ListMissedTasksQueryDto,
     user: AuthenticatedUser,
   ) {
+    await this.tasksService.synchronizeMissedTasks();
+
     if (query.from && query.to && query.to < query.from) {
       throw new BadRequestException('to must be >= from');
     }
@@ -50,7 +56,11 @@ export class MissedTasksService {
     dto: ResolveMissedTaskDto,
     user: AuthenticatedUser,
   ) {
-    await this.missedTasksRepository.resolveTask(taskId, user.sub, dto.note.trim());
+    await this.missedTasksRepository.resolveTask(
+      taskId,
+      user.sub,
+      dto.note.trim(),
+    );
     return { ok: true as const };
   }
 

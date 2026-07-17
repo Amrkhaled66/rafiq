@@ -1,45 +1,65 @@
 import { useLocalSearchParams } from "expo-router";
-import { useMemo } from "react";
-import { ScrollView, View } from "react-native";
+import { useCallback, useState } from "react";
+import { Alert, RefreshControl, ScrollView, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { FloatingCompleteTaskButton } from "@/features/tasks/components/task-detail/FloatingCompleteTaskButton";
-import { PomodoroCard } from "@/features/tasks/components/task-detail/PomodoroCard";
+import { TaskPomodoroContainer } from "@/features/tasks/components/task-detail/TaskPomodoroContainer";
 import { TaskDetailHeader } from "@/features/tasks/components/task-detail/TaskDetailHeader";
 import { TaskNote } from "@/features/tasks/components/task-detail/TaskNote";
 import { TaskSessionsSection } from "@/features/tasks/components/task-detail/TaskSessionsSection";
 import { TaskSessionsStatsCard } from "@/features/tasks/components/task-detail/TaskSessionsStatsCard";
-import { MOCK_TASK_DETAILS } from "@/features/tasks/data/mock-task-detail-data";
-import { useTaskPomodoro } from "@/features/tasks/hooks/useTaskPomodoro";
+import { useAuth } from "@/features/auth/context/AuthProvider";
+import {
+  useCompleteStudentTask,
+  useStudentTaskDetail,
+} from "@/features/tasks/queries/taskQueries";
 import { AppText } from "@/shared/ui/app-text";
 import { FocusedStatusBar } from "@/shared/ui/focused-status-bar";
 
 export function TaskDetailScreen() {
-  const isLoading = false;
-  const insets = useSafeAreaInsets();
+  const [isRefreshing, setIsRefreshing] = useState(false);
+
   const params = useLocalSearchParams<{ taskId?: string }>();
-  const taskId = params.taskId ?? "t-chemistry";
-  const taskDetail = useMemo(
-    () => MOCK_TASK_DETAILS[taskId] ?? MOCK_TASK_DETAILS["t-chemistry"],
-    [taskId],
-  );
+  const parsedTaskId = Number(params.taskId);
+  const taskId =
+    Number.isInteger(parsedTaskId) && parsedTaskId > 0
+      ? parsedTaskId
+      : undefined;
 
-  const {
-    soundEnabled,
-    pomodoroState,
-    remainingSeconds,
-    totalSeconds,
-    sessions,
-    stats,
-    progress,
-    toggleSound,
-    startSession,
-    pauseSession,
-    resumeSession,
-    stopSession,
-  } = useTaskPomodoro(taskDetail);
+  const { user } = useAuth();
+  const insets = useSafeAreaInsets();
 
-  if (!taskDetail) {
+  const taskQuery = useStudentTaskDetail(taskId);
+  const completeTask = useCompleteStudentTask(taskId);
+  const { mutateAsync: completeTaskAsync } = completeTask;
+  const { refetch: refetchTaskDetail } = taskQuery;
+  const taskDetail = taskQuery.data;
+
+  const handleRefresh = useCallback(async () => {
+    setIsRefreshing(true);
+
+    try {
+      await refetchTaskDetail();
+    } finally {
+      setIsRefreshing(false);
+    }
+  }, [refetchTaskDetail]);
+
+  const handleCompleteTask = useCallback(async () => {
+    try {
+      await completeTaskAsync();
+      return true;
+    } catch {
+      Alert.alert(
+        "Task error",
+        "Could not complete the task. Please try again.",
+      );
+      return false;
+    }
+  }, [completeTaskAsync]);
+
+  if (!taskId || taskQuery.isError) {
     return (
       <View className="bg-background flex-1 items-center justify-center px-6">
         <FocusedStatusBar style="dark" />
@@ -61,45 +81,58 @@ export function TaskDetailScreen() {
           paddingBottom: insets.bottom + 50,
           paddingHorizontal: 18,
         }}
+        refreshControl={
+          <RefreshControl
+            refreshing={isRefreshing}
+            onRefresh={() => void handleRefresh()}
+          />
+        }
       >
         <View className="gap-4 md:gap-5">
-          <TaskDetailHeader isLoading={isLoading} title={taskDetail.title} />
+          <TaskDetailHeader
+            isLoading={taskQuery.isLoading}
+            title={taskDetail?.title ?? ""}
+          />
           <TaskNote
-            isLoading={isLoading}
+            isLoading={taskQuery.isLoading}
             note="هنحل من اول سؤال 15 لحد سؤال 45 في كتاب الامتحان"
           />
 
-          <PomodoroCard
-            isLoading={isLoading}
-            taskTitle={taskDetail.title}
-            taskStatus={taskDetail.status}
-            soundEnabled={soundEnabled}
-            pomodoroState={pomodoroState}
-            durationSeconds={totalSeconds}
-            remainingSeconds={remainingSeconds}
-            progress={progress}
-            onToggleSound={toggleSound}
-            onStart={startSession}
-            onPause={pauseSession}
-            onResume={resumeSession}
-            onStop={stopSession}
+          <TaskPomodoroContainer
+            studentId={user?.id}
+            taskId={taskId}
+            taskStatus={taskDetail?.status ?? "not_started"}
+            activeSession={taskDetail?.activeSession ?? null}
+            focusDurationSeconds={(taskDetail?.focusDurationMinutes ?? 0) * 60}
+            serverClockOffsetMs={taskDetail?.serverClockOffsetMs ?? 0}
+            isLoading={taskQuery.isLoading}
+            refetchTaskDetail={refetchTaskDetail}
           />
 
           <TaskSessionsStatsCard
-            isLoading={isLoading}
-            totalFocusMinutes={stats.totalFocusMinutes}
-            totalSessions={stats.totalSessions}
-            completedSessions={stats.completedSessions}
+            isLoading={taskQuery.isLoading}
+            totalFocusMinutes={taskDetail?.stats.totalFocusMinutes ?? 0}
+            totalSessions={taskDetail?.stats.totalSessions ?? 0}
+            completedSessions={taskDetail?.stats.completedSessions ?? 0}
           />
 
-          <TaskSessionsSection isLoading={isLoading} sessions={sessions} />
+          <TaskSessionsSection
+            isLoading={taskQuery.isLoading}
+            sessions={taskDetail?.sessions ?? []}
+          />
         </View>
       </ScrollView>
 
-      {!isLoading && (
+      {!taskQuery.isLoading && (
         <FloatingCompleteTaskButton
-          disabled={taskDetail.status === "completed"}
-          onConfirm={() => {}}
+          disabled={
+            !taskDetail ||
+            taskDetail.status === "completed" ||
+            Boolean(taskDetail.activeSession) ||
+            taskDetail?.stats.totalSessions === 0
+          }
+          isSubmitting={completeTask.isPending}
+          onConfirm={handleCompleteTask}
         />
       )}
     </View>

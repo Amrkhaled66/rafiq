@@ -36,6 +36,7 @@ export type SubscriptionStats = {
 export type ListSubscriptionsParams = {
   page?: number;
   limit?: number;
+  endingSoon?: boolean;
 };
 
 export type SubscriptionsResponse = {

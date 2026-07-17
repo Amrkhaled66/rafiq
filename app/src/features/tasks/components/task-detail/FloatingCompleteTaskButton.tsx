@@ -1,13 +1,20 @@
 import { Ionicons } from "@expo/vector-icons";
 import { useRef, useState } from "react";
-import { Animated, Pressable, View, useWindowDimensions } from "react-native";
+import {
+  ActivityIndicator,
+  Animated,
+  Pressable,
+  View,
+  useWindowDimensions,
+} from "react-native";
 
 import { Colors } from "@/shared/theme/theme";
 import { AppText } from "@/shared/ui/app-text";
 
 type FloatingCompleteTaskButtonProps = {
   disabled?: boolean;
-  onConfirm: () => void;
+  isSubmitting?: boolean;
+  onConfirm: () => Promise<boolean>;
 };
 
 const PALETTE = {
@@ -23,6 +30,7 @@ const PALETTE = {
 
 export function FloatingCompleteTaskButton({
   disabled = false,
+  isSubmitting = false,
   onConfirm,
 }: FloatingCompleteTaskButtonProps) {
   const { width } = useWindowDimensions();
@@ -84,9 +92,14 @@ export function FloatingCompleteTaskButton({
     });
   };
 
-  const confirmAndClose = () => {
-    onConfirm();
-    closeConfirm();
+  const confirmAndClose = async () => {
+    if (isSubmitting) return;
+
+    const succeeded = await onConfirm();
+
+    if (succeeded) {
+      closeConfirm();
+    }
   };
 
   const widthAnimated = shellProgress.interpolate({
@@ -230,10 +243,17 @@ export function FloatingCompleteTaskButton({
 
             <View className="flex-row-reverse gap-2 md:gap-2.5">
               <Pressable
-                onPress={confirmAndClose}
+                disabled={isSubmitting}
+                onPress={() => void confirmAndClose()}
                 className="h-11 flex-1 flex-row items-center justify-center gap-2 rounded-full px-5 active:opacity-90 md:h-12 md:px-6"
-                style={{ backgroundColor: PALETTE.brand }}
+                style={{
+                  backgroundColor: PALETTE.brand,
+                  opacity: isSubmitting ? 0.7 : 1,
+                }}
               >
+                {isSubmitting && (
+                  <ActivityIndicator size="small" color={PALETTE.white} />
+                )}
                 <AppText
                   className="text-sm md:text-[15px]"
                   tone="inverse"
@@ -244,11 +264,13 @@ export function FloatingCompleteTaskButton({
               </Pressable>
 
               <Pressable
+                disabled={isSubmitting}
                 onPress={closeConfirm}
                 className="h-11 flex-1 flex-row items-center justify-center gap-2 rounded-full border px-5 active:opacity-90 md:h-12 md:px-6"
                 style={{
                   backgroundColor: PALETTE.white,
                   borderColor: PALETTE.brandMuted,
+                  opacity: isSubmitting ? 0.6 : 1,
                 }}
               >
                 <AppText

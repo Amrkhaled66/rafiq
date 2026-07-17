@@ -1,7 +1,12 @@
 import { Type } from 'class-transformer';
 import { IsIn, IsInt, IsOptional, Matches, Max, Min } from 'class-validator';
 
-const SESSION_STATUS_VALUES = ['running', 'completed', 'stopped'] as const;
+const SESSION_STATUS_VALUES = [
+  'running',
+  'paused',
+  'completed',
+  'cancelled',
+] as const;
 
 export class ListTaskSessionsQueryDto {
   @IsOptional()

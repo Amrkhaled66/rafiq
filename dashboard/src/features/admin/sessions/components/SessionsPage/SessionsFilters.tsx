@@ -1,6 +1,7 @@
+﻿import DebouncedSearchField from "@/features/admin/shared/components/DebouncedSearchField";
 import DropDownMenu from "@/shared/components/DropDownMenu";
 import FormInput from "@/shared/components/FormInput";
-
+import { SESSION_STATUS_FILTER_OPTIONS } from "@/features/admin/sessions/constants/sessionStatus";
 import type { SessionStatus } from "@/features/admin/sessions/services/sessionService";
 
 export default function SessionsFilters({
@@ -25,24 +26,19 @@ export default function SessionsFilters({
   return (
     <section className="dashboard-card">
       <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
-        <FormInput
+        <DebouncedSearchField
           label="رقم هاتف الطالب"
           name="sessions-student-phone"
           placeholder="ابحث برقم الهاتف"
           value={studentPhone}
-          onChange={(event) => onStudentPhoneChange(event.target.value)}
+          onChange={onStudentPhoneChange}
         />
 
         <DropDownMenu
           label="الحالة"
           value={status}
           placeholder="كل الحالات"
-          items={[
-            { label: "كل الحالات", value: "" },
-            { label: "جارية", value: "running" },
-            { label: "مكتملة", value: "completed" },
-            { label: "متوقفة", value: "stopped" },
-          ]}
+          items={SESSION_STATUS_FILTER_OPTIONS}
           onChange={(value) => onStatusChange(value as "" | SessionStatus)}
         />
 

@@ -37,7 +37,11 @@ export class SubscriptionsService {
 
     const [stats, list] = await Promise.all([
       this.subscriptionsRepository.getSubscriptionStats(),
-      this.subscriptionsRepository.listSubscriptions(page, limit),
+      this.subscriptionsRepository.listSubscriptions({
+        page,
+        limit,
+        endingSoon: query.endingSoon,
+      }),
     ]);
 
     return {

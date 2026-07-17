@@ -123,8 +123,20 @@ export class SubscriptionsRepository {
     return Boolean(intersects);
   }
 
-  async listSubscriptions(page: number, limit: number) {
-    const offset = (page - 1) * limit;
+  async listSubscriptions(input: {
+    page: number;
+    limit: number;
+    endingSoon?: boolean;
+  }) {
+    const offset = (input.page - 1) * input.limit;
+    const endingSoonCondition = input.endingSoon
+      ? and(
+          isNull(subscriptions.cancelledAt),
+          lte(subscriptions.startsAt, sql`current_date`),
+          gte(subscriptions.endsAt, sql`current_date`),
+          lte(subscriptions.endsAt, sql`current_date + interval '7 days'`),
+        )
+      : undefined;
 
     const items = await this.database
       .select({
@@ -150,18 +162,20 @@ export class SubscriptionsRepository {
         subscriptionPackages,
         eq(subscriptions.packageId, subscriptionPackages.id),
       )
+      .where(endingSoonCondition)
       .orderBy(desc(subscriptions.createdAt))
-      .limit(limit)
+      .limit(input.limit)
       .offset(offset);
 
     const [{ total }] = await this.database
       .select({ total: count() })
-      .from(subscriptions);
+      .from(subscriptions)
+      .where(endingSoonCondition);
 
     return {
       items: items as SubscriptionListRow[],
-      page,
-      limit,
+      page: input.page,
+      limit: input.limit,
       total: Number(total ?? 0),
     };
   }
@@ -222,7 +236,7 @@ export class SubscriptionsRepository {
         activeSubscriptions:
           sql<number>`count(${subscriptions.id}) filter (where ${subscriptions.cancelledAt} is null and current_date >= ${subscriptions.startsAt} and current_date <= ${subscriptions.endsAt})`,
         soonEndingSubscriptions:
-          sql<number>`count(${subscriptions.id}) filter (where ${subscriptions.cancelledAt} is null and current_date <= ${subscriptions.endsAt} and ${subscriptions.endsAt} <= current_date + interval '7 days')`,
+          sql<number>`count(${subscriptions.id}) filter (where ${subscriptions.cancelledAt} is null and ${subscriptions.startsAt} <= current_date and current_date <= ${subscriptions.endsAt} and ${subscriptions.endsAt} <= current_date + interval '7 days')`,
         endedSubscriptions:
           sql<number>`count(${subscriptions.id}) filter (where ${subscriptions.cancelledAt} is null and current_date > ${subscriptions.endsAt})`,
       })

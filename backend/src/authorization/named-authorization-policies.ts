@@ -223,7 +223,71 @@ export const namedAuthorizationPolicies: NamedAuthorizationPolicy[] = [
     requirements: [requireAnyRole(['coach', 'super_admin'])],
   },
   {
+    name: 'task_sessions.pause',
+    lookup: { key: 'sessionId', kind: 'resourceId', source: 'params' },
+    requirements: [
+      requireAnyRole(['student', 'coach', 'super_admin']),
+      requireStudentResourceAccess('task_session'),
+    ],
+  },
+  {
+    name: 'task_sessions.resume',
+    lookup: { key: 'sessionId', kind: 'resourceId', source: 'params' },
+    requirements: [
+      requireAnyRole(['student', 'coach', 'super_admin']),
+      requireStudentResourceAccess('task_session'),
+    ],
+  },
+  {
+    name: 'task_sessions.cancel',
+    lookup: { key: 'sessionId', kind: 'resourceId', source: 'params' },
+    requirements: [
+      requireAnyRole(['student', 'coach', 'super_admin']),
+      requireStudentResourceAccess('task_session'),
+    ],
+  },
+  {
+    name: 'task_sessions.complete',
+    lookup: { key: 'sessionId', kind: 'resourceId', source: 'params' },
+    requirements: [
+      requireAnyRole(['student', 'coach', 'super_admin']),
+      requireStudentResourceAccess('task_session'),
+    ],
+  },
+  {
     name: 'tasks.list_today_by_student',
+    lookup: { key: 'studentId', kind: 'studentId', source: 'params' },
+    requirements: [
+      requireAnyRole(['student', 'coach', 'super_admin']),
+      requireStudentResourceAccess('student_profile'),
+    ],
+  },
+  {
+    name: 'tasks.read_by_student',
+    lookup: { key: 'studentId', kind: 'studentId', source: 'params' },
+    requirements: [
+      requireAnyRole(['student', 'coach', 'super_admin']),
+      requireStudentResourceAccess('student_profile'),
+    ],
+  },
+  {
+    name: 'tasks.complete_by_student',
+    lookup: { key: 'studentId', kind: 'studentId', source: 'params' },
+    requirements: [
+      requireAnyRole(['student', 'coach', 'super_admin']),
+      requireStudentResourceAccess('student_profile'),
+    ],
+  },
+  {
+    name: 'tasks.sessions.list_by_student',
+    lookup: { key: 'studentId', kind: 'studentId', source: 'params' },
+    requirements: [
+      requireAnyRole(['student', 'coach', 'super_admin']),
+      requireStudentResourceAccess('student_profile'),
+    ],
+  },
+  {
+    name: 'tasks.sessions.start_by_student',
     lookup: { key: 'studentId', kind: 'studentId', source: 'params' },
     requirements: [
       requireAnyRole(['student', 'coach', 'super_admin']),

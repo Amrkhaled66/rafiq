@@ -1,5 +1,5 @@
 import { Icon } from "@iconify/react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 import Button from "@/shared/components/Button";
 import GradeBadge from "@/shared/components/GradeBadge";
@@ -19,7 +19,6 @@ export default function StudentPlansHeader({
 }: {
   student: StudentPlansHeaderStudent;
 }) {
-  const navigate = useNavigate();
   const initials = getUserInitials(student.fullName);
 
   return (

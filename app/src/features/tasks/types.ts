@@ -79,17 +79,56 @@ export type TaskSessionStatus =
   | "paused";
 
 export type TaskSessionItem = {
-  id: string;
+  id: number;
+  taskId?: number;
+  studentId?: number;
   startedAt: string;
+  endedAt?: string | null;
+  expectedEndAt?: string | null;
+  activeSegmentStartedAt?: string | null;
   durationSeconds: number;
   status: TaskSessionStatus;
 };
 
+export type TaskSessionStats = {
+  totalFocusMinutes: number;
+  totalSessions: number;
+  completedSessions: number;
+};
+
 export type TaskDetailItem = {
-  id: string;
+  serverNow?: string;
+  serverClockOffsetMs?: number;
+  id: number;
   title: string;
   subject: string;
   status: TaskDetailStatus;
   focusDurationMinutes: number;
+  stats?: TaskSessionStats;
+  activeSession?: TaskSessionItem | null;
   sessions: TaskSessionItem[];
+};
+
+export type TaskDetailResponse = {
+  serverNow: string;
+  serverClockOffsetMs: number;
+  id: number;
+  title: string;
+  subject: string;
+  status: TaskDetailStatus;
+  focusDurationMinutes: number;
+  stats: TaskSessionStats;
+  activeSession: TaskSessionItem | null;
+  sessions: TaskSessionItem[];
+};
+
+export type TaskSessionsResponse = {
+  items: TaskSessionItem[];
+  total: number;
+};
+
+export type CompleteStudentTaskResponse = {
+  id: number;
+  status: "completed";
+  completedAt: string;
 };

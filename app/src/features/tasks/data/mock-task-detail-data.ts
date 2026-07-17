@@ -2,25 +2,25 @@ import type { TaskDetailItem } from "@/features/tasks/types";
 
 const baseSessions = {
   running: {
-    id: "session-3",
+    id: 3,
     startedAt: "2026-06-07T21:15:00+03:00",
     durationSeconds: 18 * 60,
     status: "running",
   },
   completed: {
-    id: "session-2",
+    id: 2,
     startedAt: "2026-06-06T18:30:00+03:00",
     durationSeconds: 25 * 60,
     status: "completed",
   },
   cancelled: {
-    id: "session-1",
+    id: 1,
     startedAt: "2026-06-05T20:10:00+03:00",
     durationSeconds: 12 * 60,
     status: "cancelled",
   },
   paused: {
-    id: "session-0",
+    id: 0,
     startedAt: "2026-06-01T19:45:00+03:00",
     durationSeconds: 20 * 60,
     status: "paused",
@@ -29,7 +29,7 @@ const baseSessions = {
 
 export const MOCK_TASK_DETAILS: Record<string, TaskDetailItem> = {
   "t-chemistry": {
-    id: "t-chemistry",
+    id: 1001,
     title: "حل واجب الكيمياء",
     subject: "chemistry",
     status: "in_progress",
@@ -42,7 +42,7 @@ export const MOCK_TASK_DETAILS: Record<string, TaskDetailItem> = {
     ],
   },
   "t-physics": {
-    id: "t-physics",
+    id: 1002,
     title: "حل واجب الفيزياء",
     subject: "physics",
     status: "in_progress",
@@ -50,7 +50,7 @@ export const MOCK_TASK_DETAILS: Record<string, TaskDetailItem> = {
     sessions: [baseSessions.completed, baseSessions.cancelled, baseSessions.paused],
   },
   "t-biology": {
-    id: "t-biology",
+    id: 1003,
     title: "مراجعة الأحياء",
     subject: "biology",
     status: "completed",
@@ -58,7 +58,7 @@ export const MOCK_TASK_DETAILS: Record<string, TaskDetailItem> = {
     sessions: [baseSessions.completed, baseSessions.completed],
   },
   "t-math-1": {
-    id: "t-math-1",
+    id: 1004,
     title: "تدريبات الرياضيات",
     subject: "math",
     status: "not_started",
@@ -66,7 +66,7 @@ export const MOCK_TASK_DETAILS: Record<string, TaskDetailItem> = {
     sessions: [baseSessions.paused, baseSessions.cancelled],
   },
   "t-arabic": {
-    id: "t-arabic",
+    id: 1005,
     title: "تلخيص نص القراءة",
     subject: "arabic",
     status: "in_progress",
@@ -74,7 +74,7 @@ export const MOCK_TASK_DETAILS: Record<string, TaskDetailItem> = {
     sessions: [baseSessions.completed, baseSessions.paused],
   },
   "101": {
-    id: "101",
+    id: 101,
     title: "حل واجب الفيزياء",
     subject: "physics",
     status: "in_progress",
@@ -82,7 +82,7 @@ export const MOCK_TASK_DETAILS: Record<string, TaskDetailItem> = {
     sessions: [baseSessions.completed, baseSessions.running],
   },
   "102": {
-    id: "102",
+    id: 102,
     title: "مراجعة الأحياء",
     subject: "biology",
     status: "completed",
@@ -90,7 +90,7 @@ export const MOCK_TASK_DETAILS: Record<string, TaskDetailItem> = {
     sessions: [baseSessions.completed],
   },
   "103": {
-    id: "103",
+    id: 103,
     title: "تدريبات الرياضيات",
     subject: "math",
     status: "not_started",
@@ -98,7 +98,7 @@ export const MOCK_TASK_DETAILS: Record<string, TaskDetailItem> = {
     sessions: [baseSessions.paused],
   },
   "104": {
-    id: "104",
+    id: 104,
     title: "تلخيص نص القراءة",
     subject: "arabic",
     status: "in_progress",
@@ -106,7 +106,7 @@ export const MOCK_TASK_DETAILS: Record<string, TaskDetailItem> = {
     sessions: [baseSessions.completed, baseSessions.cancelled],
   },
   "105": {
-    id: "105",
+    id: 105,
     title: "مراجعة الباب الثالث",
     subject: "chemistry",
     status: "not_started",
@@ -114,7 +114,7 @@ export const MOCK_TASK_DETAILS: Record<string, TaskDetailItem> = {
     sessions: [baseSessions.cancelled],
   },
   "106": {
-    id: "106",
+    id: 106,
     title: "حل كلمات الإنجليزي",
     subject: "english",
     status: "completed",
@@ -122,7 +122,7 @@ export const MOCK_TASK_DETAILS: Record<string, TaskDetailItem> = {
     sessions: [baseSessions.completed, baseSessions.completed],
   },
   "107": {
-    id: "107",
+    id: 107,
     title: "قراءة أسئلة التاريخ",
     subject: "history",
     status: "not_started",

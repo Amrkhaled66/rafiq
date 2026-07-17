@@ -32,8 +32,9 @@ export const taskStatusEnum = pgEnum('task_status', [
 
 export const sessionStatusEnum = pgEnum('session_status', [
   'running',
+  'paused',
   'completed',
-  'stopped',
+  'cancelled',
 ]);
 
 export const lessonWeekdayEnum = pgEnum('lesson_weekday', [

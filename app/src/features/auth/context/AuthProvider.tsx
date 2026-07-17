@@ -1,14 +1,17 @@
 import React, {
   PropsWithChildren,
+  useCallback,
   createContext,
   useContext,
   useEffect,
+  useMemo,
+  useRef,
   useState,
 } from "react";
 import * as authStorage from "@/features/auth/storage/authStorage";
 import type { AuthUser } from "@/features/auth/types";
 import { router } from "expo-router";
-import { useAxiosInterceptor } from "@/shared/hooks/useAxiosInterceptor";
+import { setAccessToken, setUnauthorizedHandler } from "@/lib/api";
 type AuthState = {
   user: AuthUser | null;
   token: string | null;
@@ -18,14 +21,10 @@ type AuthState = {
 
 const AuthContext = createContext<AuthState | null>(null);
 
-function AuthInterceptorBridge() {
-  useAxiosInterceptor();
-  return null;
-}
-
 export function AuthProvider({ children }: PropsWithChildren) {
   const [user, setUser] = useState<AuthUser | null>(null);
   const [token, setToken] = useState<string | null>(null);
+  const isHandlingUnauthorizedRef = useRef(false);
 
   useEffect(() => {
     (async () => {
@@ -44,26 +43,52 @@ export function AuthProvider({ children }: PropsWithChildren) {
     })();
   }, []);
 
-  async function login(nextUser: AuthUser, nextToken: string) {
+  useEffect(() => {
+    setAccessToken(token);
+  }, [token]);
+
+  const login = useCallback(async (nextUser: AuthUser, nextToken: string) => {
     await authStorage.setToken(nextToken);
     await authStorage.setUser(JSON.stringify(nextUser));
     setToken(nextToken);
     setUser(nextUser);
-  }
+  }, []);
 
-  async function logout() {
+  const logout = useCallback(async () => {
     await authStorage.clearToken();
     await authStorage.clearUser();
     setToken(null);
     setUser(null);
     router.push("/login");
-  }
+  }, []);
+
+  useEffect(() => {
+    setUnauthorizedHandler(async () => {
+      if (isHandlingUnauthorizedRef.current) {
+        return;
+      }
+
+      isHandlingUnauthorizedRef.current = true;
+
+      try {
+        await logout();
+      } finally {
+        isHandlingUnauthorizedRef.current = false;
+      }
+    });
+
+    return () => {
+      setUnauthorizedHandler(null);
+    };
+  }, [logout]);
+
+  const contextValue = useMemo(
+    () => ({ user, token, login, logout }),
+    [user, token, login, logout],
+  );
 
   return (
-    <AuthContext.Provider value={{ user, token, login, logout }}>
-      <AuthInterceptorBridge />
-      {children}
-    </AuthContext.Provider>
+    <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>
   );
 }
 

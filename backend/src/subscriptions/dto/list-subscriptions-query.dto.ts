@@ -1,5 +1,6 @@
 import { Type } from 'class-transformer';
-import { IsInt, IsOptional, Max, Min } from 'class-validator';
+import { Transform } from 'class-transformer';
+import { IsBoolean, IsInt, IsOptional, Max, Min } from 'class-validator';
 
 export class ListSubscriptionsQueryDto {
   @IsOptional()
@@ -14,4 +15,9 @@ export class ListSubscriptionsQueryDto {
   @Min(1)
   @Max(100)
   limit: number = 10;
+
+  @IsOptional()
+  @Transform(({ value }) => value === true || value === 'true')
+  @IsBoolean()
+  endingSoon?: boolean;
 }

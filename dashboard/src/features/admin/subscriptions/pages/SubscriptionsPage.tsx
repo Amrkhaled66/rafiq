@@ -4,6 +4,9 @@ import { useNavigate } from "react-router-dom";
 import CreateSubscriptionModal from "@/features/admin/subscriptions/components/SubscriptionsPage/CreateSubscriptionModal";
 import SubscriptionsStatsSection from "@/features/admin/subscriptions/components/SubscriptionsPage/SubscriptionsStatsSection";
 import SubscriptionsTable from "@/features/admin/subscriptions/components/SubscriptionsPage/SubscriptionsTable";
+import SubscriptionsFilters, {
+  type SubscriptionEndingFilter,
+} from "@/features/admin/subscriptions/components/SubscriptionsPage/SubscriptionsFilters";
 import { useSubscriptionsActions } from "@/features/admin/subscriptions/hooks/useSubscriptionsActions";
 import {
   useSubscriptionPackagesQuery,
@@ -12,13 +15,17 @@ import {
 import PageHeader from "@/features/admin/shared/components/PageHeader";
 import useServerPagination from "@/features/admin/shared/hooks/useServerPagination";
 import Button from "@/shared/components/Button";
+import { useState } from "react";
 
 export default function SubscriptionsPage() {
   const navigate = useNavigate();
   const pagination = useServerPagination();
+  const [endingFilter, setEndingFilter] =
+    useState<SubscriptionEndingFilter>("");
   const subscriptionsQuery = useSubscriptionsQuery({
     page: pagination.page,
     limit: pagination.limit,
+    endingSoon: endingFilter === "ending_soon" ? true : undefined,
   });
   const packagesQuery = useSubscriptionPackagesQuery();
   const actions = useSubscriptionsActions();
@@ -42,6 +49,11 @@ export default function SubscriptionsPage() {
   }
 
   const { stats, items, total, page, limit } = subscriptionsQuery.data;
+
+  const handleEndingFilterChange = (value: SubscriptionEndingFilter) => {
+    setEndingFilter(value);
+    pagination.setPage(1);
+  };
 
   return (
     <div className="space-y-6">
@@ -70,6 +82,11 @@ export default function SubscriptionsPage() {
       />
 
       <SubscriptionsStatsSection stats={stats} />
+
+      <SubscriptionsFilters
+        endingFilter={endingFilter}
+        onEndingFilterChange={handleEndingFilterChange}
+      />
 
       <SubscriptionsTable
         items={items}

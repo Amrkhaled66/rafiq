@@ -1,4 +1,4 @@
-import { Icon } from "@iconify/react";
+﻿import { Icon } from "@iconify/react";
 
 import type { SessionStats } from "@/features/admin/sessions/services/sessionService";
 import StatCard from "@/features/admin/shared/components/StatCard";
@@ -24,16 +24,22 @@ export default function SessionsStatsSection({
         icon={<Icon icon="solar:play-circle-linear" className="size-7" />}
       />
       <StatCard
+        title="الجلسات المتوقفة"
+        value={stats.pausedSessions}
+        color="#b45309"
+        icon={<Icon icon="solar:pause-circle-linear" className="size-7" />}
+      />
+      <StatCard
         title="الجلسات المكتملة"
         value={stats.completedSessions}
         color="#15803d"
         icon={<Icon icon="solar:check-circle-linear" className="size-7" />}
       />
       <StatCard
-        title="الجلسات المتوقفة"
-        value={stats.stoppedSessions}
-        color="#b45309"
-        icon={<Icon icon="solar:stop-circle-linear" className="size-7" />}
+        title="الجلسات الملغاة"
+        value={stats.cancelledSessions}
+        color="#64748b"
+        icon={<Icon icon="solar:close-circle-linear" className="size-7" />}
       />
     </StatsRow>
   );

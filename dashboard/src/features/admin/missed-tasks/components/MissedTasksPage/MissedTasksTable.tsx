@@ -30,7 +30,7 @@ function ResolvedBadge({
       : "محلولة"
     : "غير محلولة";
 
-  return (
+  return isResolved ? (
     <InfoTooltipCell tooltipText={resolvedText} tooltipLabel="عرض حالة الحل">
       <span
         className={`inline-flex rounded-full px-3 py-1 text-xs font-medium text-nowrap ${
@@ -42,6 +42,16 @@ function ResolvedBadge({
         {isResolved ? "محلولة" : "غير محلولة"}
       </span>
     </InfoTooltipCell>
+  ) : (
+    <span
+      className={`inline-flex rounded-full px-3 py-1 text-xs font-medium text-nowrap ${
+        isResolved
+          ? "bg-emerald-100 text-emerald-700"
+          : "bg-amber-100 text-amber-900"
+      }`}
+    >
+      {isResolved ? "محلولة" : "غير محلولة"}
+    </span>
   );
 }
 
@@ -105,7 +115,9 @@ export default function MissedTasksTable({
             type="button"
             className="text-brand-primary text-sm font-medium hover:underline"
             onClick={() =>
-              navigate(`/${urls.dashBoardUrl}/students/${row.studentId}/plans/${row.planId}`)
+              navigate(
+                `/${urls.dashBoardUrl}/students/${row.studentId}/plans/${row.planId}`,
+              )
             }
           >
             {row.planName}
@@ -173,7 +185,7 @@ export default function MissedTasksTable({
       cell: (row) => (
         <Button
           variant={row.isResolved ? "outline" : "primary"}
-          className="px-3 py-1.5 text-sm"
+          className="text-xs!"
           isLoading={resolvingTaskId === row.taskId}
           onClick={() => (row.isResolved ? onUnresolve(row) : onResolve(row))}
         >

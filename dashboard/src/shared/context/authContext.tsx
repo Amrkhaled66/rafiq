@@ -1,4 +1,14 @@
-import { createContext, useContext, useState, type ReactNode } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+  type ReactNode,
+} from "react";
+import { setUnauthorizedHandler } from "@/lib/api";
+import { urls } from "@/shared/const/urls";
 import {
   clearToken,
   getToken,
@@ -38,29 +48,49 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
       token,
     };
   });
-  const updateUser = (user: IUser) => {
+  const updateUser = useCallback((user: IUser) => {
     setAuthData((prev) => ({ ...prev, user }));
     setUser(user);
-  };
+  }, []);
 
-  const login = (user: IUser, token: string) => {
+  const login = useCallback((user: IUser, token: string) => {
     setAuthData({ user, token });
     setToken(token);
     setUser(user);
-  };
-  const logout = () => {
+  }, []);
+
+  const logout = useCallback(() => {
     clearToken();
     clearUser();
     setAuthData({ user: null, token: null });
-  };
+  }, []);
+
+  useEffect(() => {
+    setUnauthorizedHandler(() => {
+      logout();
+
+      const signinPath = `/${urls.dashBoardUrl}/signin`;
+      if (window.location.pathname !== signinPath) {
+        window.location.assign(signinPath);
+      }
+    });
+
+    return () => {
+      setUnauthorizedHandler(null);
+    };
+  }, [logout]);
+
   const isAuthenticated = !!authData.token && !!authData.user;
-  const contextValue = {
-    authData,
-    login,
-    logout,
-    isAuthenticated,
-    updateUser,
-  };
+  const contextValue = useMemo(
+    () => ({
+      authData,
+      login,
+      logout,
+      isAuthenticated,
+      updateUser,
+    }),
+    [authData, isAuthenticated, login, logout, updateUser],
+  );
 
   return (
     <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>

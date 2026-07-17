@@ -10,5 +10,6 @@ import { TaskSessionsService } from './task-sessions.service';
   imports: [AuthModule, AuthorizationModule, DbModule],
   controllers: [TaskSessionsController],
   providers: [TaskSessionsRepository, TaskSessionsService],
+  exports: [TaskSessionsRepository, TaskSessionsService],
 })
 export class TaskSessionsModule {}

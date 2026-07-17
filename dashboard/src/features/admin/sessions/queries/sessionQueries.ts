@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
 
 import {
   getTaskSessions,
@@ -11,5 +11,6 @@ export function useTaskSessionsQuery(params: ListTaskSessionsParams = {}) {
   return useQuery({
     queryKey: [...taskSessionsQueryKey, params],
     queryFn: () => getTaskSessions(params),
+    placeholderData: keepPreviousData,
   });
 }

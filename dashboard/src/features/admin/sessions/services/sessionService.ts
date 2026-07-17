@@ -1,12 +1,14 @@
 import { api } from "@/lib/api";
 
-export type SessionStatus = "running" | "completed" | "stopped";
+import type { SessionStatus } from "@/features/admin/sessions/constants/sessionStatus";
+export type { SessionStatus } from "@/features/admin/sessions/constants/sessionStatus";
 
 export type SessionStats = {
   totalSessions: number;
   runningSessions: number;
+  pausedSessions: number;
   completedSessions: number;
-  stoppedSessions: number;
+  cancelledSessions: number;
 };
 
 export type TaskSessionRow = {
@@ -19,6 +21,7 @@ export type TaskSessionRow = {
   planName: string;
   startedAt: string;
   endedAt: string | null;
+  durationSeconds: number;
   status: SessionStatus;
 };
 

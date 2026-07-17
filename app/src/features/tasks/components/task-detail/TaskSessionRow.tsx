@@ -49,7 +49,7 @@ export function TaskSessionRow({ session, index }: TaskSessionRowProps) {
                 className={`text-base md:text-[17px] ${dir.textAlign}`}
                 weight="bold"
               >
-                {`الجلسة ${index}`}
+                {`الجلسة ${index+1}`}
               </AppText>
 
               <AppText

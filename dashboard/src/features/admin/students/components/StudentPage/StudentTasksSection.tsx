@@ -6,7 +6,7 @@ import Table from "@/shared/components/Table";
 function TaskStatusBadge({ status }: { status: string }) {
   const statusMap: Record<string, { label: string; className: string }> = {
     pending: {
-      label: "متبقي",
+      label: "لسا مكتملش",
       className: "bg-amber-100 text-amber-700",
     },
     done: {
