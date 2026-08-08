@@ -1,4 +1,4 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   getMissedTasks,
   resolveMissedTask,
@@ -12,6 +12,7 @@ export function useMissedTasksQuery(params: ListMissedTasksParams = {}) {
   return useQuery({
     queryKey: [...missedTasksQueryKey, params],
     queryFn: () => getMissedTasks(params),
+    placeholderData: keepPreviousData,
   });
 }
 

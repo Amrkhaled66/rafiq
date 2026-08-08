@@ -6,7 +6,7 @@ export default function HeroHeader() {
   return (
     <div className="relative z-10 mx-auto flex max-w-3xl flex-col items-center text-center">
       <InfoBadge
-        text="منصة تنظيم المذاكرة الأولى في مصر"
+        text="رفيقك في رحلة الثانوية العامة"
         icon="game-icons:graduate-cap"
       />
 

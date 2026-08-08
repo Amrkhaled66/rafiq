@@ -1,6 +1,6 @@
 import { create } from "axios";
 
-const baseURL = process.env.EXPO_PUBLIC_API_URL ?? "http://192.168.1.8:5555";
+const baseURL = process.env.EXPO_PUBLIC_API_URL ?? "http://192.168.1.7:5555";
 
 let accessToken: string | null = null;
 let unauthorizedHandler: (() => void | Promise<void>) | null = null;

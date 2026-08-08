@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import type { TableColumn } from "react-data-table-component";
 
 import type { MissedTaskRow } from "@/features/admin/missed-tasks/services/missedTasksService";
+import MissedTasksTableSkeleton from "@/features/admin/missed-tasks/components/MissedTasksPage/MissedTasksTableSkeleton";
 import AdminServerTable from "@/features/admin/shared/components/AdminServerTable";
 import InfoTooltipCell from "@/features/admin/shared/components/InfoTooltipCell";
 import Button from "@/shared/components/Button";
@@ -60,7 +61,8 @@ export default function MissedTasksTable({
   total,
   page,
   limit,
-  isLoading,
+  isInitialLoading,
+  isFetching,
   canReadCoaches,
   resolvingTaskId,
   onResolve,
@@ -72,7 +74,8 @@ export default function MissedTasksTable({
   total: number;
   page: number;
   limit: number;
-  isLoading: boolean;
+  isInitialLoading: boolean;
+  isFetching: boolean;
   canReadCoaches: boolean;
   resolvingTaskId: number | null;
   onResolve: (task: MissedTaskRow) => void;
@@ -200,6 +203,10 @@ export default function MissedTasksTable({
     return baseColumns;
   }, [canReadCoaches, navigate, onResolve, onUnresolve, resolvingTaskId]);
 
+  if (isInitialLoading) {
+    return <MissedTasksTableSkeleton />;
+  }
+
   return (
     <section className="dashboard-card">
       <div className="mb-5 text-right">
@@ -214,7 +221,7 @@ export default function MissedTasksTable({
       <AdminServerTable
         columns={columns}
         data={items}
-        isLoading={isLoading}
+        isLoading={isFetching}
         loadingText="جاري تحميل المهام الفائتة..."
         noDataText="لا توجد مهام فائتة لعرضها"
         currentPage={page}

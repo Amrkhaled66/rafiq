@@ -15,14 +15,14 @@ export default function Home() {
       <Navbar />
     <main className="w-full">
       <HeroSection />
-      <SeatsStatusBarSection/>
+      {/* <SeatsStatusBarSection/> */}
       <ProblemSection />
       <SolveSection />
       {/* <SeatsSection /> */}
       <PricingSection />
       <CTASection />
       {/* <Footer /> */}
-      <FloatingSeatBadge/>
+      {/* <FloatingSeatBadge/> */}
     </main>
     </>
   );
