@@ -25,12 +25,12 @@ const NewLeadModal = ({ isOpen, onClose, onSubmit }: NewLeadModalProps) => {
   return (
     <Model isOpen={isOpen} onClose={onClose}>
       <div dir="rtl" className="relative mx-auto min-w-full lg:min-w-130">
-        <div className="relative overflow-hidden rounded-[28px] bg-white p-6 sm:p-8">
+        <div className="relative overflow-hidden rounded-[28px] bg-white p-6 py-9 sm:p-8">
           <button
             type="button"
             onClick={onClose}
             aria-label="إغلاق"
-            className="absolute left-5 top-5 flex size-7 md:size-9 items-center justify-center rounded-full bg-[#f5f5f5] text-xl text-[#777] transition hover:bg-[#eeeeee] hover:text-brand-primary"
+            className="absolute left-5 top-3 flex size-7 md:size-9 items-center justify-center rounded-full bg-[#f5f5f5] text-xl text-[#777] transition hover:bg-[#eeeeee] hover:text-brand-primary"
           >
             ×
           </button>

@@ -1,4 +1,5 @@
 import InfoBadge from "@/src/components/shared/InfoBedge";
+import ScrollRevealHeading from "@/src/components/shared/ScrollRevealHeading";
 
 export default function PricingHeader() {
     return (
@@ -9,10 +10,10 @@ export default function PricingHeader() {
                 text="سعر الاشتراك"
             />
 
-            <h2 className="section-title max-w-xl lg:max-w-none lg:text-nowrap">
+            <ScrollRevealHeading className="max-w-xl lg:max-w-none lg:text-nowrap">
                 <span>ابدأ مع رفيق بـــ</span>
                 <span className="text-brand-primary text-4xl sm:text-5xl md:text-6xl">{" "}199 جنيه</span>
-            </h2>
+            </ScrollRevealHeading>
 
             <p className="section-subTitle max-w-sm">
                 كل اللي هتحتاجه علشان تنظم مذاكرتك، وتلتزم بخطتك، وتلاقي متابعة حقيقية تساعدك تكمل.

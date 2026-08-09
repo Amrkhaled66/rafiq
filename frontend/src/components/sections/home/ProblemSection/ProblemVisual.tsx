@@ -1,10 +1,19 @@
+"use client";
+
+import { useRef } from "react";
 import Image from "next/image";
+import { useGSAP } from "@gsap/react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import ProblemCard from "./ProblemCard";
 import studentConfusing from "@/src/assets/student-confusing.png";
 import targetIcon from "@/src/assets/target-icon.png";
 import questionIcon from "@/src/assets/question.png";
 import calenderIcon from "@/src/assets/calender-icon.png";
 import clockIcon from "@/src/assets/clock.png";
+
+gsap.registerPlugin(useGSAP, ScrollTrigger);
+
 const problemCards = [
   {
     title: "مفيش التزام",
@@ -41,8 +50,37 @@ const problemCards = [
 ];
 
 export default function ProblemVisual() {
+  const container = useRef<HTMLDivElement>(null);
+
+  useGSAP(
+    () => {
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        return;
+      }
+
+      gsap.from("[data-problem-decoration]", {
+        autoAlpha: 0,
+        y: 14,
+        duration: 0.55,
+        ease: "power2.out",
+        stagger: 0.08,
+        scrollTrigger: {
+          trigger: container.current,
+          start: "top 50%",
+          toggleActions: "play none none reverse",
+          once: true,
+          // markers: true,
+        },
+      });
+    },
+    { scope: container },
+  );
+
   return (
-    <div className="flex lg:block flex-col-reverse overflow-hidden sm:drop-shadow-sm rounded-3xl px-3 lg:px-8  bg-[linear-gradient(180deg,#fffdfd_0%,#fff6f6_56%,#ffffff_100%)] py-12 w-full sm:grid-cols-2 ">
+    <div
+      ref={container}
+      className="flex lg:block flex-col-reverse overflow-hidden sm:drop-shadow-sm rounded-3xl px-3 lg:px-8  bg-[linear-gradient(180deg,#fffdfd_0%,#fff6f6_56%,#ffffff_100%)] py-12 w-full sm:grid-cols-2 "
+    >
       <div className="grid sm:grid-cols-2 gap-6 lg:gap-8">
         {problemCards.map((card, i) => (
           <ProblemCard
@@ -66,31 +104,45 @@ export default function ProblemVisual() {
             className="relative translate-y-9 z-10 h-auto w-[18rem] object-contain sm:w-[20rem] lg:w-[24rem] xl:w-[18rem]"
           />
         </div>
-        <Image
-          src={questionIcon}
-          alt="رمز سؤال"
-          className="absolute top-6 -inset-e-9 -rotate-20 h-20 w-18"
-        />
-        <Image
-          src={questionIcon}
-          alt="رمز سؤال"
-          className="absolute top-1/2 -translate-y-1/2 -inset-s-9 rotate-20 h-20 w-18"
-        />
-        <Image
-          src={calenderIcon}
-          alt="رمز تقويم"
-          className="absolute top-10 -translate-y-1/2 -inset-s-9 rotate-10 size-22"
-        />
-        <Image
-          src={clockIcon}
-          alt="رمز ساعة"
-          className="absolute bottom-10 -inset-e-9 -rotate-10 size-22"
-        />
+        <div className="absolute top-6 -inset-e-9 h-20 w-18">
+          <div data-problem-decoration className="size-full">
+            <Image
+              src={questionIcon}
+              alt="رمز سؤال"
+              className="size-full -rotate-20"
+            />
+          </div>
+        </div>
+        <div className="absolute top-1/2 -translate-y-1/2 -inset-s-9 h-20 w-18">
+          <div data-problem-decoration className="size-full">
+            <Image
+              src={questionIcon}
+              alt="رمز سؤال"
+              className="size-full rotate-20"
+            />
+          </div>
+        </div>
+        <div className="absolute top-10 -translate-y-1/2 -inset-s-9 size-22">
+          <div data-problem-decoration className="size-full">
+            <Image
+              src={calenderIcon}
+              alt="رمز تقويم"
+              className="size-full rotate-10"
+            />
+          </div>
+        </div>
+        <div className="absolute bottom-10 -inset-e-9 size-22">
+          <div data-problem-decoration className="size-full">
+            <Image
+              src={clockIcon}
+              alt="رمز ساعة"
+              className="size-full -rotate-10"
+            />
+          </div>
+        </div>
       </div>
     </div>
   );
 }
 
-{
-  /* <div className="pointer-events-none absolute inset-x-1/2 top-1/2 hidden h-80 w-80 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgba(208,5,7,0.16)_0%,rgba(208,5,7,0.04)_44%,rgba(255,255,255,0)_74%)] blur-xl lg:block" /> */
-}
+

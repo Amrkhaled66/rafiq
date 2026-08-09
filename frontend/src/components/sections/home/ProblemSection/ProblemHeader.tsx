@@ -1,4 +1,5 @@
 import InfoBadge from "@/src/components/shared/InfoBedge";
+import ScrollRevealHeading from "@/src/components/shared/ScrollRevealHeading";
 
 export default function ProblemHeader() {
   return (
@@ -9,12 +10,12 @@ export default function ProblemHeader() {
         text="ايه المشكلة اللي بتقابلك"
       />
 
-      <h2 className="section-title">
+      <ScrollRevealHeading>
         <span className="block">المشكلة مش فيك...</span>
         <span className="mt-2 block">
           المشكلة انك <span className="text-brand-primary">لوحدك.</span>
         </span>
-      </h2>
+      </ScrollRevealHeading>
 
       <p className="section-subTitle">
       مواد كتير، واجبات، مواعيد، ومش عارف تبدأ منين ولا تتابع تقدمك إزاي.

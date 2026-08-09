@@ -21,7 +21,7 @@ const Navbar = () => {
       <div className="mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex h-20 items-center justify-between">
           {/* Logo */}
-          <div className="flex-1 shrink-0">
+          <div className="flex-1 flex items-start shrink-0">
             <Link href="/" className="flex items-center">
               <Image
                 src="/logo1.svg"

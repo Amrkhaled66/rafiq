@@ -5,12 +5,17 @@ import HeroLeadModalTrigger from "./HeroLeadModalTrigger";
 export default function HeroHeader() {
   return (
     <div className="relative z-10 mx-auto flex max-w-3xl flex-col items-center text-center">
-      <InfoBadge
+      <div data-hero-reveal>
+        <InfoBadge
         text="رفيقك في رحلة الثانوية العامة"
-        icon="game-icons:graduate-cap"
-      />
+          icon="game-icons:graduate-cap"
+        />
+      </div>
 
-      <h1 className="text-[2.8rem] leading-[1.3] font-bold tracking-[-0.03em] text-black sm:text-[3.6rem] md:text-[4.6rem] lg:text-[4.6rem]">
+      <h1
+        data-hero-reveal
+        className="text-[2.8rem] leading-[1.3] font-bold tracking-[-0.03em] text-black sm:text-[3.6rem] md:text-[4.6rem] lg:text-[4.6rem]"
+      >
         <span className="block">رفيقك من</span>
 
         <AnimatedWord />
@@ -20,12 +25,17 @@ export default function HeroHeader() {
         </span>
       </h1>
 
-      <p className="mt-6 text-base font-medium text-black/62 sm:text-lg">
+      <p
+        data-hero-reveal
+        className="mt-6 text-base font-medium text-black/62 sm:text-lg"
+      >
         خطط يومك، تابع مهامك، وخلي الكوتش <br />
         يساعدك توصّل لهدفك خطوة بخطوة
       </p>
 
-      <HeroLeadModalTrigger />
+      <div data-hero-reveal>
+        <HeroLeadModalTrigger />
+      </div>
 
       <div className="absolute top-28 right-[19%] hidden text-brand-primary-muted lg:block">
         <Icon icon="solar:star-fall-bold-duotone" className="h-7 w-7" />

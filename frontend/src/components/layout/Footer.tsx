@@ -5,7 +5,7 @@ import { Icon } from "@iconify/react";
 import Image from "next/image";
 import Logo1 from "@/public/logo1.svg";
 import LeadModalTrigger from "../shared/LeadModalTrigger";
-import { CONTACT_LINK, FACEBOOK_LINK } from "@/src/data/const";
+import { CONTACT_LINK, FACEBOOK_LINK ,INSTAGRAM_LINK} from "@/src/data/const";
 const sectionItems = [
   { text: "الرئيسية", href: "#" },
   { text: "يعني ايه رفيق؟", href: "#solve" },
@@ -20,6 +20,7 @@ const contactItems = [
 
 const socialItems = [
   { icon: "mdi:facebook", label: "facebook", to: FACEBOOK_LINK },
+  { icon: "mdi:instagram", label: "Instagram", to: INSTAGRAM_LINK },
   { icon: "ic:baseline-whatsapp", label: "WhatsApp", to: CONTACT_LINK },
 ];
 
