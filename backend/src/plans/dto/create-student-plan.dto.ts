@@ -20,6 +20,11 @@ export class CreateStudentPlanTaskDto {
   @MaxLength(255)
   title!: string;
 
+  @IsOptional()
+  @IsString()
+  @MaxLength(1000)
+  note?: string;
+
   @IsEnum(SCHOOL_SUBJECT_ENUM_VALUES)
   subject!: (typeof SCHOOL_SUBJECT_ENUM_VALUES)[number];
 

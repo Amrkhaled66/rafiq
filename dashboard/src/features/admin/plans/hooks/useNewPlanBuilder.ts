@@ -134,7 +134,10 @@ function reducer(state: State, action: Action): State {
           if (d.date !== dayDate) return d;
           return {
             ...d,
-            tasks: [...d.tasks, { id: makeId(), title: "", subject: "" }],
+            tasks: [
+              ...d.tasks,
+              { id: makeId(), title: "", note: "", subject: "" },
+            ],
           };
         }),
       };

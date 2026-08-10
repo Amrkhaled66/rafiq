@@ -31,6 +31,7 @@ export type CoachPlanRow = {
 export type PlanTaskDetailRow = {
   id: number;
   title: string;
+  note: string | null;
   subject: string;
   status: string;
   dueAt: string;
@@ -188,7 +189,12 @@ export class PlansRepository {
     name: string;
     startsOn: string;
     endsOn: string;
-    tasks: Array<{ title: string; subject: string; dueOn: string }>;
+    tasks: Array<{
+      title: string;
+      note: string | null;
+      subject: string;
+      dueOn: string;
+    }>;
   }) {
     return this.database.transaction(async (tx) => {
       const [createdPlan] = await tx
@@ -205,6 +211,7 @@ export class PlansRepository {
       const taskRows = input.tasks.map((t) => ({
         planId: createdPlan.id,
         title: t.title,
+        note: t.note,
         // subject is validated in service/DTO; keep as string for Drizzle enum column.
         subject: t.subject as any,
         dueAt: t.dueOn,
@@ -229,6 +236,7 @@ export class PlansRepository {
       .select({
         id: tasks.id,
         title: tasks.title,
+        note: tasks.note,
         subject: tasks.subject,
         status: tasks.status,
         dueAt: tasks.dueAt,
@@ -262,6 +270,7 @@ export class PlansRepository {
       .returning({
         id: tasks.id,
         title: tasks.title,
+        note: tasks.note,
         subject: tasks.subject,
         status: tasks.status,
         dueAt: tasks.dueAt,
@@ -278,7 +287,12 @@ export class PlansRepository {
     name: string;
     startsOn: string;
     endsOn: string;
-    tasks: Array<{ title: string; subject: string; dueOn: string }>;
+    tasks: Array<{
+      title: string;
+      note: string | null;
+      subject: string;
+      dueOn: string;
+    }>;
   }) {
     return this.database.transaction(async (tx) => {
       const [updatedPlan] = await tx
@@ -298,6 +312,7 @@ export class PlansRepository {
       const taskRows = input.tasks.map((t) => ({
         planId: input.planId,
         title: t.title,
+        note: t.note,
         subject: t.subject as any,
         dueAt: t.dueOn,
       }));

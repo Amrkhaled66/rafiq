@@ -95,7 +95,7 @@ export function TaskDetailScreen() {
           />
           <TaskNote
             isLoading={taskQuery.isLoading}
-            note="هنحل من اول سؤال 15 لحد سؤال 45 في كتاب الامتحان"
+            note={taskDetail?.note}
           />
 
           <TaskPomodoroContainer

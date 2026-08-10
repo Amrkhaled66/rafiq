@@ -32,6 +32,7 @@ export const plans = pgTable(
       .notNull(),
   },
   (table) => [
+    index('plans_student_id_idx').on(table.studentId),
     index('plans_coach_created_at_idx').on(
       table.coachId,
       table.createdAt.desc(),

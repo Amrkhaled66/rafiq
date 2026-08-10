@@ -101,6 +101,7 @@ export type TaskDetailItem = {
   serverClockOffsetMs?: number;
   id: number;
   title: string;
+  note?: string | null;
   subject: string;
   status: TaskDetailStatus;
   focusDurationMinutes: number;
@@ -114,6 +115,7 @@ export type TaskDetailResponse = {
   serverClockOffsetMs: number;
   id: number;
   title: string;
+  note: string | null;
   subject: string;
   status: TaskDetailStatus;
   focusDurationMinutes: number;

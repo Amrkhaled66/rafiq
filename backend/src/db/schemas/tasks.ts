@@ -5,6 +5,7 @@ import {
   integer,
   pgTable,
   serial,
+  text,
   timestamp,
   varchar,
 } from 'drizzle-orm/pg-core';
@@ -20,6 +21,7 @@ export const tasks = pgTable(
       .notNull()
       .references(() => plans.id, { onDelete: 'cascade' }),
     title: varchar('title', { length: 255 }).notNull(),
+    note: text('note'),
     subject: schoolSubjectEnum('subject').notNull(),
     dueAt: date('due_at').notNull(),
     status: taskStatusEnum('status').notNull().default('pending'),
@@ -32,6 +34,7 @@ export const tasks = pgTable(
       .notNull(),
   },
   (table) => [
+    index('tasks_plan_due_at_idx').on(table.planId, table.dueAt),
     index('tasks_plan_status_idx').on(table.planId, table.status),
     index('tasks_status_due_at_idx').on(table.status, table.dueAt),
   ],

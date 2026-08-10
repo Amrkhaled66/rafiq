@@ -73,6 +73,7 @@ export class TasksService {
       serverNow: new Date(),
       id: task.id,
       title: task.title,
+      note: task.note,
       subject: task.subject,
       status: this.toMobileTaskStatus(task.status),
       focusDurationMinutes: TASK_FOCUS_DURATION_MINUTES,

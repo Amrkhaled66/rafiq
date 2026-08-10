@@ -37,6 +37,7 @@ export type ListStudentPlansParams = {
 
 export type CreateStudentPlanTask = {
   title: string;
+  note?: string;
   subject: string;
   dueOn: string;
 };
@@ -56,6 +57,7 @@ export type CreateStudentPlanResponse = {
 export type StudentPlanDetailTask = {
   id: number;
   title: string;
+  note: string | null;
   subject: string;
   status: string;
 };

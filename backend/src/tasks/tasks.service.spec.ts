@@ -10,6 +10,7 @@ describe('TasksService', () => {
   const pendingTask: StudentTaskDetailRow = {
     id: taskId,
     title: 'Task',
+    note: 'Read questions 1 through 10',
     subject: 'math',
     status: 'in_progress',
     dueAt: '2026-07-11',
@@ -43,6 +44,15 @@ describe('TasksService', () => {
       activeSession: null,
       sessions: [],
       stats: {},
+    });
+  });
+
+  it('includes the task note in the student task detail', async () => {
+    await expect(
+      service.getStudentTaskDetail(studentId, taskId),
+    ).resolves.toMatchObject({
+      id: taskId,
+      note: pendingTask.note,
     });
   });
 

@@ -16,6 +16,7 @@ export type TodayTaskRow = {
 export type StudentTaskDetailRow = {
   id: number;
   title: string;
+  note: string | null;
   subject: string;
   status: 'pending' | 'in_progress' | 'done' | 'missed';
   dueAt: string;
@@ -56,6 +57,7 @@ export class TasksRepository {
       .select({
         id: tasks.id,
         title: tasks.title,
+        note: tasks.note,
         subject: tasks.subject,
         status: tasks.status,
         dueAt: tasks.dueAt,

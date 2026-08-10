@@ -1,6 +1,7 @@
 export type PlanTask = {
   id: string;
   title: string;
+  note?: string;
   subject: string;
 };
 

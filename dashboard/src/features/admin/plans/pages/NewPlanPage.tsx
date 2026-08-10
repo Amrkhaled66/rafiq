@@ -26,7 +26,12 @@ function buildEditableDays(
   endsOn: string,
   groupedDays: Array<{
     date: string;
-    tasks: Array<{ id: number; title: string; subject: string }>;
+    tasks: Array<{
+      id: number;
+      title: string;
+      note: string | null;
+      subject: string;
+    }>;
   }>,
 ): PlanDay[] {
   const from = new Date(startsOn);
@@ -46,6 +51,7 @@ function buildEditableDays(
       day.tasks.map((task) => ({
         id: String(task.id),
         title: task.title,
+        note: task.note ?? "",
         subject: task.subject,
       })),
     ]),
@@ -245,6 +251,7 @@ export default function NewPlanPage() {
       tasks: days.flatMap((day) =>
         day.tasks.map((task) => ({
           title: task.title.trim(),
+          note: task.note?.trim() || undefined,
           subject: task.subject,
           dueOn: day.date,
         })),

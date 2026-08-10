@@ -29,8 +29,10 @@ export class PlansService {
       throw new NotFoundException('Student not found');
     }
 
-    const stats = await this.plansRepository.getStudentPlansStats(studentId);
-    const list = await this.plansRepository.listStudentPlans(studentId, query);
+    const [stats, list] = await Promise.all([
+      this.plansRepository.getStudentPlansStats(studentId),
+      this.plansRepository.listStudentPlans(studentId, query),
+    ]);
     const today = this.formatDateAsIso(this.getCairoNow());
 
     return {
@@ -84,6 +86,7 @@ export class PlansService {
         tasks: Array<{
           id: number;
           title: string;
+          note: string | null;
           subject: string;
           status: string;
         }>;
@@ -112,6 +115,7 @@ export class PlansService {
       existing.tasks.push({
         id: task.id,
         title: task.title,
+        note: task.note,
         subject: task.subject,
         status: task.status,
       });
@@ -271,6 +275,7 @@ export class PlansService {
 
     const tasks = dto.tasks.map((t) => ({
       title: t.title.trim(),
+      note: t.note?.trim() || null,
       subject: t.subject,
       dueOn: t.dueOn,
     }));
