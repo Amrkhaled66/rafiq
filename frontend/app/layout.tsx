@@ -20,8 +20,63 @@ const cairo = Cairo({
   weight: ["400", "500", "600", "700", "800"],
 });
 
+
 export const metadata: Metadata = {
-  title: "Rafiq",
+  title: "Rafiq | رفيقك في الثانوية العامة",
+
+  description:
+    "رفيق يساعد طلاب الثانوية العامة على تنظيم المذاكرة، متابعة المهام، الالتزام بالخطة، وتحقيق تقدم مستمر خلال السنة.",
+
+  keywords: [
+    "رفيق",
+    "Rafiq",
+    "الثانوية العامة",
+    "طلاب الثانوية العامة",
+    "تنظيم المذاكرة",
+    "متابعة المذاكرة",
+    "خطة مذاكرة",
+    "التعليم اونلاين",
+    "متابعة الطلاب",
+  ],
+
+  authors: [
+    {
+      name: "Rafiq",
+    },
+  ],
+
+  openGraph: {
+    title: "Rafiq | رفيقك في الثانوية العامة",
+    description:
+      "نساعدك تنظم مذاكرتك، تتابع مهامك وتلتزم بخطتك طوال رحلة الثانوية العامة.",
+    url: "https://rafiq-edu.com",
+    siteName: "Rafiq",
+
+    images: [
+      {
+        url: "/og-image.jpg",
+        width: 1200,
+        height: 630,
+        alt: "Rafiq - رفيقك في الثانوية العامة",
+      },
+    ],
+
+    locale: "ar_EG",
+    type: "website",
+  },
+
+  twitter: {
+    card: "summary_large_image",
+    title: "Rafiq | رفيقك في الثانوية العامة",
+    description:
+      "نساعدك تنظم مذاكرتك، تتابع مهامك وتلتزم بخطتك طوال رحلة الثانوية العامة.",
+    images: ["/og-image.jpg"],
+  },
+
+  robots: {
+    index: true,
+    follow: true,
+  },
 };
 
 export default function RootLayout({
