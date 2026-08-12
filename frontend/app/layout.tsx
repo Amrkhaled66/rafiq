@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
 import { IBM_Plex_Sans_Arabic, Cairo } from "next/font/google";
 import "./globals.css";
-import Navbar from "@/src/components/layout/Navbar";
 import Script from "next/script";
 import { Suspense } from "react";
+
 import MetaPixelEvents from "@/src/components/shared/MetaPixelEvents";
 import Footer from "@/src/components/layout/Footer";
+
 const pixelId = 941134205710592;
 
 const ibmPlexSansArabic = IBM_Plex_Sans_Arabic({
@@ -20,9 +21,10 @@ const cairo = Cairo({
   weight: ["400", "500", "600", "700", "800"],
 });
 
-
 export const metadata: Metadata = {
-  title: "Rafiq | رفيقك في الثانوية العامة",
+  metadataBase: new URL("https://rafiq-edu.com"),
+
+  title: "رفيق | متابعة وتنظيم الثانوية العامة",
 
   description:
     "رفيق يساعد طلاب الثانوية العامة على تنظيم المذاكرة، متابعة المهام، الالتزام بالخطة، وتحقيق تقدم مستمر خلال السنة.",
@@ -45,19 +47,32 @@ export const metadata: Metadata = {
     },
   ],
 
+  alternates: {
+    canonical: "/",
+  },
+
+  icons: {
+    icon: "/favicon.ico",
+    shortcut: "/favicon.ico",
+    apple: "/apple-touch-icon.png",
+  },
+
   openGraph: {
-    title: "Rafiq | رفيقك في الثانوية العامة",
+    title: "رفيق | متابعة وتنظيم الثانوية العامة",
+
     description:
       "نساعدك تنظم مذاكرتك، تتابع مهامك وتلتزم بخطتك طوال رحلة الثانوية العامة.",
+
     url: "https://rafiq-edu.com",
+
     siteName: "Rafiq",
 
     images: [
       {
-        url: "/og-image.jpg",
+        url: "/og-image.svg",
         width: 1200,
         height: 630,
-        alt: "Rafiq - رفيقك في الثانوية العامة",
+        alt: "رفيق - متابعة وتنظيم طلاب الثانوية العامة",
       },
     ],
 
@@ -67,10 +82,13 @@ export const metadata: Metadata = {
 
   twitter: {
     card: "summary_large_image",
-    title: "Rafiq | رفيقك في الثانوية العامة",
+
+    title: "رفيق | متابعة وتنظيم الثانوية العامة",
+
     description:
       "نساعدك تنظم مذاكرتك، تتابع مهامك وتلتزم بخطتك طوال رحلة الثانوية العامة.",
-    images: ["/og-image.jpg"],
+
+    images: ["/og-image.svg"],
   },
 
   robots: {
@@ -91,8 +109,8 @@ export default function RootLayout({
       className={`${ibmPlexSansArabic.variable} ${cairo.variable} h-full antialiased`}
     >
       <body className="min-h-full overflow-x-hidden bg-white text-black">
-        {/* <Navbar /> */}
         {children}
+
         <Footer />
 
         {pixelId && (
@@ -100,17 +118,23 @@ export default function RootLayout({
             <Script id="meta-pixel" strategy="afterInteractive">
               {`
                 !function(f,b,e,v,n,t,s)
-{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-n.queue=[];t=b.createElement(e);t.async=!0;
-t.src=v;s=b.getElementsByTagName(e)[0];
-s.parentNode.insertBefore(t,s)}(window, document,'script',
-'https://connect.facebook.net/en_US/fbevents.js');
+                {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+                n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+                if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+                n.queue=[];t=b.createElement(e);t.async=!0;
+                t.src=v;s=b.getElementsByTagName(e)[0];
+                s.parentNode.insertBefore(t,s)}(
+                  window,
+                  document,
+                  'script',
+                  'https://connect.facebook.net/en_US/fbevents.js'
+                );
+
                 fbq('init', '${pixelId}');
-                  fbq('track', 'PageView');
+                fbq('track', 'PageView');
               `}
             </Script>
+
             <noscript>
               <img
                 height="1"
