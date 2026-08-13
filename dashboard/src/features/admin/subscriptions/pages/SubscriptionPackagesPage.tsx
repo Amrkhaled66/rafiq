@@ -6,6 +6,7 @@ import SubscriptionPackagesTable from "@/features/admin/subscriptions/components
 import { useSubscriptionPackagesActions } from "@/features/admin/subscriptions/hooks/useSubscriptionPackagesActions";
 import { useSubscriptionPackagesQuery } from "@/features/admin/subscriptions/queries/subscriptionQueries";
 import PageHeader from "@/features/admin/shared/components/PageHeader";
+import AdminPageSkeleton from "@/features/admin/shared/components/skeletons/AdminPageSkeleton";
 import Button from "@/shared/components/Button";
 
 export default function SubscriptionPackagesPage() {
@@ -14,12 +15,7 @@ export default function SubscriptionPackagesPage() {
   const actions = useSubscriptionPackagesActions();
 
   if (packagesQuery.isLoading && !packagesQuery.data) {
-    return (
-      <section className="dashboard-card text-right">
-        <h1 className="text-foreground text-2xl font-bold">باقات الاشتراك</h1>
-        <p className="text-subTitle mt-2 text-sm">جاري تحميل الباقات...</p>
-      </section>
-    );
+    return <AdminPageSkeleton rows={4} />;
   }
 
   if (packagesQuery.isError) {

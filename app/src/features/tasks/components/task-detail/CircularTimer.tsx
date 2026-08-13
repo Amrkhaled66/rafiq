@@ -6,8 +6,8 @@ import Svg, {
   Stop,
 } from "react-native-svg";
 
-import tomato from "@assets/images/tomato.png";
-import tomatoHead from "@assets/images/tomato-head.png";
+import tomato from "@assets/images/tomato.webp";
+import tomatoHead from "@assets/images/tomato-head.webp";
 import { formatTaskTimer } from "@/features/tasks/utils/task-session-ui";
 import { AppText } from "@/shared/ui/app-text";
 

@@ -207,6 +207,10 @@ export const namedAuthorizationPolicies: NamedAuthorizationPolicy[] = [
     requirements: [requireRole('super_admin')],
   },
   {
+    name: 'subscriptions.list_expiring',
+    requirements: [requireRole('super_admin')],
+  },
+  {
     name: 'subscriptions.list_by_student',
     lookup: { key: 'studentId', kind: 'studentId', source: 'params' },
     requirements: [

@@ -1,14 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import {
-  and,
-  count,
-  desc,
-  eq,
-  isNull,
-  lte,
-  gte,
-  sql,
-} from 'drizzle-orm';
+import { and, asc, count, desc, eq, isNull, lte, gte, sql } from 'drizzle-orm';
 import { subscriptionPackages, subscriptions, users } from '../db';
 import { db } from '../db/db.module';
 import type { Database } from '../db/db.module';
@@ -38,6 +29,17 @@ export type StudentSubscriptionRow = {
   createdAt: Date;
   updatedAt: Date;
   status: 'active' | 'upcoming' | 'ended';
+};
+
+export type ExpiringSubscriptionListRow = {
+  id: number;
+  studentId: number;
+  studentName: string;
+  packageId: number;
+  packageName: string;
+  startsAt: string;
+  endsAt: string;
+  daysRemaining: number;
 };
 
 @Injectable()
@@ -123,6 +125,23 @@ export class SubscriptionsRepository {
     return Boolean(intersects);
   }
 
+  async hasActiveSubscription(studentId: number): Promise<boolean> {
+    const [activeSubscription] = await this.database
+      .select({ id: subscriptions.id })
+      .from(subscriptions)
+      .where(
+        and(
+          eq(subscriptions.studentId, studentId),
+          isNull(subscriptions.cancelledAt),
+          lte(subscriptions.startsAt, sql`current_date`),
+          gte(subscriptions.endsAt, sql`current_date`),
+        ),
+      )
+      .limit(1);
+
+    return Boolean(activeSubscription);
+  }
+
   async listSubscriptions(input: {
     page: number;
     limit: number;
@@ -174,6 +193,59 @@ export class SubscriptionsRepository {
 
     return {
       items: items as SubscriptionListRow[],
+      page: input.page,
+      limit: input.limit,
+      total: Number(total ?? 0),
+    };
+  }
+
+  async listExpiringSubscriptions(input: {
+    days: 3 | 7 | 14 | 30;
+    page: number;
+    limit: number;
+  }) {
+    const offset = (input.page - 1) * input.limit;
+    const expiringCondition = and(
+      isNull(subscriptions.cancelledAt),
+      lte(subscriptions.startsAt, sql`current_date`),
+      gte(subscriptions.endsAt, sql`current_date`),
+      lte(subscriptions.endsAt, sql`current_date + (${input.days})::integer`),
+    );
+
+    const [items, [{ total }]] = await Promise.all([
+      this.database
+        .select({
+          id: subscriptions.id,
+          studentId: subscriptions.studentId,
+          studentName: users.fullName,
+          packageId: subscriptions.packageId,
+          packageName: subscriptionPackages.name,
+          startsAt: subscriptions.startsAt,
+          endsAt: subscriptions.endsAt,
+          daysRemaining: sql<number>`(${subscriptions.endsAt} - current_date)::integer`,
+        })
+        .from(subscriptions)
+        .innerJoin(users, eq(subscriptions.studentId, users.id))
+        .innerJoin(
+          subscriptionPackages,
+          eq(subscriptions.packageId, subscriptionPackages.id),
+        )
+        .where(expiringCondition)
+        .orderBy(
+          asc(subscriptions.endsAt),
+          asc(users.fullName),
+          asc(subscriptions.id),
+        )
+        .limit(input.limit)
+        .offset(offset),
+      this.database
+        .select({ total: count() })
+        .from(subscriptions)
+        .where(expiringCondition),
+    ]);
+
+    return {
+      items: items as ExpiringSubscriptionListRow[],
       page: input.page,
       limit: input.limit,
       total: Number(total ?? 0),
@@ -233,12 +305,9 @@ export class SubscriptionsRepository {
     const [stats] = await this.database
       .select({
         totalCount: count(subscriptions.id),
-        activeSubscriptions:
-          sql<number>`count(${subscriptions.id}) filter (where ${subscriptions.cancelledAt} is null and current_date >= ${subscriptions.startsAt} and current_date <= ${subscriptions.endsAt})`,
-        soonEndingSubscriptions:
-          sql<number>`count(${subscriptions.id}) filter (where ${subscriptions.cancelledAt} is null and ${subscriptions.startsAt} <= current_date and current_date <= ${subscriptions.endsAt} and ${subscriptions.endsAt} <= current_date + interval '7 days')`,
-        endedSubscriptions:
-          sql<number>`count(${subscriptions.id}) filter (where ${subscriptions.cancelledAt} is null and current_date > ${subscriptions.endsAt})`,
+        activeSubscriptions: sql<number>`count(${subscriptions.id}) filter (where ${subscriptions.cancelledAt} is null and current_date >= ${subscriptions.startsAt} and current_date <= ${subscriptions.endsAt})`,
+        soonEndingSubscriptions: sql<number>`count(${subscriptions.id}) filter (where ${subscriptions.cancelledAt} is null and ${subscriptions.startsAt} <= current_date and current_date <= ${subscriptions.endsAt} and ${subscriptions.endsAt} <= current_date + interval '7 days')`,
+        endedSubscriptions: sql<number>`count(${subscriptions.id}) filter (where ${subscriptions.cancelledAt} is null and current_date > ${subscriptions.endsAt})`,
       })
       .from(subscriptions);
 

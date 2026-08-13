@@ -8,6 +8,7 @@ import { StudentsRepository } from '../students/students.repository';
 import { UsersService } from '../users/users.service';
 import { CreateSubscriptionPackageDto } from './dto/create-subscription-package.dto';
 import { CreateSubscriptionDto } from './dto/create-subscription.dto';
+import { ListExpiringSubscriptionsQueryDto } from './dto/list-expiring-subscriptions-query.dto';
 import { ListSubscriptionsQueryDto } from './dto/list-subscriptions-query.dto';
 import { SubscriptionsRepository } from './subscriptions.repository';
 
@@ -51,6 +52,20 @@ export class SubscriptionsService {
       limit: list.limit,
       total: list.total,
     };
+  }
+
+  async listExpiringSubscriptions(query: ListExpiringSubscriptionsQueryDto) {
+    const days = query.days ?? 7;
+    const page = query.page ?? 1;
+    const limit = query.limit ?? 10;
+
+    const list = await this.subscriptionsRepository.listExpiringSubscriptions({
+      days,
+      page,
+      limit,
+    });
+
+    return { ...list, days };
   }
 
   async getStudentSubscriptions(studentId: number) {

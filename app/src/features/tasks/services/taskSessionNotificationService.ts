@@ -1,5 +1,7 @@
 import * as Notifications from "expo-notifications";
 
+const NOTIFICATION_ACCENT_COLOR = "#A60F12";
+
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
     shouldPlaySound: true,
@@ -42,6 +44,7 @@ export async function scheduleTaskSessionEndNotification(
       title: "الجلسة خلصت",
       body: "يلا بينا علي الجلسة اللي بعدها",
       sound: "default",
+      color: NOTIFICATION_ACCENT_COLOR,
     },
     trigger: {
       type: Notifications.SchedulableTriggerInputTypes.DATE,

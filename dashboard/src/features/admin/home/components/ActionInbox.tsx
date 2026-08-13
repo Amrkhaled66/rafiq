@@ -187,7 +187,7 @@ export default function ActionInbox({
               <button
                 type="button"
                 className="text-amber-700 text-sm hover:underline"
-                onClick={() => navigate("subscriptions")}
+                onClick={() => navigate("expiring-subscriptions")}
               >
                 عرض الكل
               </button>
@@ -199,7 +199,7 @@ export default function ActionInbox({
                   <li key={row.id}>
                     <button
                       type="button"
-                      onClick={() => navigate("subscriptions")}
+                      onClick={() => navigate("expiring-subscriptions")}
                       className="flex w-full items-start justify-between gap-3 p-4 text-right hover:bg-black/2"
                     >
                       <div className="min-w-0">

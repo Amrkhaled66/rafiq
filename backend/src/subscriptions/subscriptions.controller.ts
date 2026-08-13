@@ -15,6 +15,7 @@ import { RequirePolicy } from '../authorization/decorators/require-policy.decora
 import type { AuthenticatedUser } from '../authorization/types/authenticated-user.type';
 import { CreateSubscriptionPackageDto } from './dto/create-subscription-package.dto';
 import { CreateSubscriptionDto } from './dto/create-subscription.dto';
+import { ListExpiringSubscriptionsQueryDto } from './dto/list-expiring-subscriptions-query.dto';
 import { ListSubscriptionsQueryDto } from './dto/list-subscriptions-query.dto';
 import { SubscriptionsService } from './subscriptions.service';
 
@@ -41,11 +42,15 @@ export class SubscriptionsController {
     return this.subscriptionsService.listSubscriptions(query);
   }
 
+  @Get('subscriptions/expiring')
+  @RequirePolicy('subscriptions.list_expiring')
+  listExpiringSubscriptions(@Query() query: ListExpiringSubscriptionsQueryDto) {
+    return this.subscriptionsService.listExpiringSubscriptions(query);
+  }
+
   @Get('students/:studentId/subscriptions')
   @RequirePolicy('subscriptions.list_by_student')
-  getStudentSubscriptions(
-    @Param('studentId', ParseIntPipe) studentId: number,
-  ) {
+  getStudentSubscriptions(@Param('studentId', ParseIntPipe) studentId: number) {
     return this.subscriptionsService.getStudentSubscriptions(studentId);
   }
 

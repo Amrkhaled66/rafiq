@@ -1,0 +1,1 @@
+CREATE INDEX "subscriptions_active_student_dates_idx" ON "subscriptions" USING btree ("student_id","starts_at","ends_at") WHERE "subscriptions"."cancelled_at" is null;

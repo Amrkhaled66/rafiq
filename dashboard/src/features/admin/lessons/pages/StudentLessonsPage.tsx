@@ -7,6 +7,7 @@ import StudentLessonsStatsSection from "@/features/admin/lessons/components/Stud
 import StudentLessonsTable from "@/features/admin/lessons/components/StudentLessonsPage/StudentLessonsTable";
 import { useStudentLessonsActions } from "@/features/admin/lessons/hooks/useStudentLessonsActions";
 import { useStudentLessonsQuery } from "@/features/admin/lessons/queries/lessonQueries";
+import AdminPageSkeleton from "@/features/admin/shared/components/skeletons/AdminPageSkeleton";
 import type { LessonWeekday } from "@/features/admin/lessons/services/lessonService";
 import {
   LESSON_WEEKDAY_LABELS,
@@ -18,7 +19,6 @@ function getLessonDistanceFromToday(weekday: LessonWeekday) {
   const todayIndex = LESSON_WEEKDAY_ORDER.indexOf(getTodayWeekday());
   const lessonIndex = LESSON_WEEKDAY_ORDER.indexOf(weekday);
 
-  console.log(todayIndex, lessonIndex);
   if (lessonIndex >= todayIndex) {
     return lessonIndex - todayIndex;
   }
@@ -32,7 +32,7 @@ export default function StudentLessonsPage() {
 
   const lessonsQuery = useStudentLessonsQuery(studentId);
   const lessonsActions = useStudentLessonsActions(studentId);
-  const lessons = lessonsQuery.data ?? [];
+  const lessons = useMemo(() => lessonsQuery.data ?? [], [lessonsQuery.data]);
 
   const nextLessonLabel = useMemo(() => {
     const nextLesson = [...lessons].sort((a, b) => {
@@ -70,13 +70,8 @@ export default function StudentLessonsPage() {
     );
   }
 
-  if (lessonsQuery.isLoading) {
-    return (
-      <section className="dashboard-card text-right">
-        <h1 className="text-foreground text-2xl font-bold">دروس الطالب</h1>
-        <p className="text-subTitle mt-2 text-sm">جاري تحميل الدروس...</p>
-      </section>
-    );
+  if (lessonsQuery.isLoading && !lessonsQuery.data) {
+    return <AdminPageSkeleton statsCount={3} />;
   }
 
   if (lessonsQuery.isError) {

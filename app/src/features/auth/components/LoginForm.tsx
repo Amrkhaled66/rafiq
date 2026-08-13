@@ -1,4 +1,4 @@
-import { AxiosError } from "axios";
+import { isAxiosError } from "axios";
 import { useRef } from "react";
 import { Pressable, Text, TextInput, View } from "react-native";
 
@@ -14,10 +14,13 @@ import { AppFonts } from "@/shared/theme/theme";
 type LoginFormProps = {
   language: AppLanguage;
   onSubmit?: () => void;
+  onSubscriptionRequired?: () => void;
 };
 
 type LoginErrorResponse = {
+  statusCode?: number;
   message?: string;
+  error?: string;
 };
 
 function validateLoginForm(values: LoginFormValues) {
@@ -27,7 +30,11 @@ function validateLoginForm(values: LoginFormValues) {
   };
 }
 
-export default function LoginForm({ language, onSubmit }: LoginFormProps) {
+export default function LoginForm({
+  language,
+  onSubmit,
+  onSubscriptionRequired,
+}: LoginFormProps) {
   const passwordInputRef = useRef<TextInput>(null);
   const { mutateAsync, isPending } = useLoginMutation();
   const auth = useAuth();
@@ -42,11 +49,19 @@ export default function LoginForm({ language, onSubmit }: LoginFormProps) {
       await auth.login(data.user, data.token);
       onSubmit?.();
     } catch (error) {
-      const axiosError = error as AxiosError<LoginErrorResponse>;
+      if (
+        isAxiosError<LoginErrorResponse>(error) &&
+        error.response?.status === 403 &&
+        error.response.data?.message === "No active subscription"
+      ) {
+        onSubscriptionRequired?.();
+        return;
+      }
 
       form.updateError(
-        axiosError.response?.data?.message ??
-          axiosError.message ??
+        (isAxiosError<LoginErrorResponse>(error)
+          ? error.response?.data?.message ?? error.message
+          : undefined) ??
           "Invalid credentials",
         "phone",
       );

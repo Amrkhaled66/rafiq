@@ -1,7 +1,7 @@
 import { Ionicons } from "@expo/vector-icons";
 import { Image, Pressable, View } from "react-native";
 
-import timerPanner from "@assets/images/timer-banner.png";
+import timerPanner from "@assets/images/timer-banner.webp";
 import { CircularTimer } from "@/features/tasks/components/task-detail/CircularTimer";
 import { PomodoroCardSkeleton } from "@/features/tasks/components/task-detail/skeletons";
 import type { TaskDetailStatus } from "@/features/tasks/types";

@@ -3,6 +3,7 @@ import { useState } from "react";
 import PageHeader from "@/features/admin/shared/components/PageHeader";
 import StatCard from "@/features/admin/shared/components/StatCard";
 import StatsRow from "@/features/admin/shared/components/StatsRow";
+import AdminPageSkeleton from "@/features/admin/shared/components/skeletons/AdminPageSkeleton";
 import useResetPageOnChange from "@/features/admin/shared/hooks/useResetPageOnChange";
 import useServerPagination from "@/features/admin/shared/hooks/useServerPagination";
 import Button from "@/shared/components/Button";
@@ -25,6 +26,10 @@ export default function StudentsPage() {
 
   const students = studentsQuery.data?.items ?? [];
   const studentsCount = studentsQuery.data?.total ?? 0;
+
+  if (studentsQuery.isLoading && !studentsQuery.data) {
+    return <AdminPageSkeleton statsCount={2} />;
+  }
 
   return (
     <div className="space-y">

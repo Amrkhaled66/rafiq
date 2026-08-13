@@ -5,6 +5,7 @@ import StudentPlansHeader from "@/features/admin/plans/components/StudentPlansPa
 import StudentPlansStatsSection from "@/features/admin/plans/components/StudentPlansPage/StudentPlansStatsSection";
 import StudentPlansTableSection from "@/features/admin/plans/components/StudentPlansPage/StudentPlansTableSection";
 import { useStudentPlansQuery } from "@/features/admin/plans/queries/plansQueries";
+import AdminPageSkeleton from "@/features/admin/shared/components/skeletons/AdminPageSkeleton";
 
 export default function StudentPlansPage() {
   const { id } = useParams();
@@ -23,13 +24,8 @@ export default function StudentPlansPage() {
     );
   }
 
-  if (plansQuery.isLoading) {
-    return (
-      <section className="dashboard-card text-right">
-        <h1 className="text-foreground text-2xl font-bold">خطط الطالب</h1>
-        <p className="text-subTitle mt-2 text-sm">جاري تحميل الخطط...</p>
-      </section>
-    );
+  if (plansQuery.isLoading && !plansQuery.data) {
+    return <AdminPageSkeleton header="profile" statsCount={5} />;
   }
 
   if (plansQuery.isError || !plansQuery.data) {

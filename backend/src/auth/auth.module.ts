@@ -1,4 +1,4 @@
-import {  Module } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { JwtModule } from '@nestjs/jwt';
@@ -6,6 +6,7 @@ import { DbModule } from '../db/db.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { UsersRepository } from '../users/users.repository';
+import { SubscriptionsRepository } from '../subscriptions/subscriptions.repository';
 
 @Module({
   imports: [
@@ -20,7 +21,12 @@ import { UsersRepository } from '../users/users.repository';
     DbModule,
   ],
   controllers: [AuthController],
-  providers: [AuthService, JwtAuthGuard, UsersRepository],
+  providers: [
+    AuthService,
+    JwtAuthGuard,
+    UsersRepository,
+    SubscriptionsRepository,
+  ],
   exports: [AuthService, JwtAuthGuard, JwtModule],
 })
 export class AuthModule {}

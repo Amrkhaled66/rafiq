@@ -1,7 +1,7 @@
 import { Image, View, useWindowDimensions } from "react-native";
 import Svg, { Path } from "react-native-svg";
 
-import authBg from "@assets/images/auth-bg.png";
+import authBg from "@assets/images/auth-bg.webp";
 
 export default function LoginHeader() {
   const { width } = useWindowDimensions();

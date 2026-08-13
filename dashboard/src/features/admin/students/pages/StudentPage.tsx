@@ -4,6 +4,7 @@ import StudentLessonsSection from "@/features/admin/students/components/StudentP
 import StudentStatsSection from "@/features/admin/students/components/StudentPage/StudentStatsSection";
 import StudentTasksSection from "@/features/admin/students/components/StudentPage/StudentTasksSection";
 import { useStudentOverviewQuery } from "@/features/admin/students/queries/studentQueries";
+import AdminPageSkeleton from "@/features/admin/shared/components/skeletons/AdminPageSkeleton";
 
 export default function StudentPage() {
   const { id } = useParams();
@@ -19,14 +20,13 @@ export default function StudentPage() {
     );
   }
 
-  if (studentOverviewQuery.isLoading) {
+  if (studentOverviewQuery.isLoading && !studentOverviewQuery.data) {
     return (
-      <section className="dashboard-card text-right">
-        <h1 className="text-foreground text-2xl font-bold">تفاصيل الطالب</h1>
-        <p className="text-subTitle mt-2 text-sm">
-          جاري تحميل بيانات الطالب...
-        </p>
-      </section>
+      <AdminPageSkeleton
+        header="profile"
+        statsCount={5}
+        contentSections={2}
+      />
     );
   }
 

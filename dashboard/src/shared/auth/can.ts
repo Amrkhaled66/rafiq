@@ -7,6 +7,7 @@ export type Resource =
   | "student_coach_assignments"
   | "plans_admin"
   | "subscriptions"
+  | "expiring_subscriptions"
   | "subscription_packages";
 
 export type Action = "read" | "create" | "update" | "delete";
@@ -23,6 +24,7 @@ const ROLE_PERMISSIONS: PermissionMatrix = {
     student_coach_assignments: ["update"],
     plans_admin: ["read", "create", "update", "delete"],
     subscriptions: ["read", "create"],
+    expiring_subscriptions: ["read"],
     subscription_packages: ["read", "create"],
   },
   [USER_ROLES.COACH]: {

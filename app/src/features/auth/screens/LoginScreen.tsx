@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { router } from "expo-router";
 import { View } from "react-native";
 
@@ -8,10 +8,13 @@ import { useAuth } from "@/features/auth/context/AuthProvider";
 import { useI18n } from "@/shared/i18n/I18nProvider";
 import { FocusedStatusBar } from "@/shared/ui/focused-status-bar";
 import { KeyboardScreenView } from "@/shared/ui/keyboard-screen-view";
+import { AppModal } from "@/shared/ui/app-modal";
 
 export function LoginScreen() {
   const { language } = useI18n();
   const { user } = useAuth();
+  const [isSubscriptionModalVisible, setIsSubscriptionModalVisible] =
+    useState(false);
 
   useEffect(() => {
     if (user) {
@@ -27,8 +30,19 @@ export function LoginScreen() {
         <LoginForm
           language={language}
           onSubmit={() => router.replace("/home")}
+          onSubscriptionRequired={() =>
+            setIsSubscriptionModalVisible(true)
+          }
         />
       </KeyboardScreenView>
+
+      <AppModal
+        visible={isSubscriptionModalVisible}
+        title="لا يوجد اشتراك فعال"
+        message="اشتراكك غير فعال أو انتهى. تواصل مع الدعم لتجديد الاشتراك، و تسجيل الدخول تاني."
+        actionLabel="حسنًا"
+        onClose={() => setIsSubscriptionModalVisible(false)}
+      />
     </View>
   );
 }

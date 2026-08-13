@@ -10,8 +10,8 @@ import Svg, { Path } from "react-native-svg";
 import { useI18n } from "@/shared/i18n/I18nProvider";
 import { AppFonts } from "@/shared/theme/theme";
 
-import heroBg from "@assets/images/hero-bg.png";
-import logoWhite from "@assets/images/logoWhite.png";
+import heroBg from "@assets/images/hero-bg.webp";
+import logoWhite from "@assets/images/logoWhite.webp";
 
 type HomeHeaderProps = {
   firstName: string;

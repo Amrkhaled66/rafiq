@@ -13,6 +13,7 @@ import {
   useUpdateStudentPlanMutation,
 } from "@/features/admin/plans/queries/plansQueries";
 import PageHeader from "@/features/admin/shared/components/PageHeader";
+import AdminPageSkeleton from "@/features/admin/shared/components/skeletons/AdminPageSkeleton";
 import { useStudentCoachesQuery } from "@/features/admin/students/queries/studentQueries";
 import Button from "@/shared/components/Button";
 import { useAuth } from "@/shared/context/authContext";
@@ -99,18 +100,11 @@ export default function NewPlanPage() {
   const assignedCoaches = assignedCoachesQuery.data ?? [];
 
   const [selectedDayDate, setSelectedDayDate] = useState<string | null>(null);
-  const isDayModalOpen = selectedDayDate != null;
 
   const selectedDay = useMemo(() => {
     if (!selectedDayDate) return null;
     return days.find((day) => day.date === selectedDayDate) ?? null;
   }, [days, selectedDayDate]);
-
-  useEffect(() => {
-    if (selectedDayDate && !selectedDay) {
-      setSelectedDayDate(null);
-    }
-  }, [selectedDay, selectedDayDate]);
 
   useEffect(() => {
     if (!isEditMode || !detailQuery.data) {
@@ -218,12 +212,7 @@ export default function NewPlanPage() {
   }
 
   if (isEditMode && detailQuery.isLoading) {
-    return (
-      <section className="dashboard-card text-right">
-        <h1 className="text-foreground text-2xl font-bold">تعديل الخطة</h1>
-        <p className="text-subTitle mt-2 text-sm">جاري تحميل الخطة...</p>
-      </section>
-    );
+    return <AdminPageSkeleton contentSections={3} rows={3} />;
   }
 
   if (isEditMode && (detailQuery.isError || !detailQuery.data)) {
@@ -347,7 +336,7 @@ export default function NewPlanPage() {
 
       {selectedDayDate && selectedDay ? (
         <PlanDayEditorModal
-          isOpen={isDayModalOpen}
+          isOpen={Boolean(selectedDay)}
           day={selectedDay}
           onClose={() => {
             setSelectedDayDate(null);

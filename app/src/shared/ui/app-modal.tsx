@@ -1,4 +1,4 @@
-import { Modal, Pressable, Text, View } from "react-native";
+import { Modal, Pressable, StyleSheet, Text, View } from "react-native";
 
 import { useI18n } from "@/shared/i18n/I18nProvider";
 import { AppFonts } from "@/shared/theme/theme";
@@ -27,7 +27,18 @@ export function AppModal({
       animationType="fade"
       onRequestClose={onClose}
     >
-      <View className="flex-1 items-center justify-center bg-black/45 px-6">
+      <View className="flex-1 items-center justify-center px-6">
+        <View
+          pointerEvents="none"
+          style={[StyleSheet.absoluteFillObject, styles.overlay]}
+        />
+        <Pressable
+          style={StyleSheet.absoluteFillObject}
+          onPress={onClose}
+          accessibilityRole="button"
+          accessibilityLabel="إغلاق النافذة"
+        />
+
         <View className="w-full max-w-90 rounded-3xl bg-white px-6 py-6">
           <Text
             style={{ fontFamily: AppFonts[language].bold }}
@@ -57,3 +68,9 @@ export function AppModal({
     </Modal>
   );
 }
+
+const styles = StyleSheet.create({
+  overlay: {
+    backgroundColor: "rgba(0, 0, 0, 0.4)",
+  },
+});

@@ -1,13 +1,19 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { SigninDto } from './dto/signin.dto';
 import { UsersRepository } from '../users/users.repository';
+import { SubscriptionsRepository } from '../subscriptions/subscriptions.repository';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly usersRepository: UsersRepository,
+    private readonly subscriptionsRepository: SubscriptionsRepository,
     private readonly jwtService: JwtService,
   ) {}
 
@@ -26,6 +32,13 @@ export class AuthService {
 
     if (!isPasswordValid) {
       throw new UnauthorizedException('Invalid phone or password');
+    }
+
+    if (
+      user.role === 'student' &&
+      !(await this.subscriptionsRepository.hasActiveSubscription(user.id))
+    ) {
+      throw new ForbiddenException('No active subscription');
     }
 
     const token = await this.jwtService.signAsync({

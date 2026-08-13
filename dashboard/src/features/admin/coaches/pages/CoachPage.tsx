@@ -8,6 +8,7 @@ import {
   useCoachOverviewQuery,
   useCoachPlansQuery,
 } from "@/features/admin/coaches/queries/coachQueries";
+import AdminPageSkeleton from "@/features/admin/shared/components/skeletons/AdminPageSkeleton";
 import { useStudentsQuery } from "@/features/admin/students/queries/studentQueries";
 
 export default function CoachPage() {
@@ -38,12 +39,18 @@ export default function CoachPage() {
     );
   }
 
-  if (coachOverviewQuery.isLoading) {
+  const isInitialLoading =
+    (coachOverviewQuery.isLoading && !coachOverviewQuery.data) ||
+    (studentsQuery.isLoading && !studentsQuery.data) ||
+    (coachPlansQuery.isLoading && !coachPlansQuery.data);
+
+  if (isInitialLoading) {
     return (
-      <section className="dashboard-card text-right">
-        <h1 className="text-foreground text-2xl font-bold">تفاصيل المدرب</h1>
-        <p className="text-subTitle mt-2 text-sm">جاري تحميل بيانات المدرب...</p>
-      </section>
+      <AdminPageSkeleton
+        header="profile"
+        statsCount={2}
+        contentSections={2}
+      />
     );
   }
 

@@ -1,6 +1,6 @@
 import { ImageBackground, Pressable, View } from "react-native";
 
-import plansBg from "@assets/images/plans-bg.png";
+import plansBg from "@assets/images/plans-bg.webp";
 import { CurrentPlanCardSkeleton } from "@/features/plans/components/skeletons";
 import type { StudyPlan } from "@/features/plans/types";
 import {

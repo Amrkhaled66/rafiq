@@ -13,6 +13,7 @@ import {
   useSubscriptionsQuery,
 } from "@/features/admin/subscriptions/queries/subscriptionQueries";
 import PageHeader from "@/features/admin/shared/components/PageHeader";
+import AdminPageSkeleton from "@/features/admin/shared/components/skeletons/AdminPageSkeleton";
 import useServerPagination from "@/features/admin/shared/hooks/useServerPagination";
 import Button from "@/shared/components/Button";
 import { useState } from "react";
@@ -31,12 +32,7 @@ export default function SubscriptionsPage() {
   const actions = useSubscriptionsActions();
 
   if (subscriptionsQuery.isLoading && !subscriptionsQuery.data) {
-    return (
-      <section className="dashboard-card text-right">
-        <h1 className="text-foreground text-2xl font-bold">الاشتراكات</h1>
-        <p className="text-subTitle mt-2 text-sm">جاري تحميل الاشتراكات...</p>
-      </section>
-    );
+    return <AdminPageSkeleton statsCount={4} contentSections={2} rows={4} />;
   }
 
   if (subscriptionsQuery.isError || !subscriptionsQuery.data) {

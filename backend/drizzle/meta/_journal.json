@@ -106,6 +106,20 @@
       "when": 1786326506126,
       "tag": "0014_narrow_the_fallen",
       "breakpoints": true
+    },
+    {
+      "idx": 15,
+      "version": "7",
+      "when": 1786647531613,
+      "tag": "0015_pale_rhino",
+      "breakpoints": true
+    },
+    {
+      "idx": 16,
+      "version": "7",
+      "when": 1786651230238,
+      "tag": "0016_living_terror",
+      "breakpoints": true
     }
   ]
 }

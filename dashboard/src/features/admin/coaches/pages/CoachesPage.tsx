@@ -3,6 +3,7 @@ import { useState } from "react";
 import PageHeader from "@/features/admin/shared/components/PageHeader";
 import StatCard from "@/features/admin/shared/components/StatCard";
 import StatsRow from "@/features/admin/shared/components/StatsRow";
+import AdminPageSkeleton from "@/features/admin/shared/components/skeletons/AdminPageSkeleton";
 import useResetPageOnChange from "@/features/admin/shared/hooks/useResetPageOnChange";
 import useServerPagination from "@/features/admin/shared/hooks/useServerPagination";
 import Button from "@/shared/components/Button";
@@ -25,6 +26,10 @@ export default function CoachesPage() {
 
   const coaches = coachesQuery.data?.data ?? [];
   const coachesCount = coachesQuery.data?.total ?? 0;
+
+  if (coachesQuery.isLoading && !coachesQuery.data) {
+    return <AdminPageSkeleton statsCount={1} />;
+  }
 
   return (
     <div className="space-y">

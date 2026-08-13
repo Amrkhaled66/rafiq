@@ -40,6 +40,12 @@ const SIDEBAR_ITEMS: SidebarItem[] = [
     requires: { resource: "subscriptions", action: "read" },
   },
   {
+    icon: "solar:calendar-mark-linear",
+    label: "الاشتراكات اللي هتنتهي",
+    path: "expiring-subscriptions",
+    requires: { resource: "expiring_subscriptions", action: "read" },
+  },
+  {
     icon: "material-symbols:timer-outline",
     label: "الجلسات",
     path: "sessions",

@@ -6,6 +6,7 @@ import StudentPlanDetailsHeader from "@/features/admin/plans/components/PlanDeta
 import StudentPlanDetailsStatsSection from "@/features/admin/plans/components/PlanDetailsPage/StudentPlanDetailsStatsSection";
 import { useStudentPlanDetailsActions } from "@/features/admin/plans/hooks/useStudentPlanDetailsActions";
 import { useStudentPlanDetailQuery } from "@/features/admin/plans/queries/plansQueries";
+import AdminPageSkeleton from "@/features/admin/shared/components/skeletons/AdminPageSkeleton";
 
 export default function StudentPlanDetailsPage() {
   const { id, planId } = useParams();
@@ -29,13 +30,8 @@ export default function StudentPlanDetailsPage() {
     );
   }
 
-  if (detailQuery.isLoading) {
-    return (
-      <section className="dashboard-card text-right">
-        <h1 className="text-foreground text-2xl font-bold">تفاصيل الخطة</h1>
-        <p className="text-subTitle mt-2 text-sm">جاري تحميل الخطة...</p>
-      </section>
-    );
+  if (detailQuery.isLoading && !detailQuery.data) {
+    return <AdminPageSkeleton statsCount={5} contentSections={2} />;
   }
 
   if (detailQuery.isError || !detailQuery.data) {
