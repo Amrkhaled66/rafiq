@@ -1,9 +1,9 @@
 "use client";
 
 import { useMemo, useState, type FormEvent } from "react";
-import { Icon } from "@iconify/react";
 import { useRouter } from "next/navigation";
 import instaPayIcon from "@/src/assets/instaPay.webp";
+import fawryIcon from "@/src/assets/fawry.webp";
 import plans, { type MonthPlan } from "@/src/data/plans";
 import SectionTitle from "./components/SectionTitle";
 import FormField from "./components/FormField";
@@ -19,24 +19,37 @@ const durationOptions: MonthPlan[] = plans;
 
 const paymentMethods: PaymentMethod[] = [
   {
-    id: "instapay",
-    label: "InstaPay",
-    description: "تحويل بنكي مباشر",
-    icon: instaPayIcon,
+    id: "fawry",
+    label: "Fawry",
+    description: "دفع من خلال فوري",
+    icon: fawryIcon,
+    buttonText: "الانتقال لصفحة الدفع",
   },
   {
-    id: "vodafone_cash",
-    label: "Vodafone Cash",
-    description: "محفظة فودافون كاش",
-    icon: "simple-icons:vodafone",
+    id: "instapay",
+    label: "InstaPay",
+    description: "تحويل من خلال انستا باي",
+    icon: instaPayIcon,
+    buttonText: "ادفع الآن",
   },
+
 ];
 
-const CheckoutForm = () => {
+type CheckoutFormProps = {
+  mode?: "manual" | "fawaterak";
+};
+
+type FawaterakResponse = {
+  data?: { url?: string };
+  error?: string;
+};
+
+const CheckoutForm = ({ mode = "manual" }: CheckoutFormProps) => {
   const router = useRouter();
+  const isFawaterak = mode === "fawaterak";
   const [selectedDurationId, setSelectedDurationId] = useState(1);
   const [selectedPayment, setSelectedPayment] =
-    useState<PaymentMethod["id"]>("instapay");
+    useState<PaymentMethod["id"]>("fawry");
   const [proofImage, setProofImage] = useState<File | null>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -44,6 +57,7 @@ const CheckoutForm = () => {
     null,
   );
   const [submitMessage, setSubmitMessage] = useState("");
+  const usesFawaterak = isFawaterak || selectedPayment === "fawry";
 
   const selectedDuration = useMemo(
     () =>
@@ -73,7 +87,7 @@ const CheckoutForm = () => {
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    if (!proofImage) {
+    if (selectedPayment === "instapay" && !isFawaterak && !proofImage) {
       alert("من فضلك ارفع صورة الإيصال");
       return;
     }
@@ -85,11 +99,41 @@ const CheckoutForm = () => {
     try {
       const formData = new FormData(event.currentTarget);
 
+      if (usesFawaterak) {
+        const response = await fetch("/api/checkout_faw", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            planId: selectedDuration.id,
+            user: {
+              name: String(formData.get("name") ?? ""),
+              phone: String(formData.get("phone") ?? ""),
+            },
+          }),
+        });
+        const data = (await response.json().catch(() => null)) as
+          | FawaterakResponse
+          | null;
+
+        if (!response.ok) {
+          throw new Error(data?.error ?? "تعذر إنشاء رابط الدفع الآن.");
+        }
+
+        const invoiceUrl = data?.data?.url;
+
+        if (!invoiceUrl) {
+          throw new Error("لم ترجع خدمة الدفع رابطًا صالحًا.");
+        }
+
+        window.location.assign(invoiceUrl);
+        return;
+      }
+
       formData.append("durationId", String(selectedDuration.id));
       formData.append("durationLabel", selectedDuration.label);
       formData.append("price", String(selectedDuration.price));
       formData.append("paymentMethod", selectedPaymentData.label);
-      formData.append("proofImage", proofImage);
+      formData.append("proofImage", proofImage as File);
 
       if (!formData.get("grade")) {
         formData.append("grade", "ثالثة ثانوي");
@@ -134,17 +178,27 @@ const CheckoutForm = () => {
       <SectionTitle title="بيانات الاشتراك" icon="solar:user-rounded-bold" />
 
       <form onSubmit={handleSubmit} className="mt-6 space-y-5">
+        {usesFawaterak ? (
+          <FormField
+            label="الاسم بالكامل"
+            name="name"
+            type="text"
+            placeholder="أحمد محمد"
+            icon="solar:user-bold"
+          />
+        ) : null}
+
         <FormField
           label="رقم الهاتف"
           name="phone"
-          placeholder="مثال: 01012345678"
+          placeholder="01012345678"
           icon="solar:phone-rounded-bold"
         />
 
         <FormField
           label="رقم ولي الأمر"
           name="parentPhone"
-          placeholder="مثال: 01012345678"
+          placeholder="01012345678"
           icon="solar:user-id-bold"
         />
 
@@ -166,30 +220,38 @@ const CheckoutForm = () => {
           </div>
         </div>
 
-        <div>
-          <FieldLabel label="طريقة الدفع" icon="solar:wallet-money-bold" />
+        {!isFawaterak ? (
+          <>
+            <div>
+              <FieldLabel label="طريقة الدفع" icon="solar:wallet-money-bold" />
 
-          <div className="mt-3 grid grid-cols-2 gap-3">
-            {paymentMethods.map((method) => (
-              <PaymentCard
-                key={method.id}
-                method={method}
-                isSelected={method.id === selectedPayment}
-                onClick={() => setSelectedPayment(method.id)}
-              />
-            ))}
-          </div>
-        </div>
+              <div className="mt-3 grid grid-cols-2 gap-3">
+                {paymentMethods.map((method) => (
+                  <PaymentCard
+                    key={method.id}
+                    method={method}
+                    isSelected={method.id === selectedPayment}
+                    onClick={() => setSelectedPayment(method.id)}
+                  />
+                ))}
+              </div>
+            </div>
 
-        <PaymentInfo selectedPayment={selectedPayment} />
+            {selectedPayment === "instapay" ? (
+              <>
+                <PaymentInfo selectedPayment={selectedPayment} />
 
-        <ProofUpload
-          file={proofImage}
-          isDragging={isDragging}
-          onDragStateChange={setIsDragging}
-          onFileSelect={handleProofFile}
-          onRemove={() => setProofImage(null)}
-        />
+                <ProofUpload
+                  file={proofImage}
+                  isDragging={isDragging}
+                  onDragStateChange={setIsDragging}
+                  onFileSelect={handleProofFile}
+                  onRemove={() => setProofImage(null)}
+                />
+              </>
+            ) : null}
+          </>
+        ) : null}
 
         {submitStatus === "success" ? (
           <p className="rounded-2xl bg-green-50 px-4 py-3 text-center text-sm font-bold text-green-700">
@@ -208,18 +270,17 @@ const CheckoutForm = () => {
           disabled={isSubmitting}
           className="group flex w-full items-center justify-center gap-3 rounded-full bg-green-700 px-5 py-4 text-sm font-black text-white transition duration-300 hover:-translate-y-0.5 active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-60 sm:text-base"
         >
-          {/* <Icon
-            icon={
-              isSubmitting ? "solar:refresh-bold" : "solar:lock-keyhole-bold"
-            }
-            className="text-xl"
-          /> */}
-
-          <span>{isSubmitting ? "جاري التأكيد..." : "تأكيد الدفع"}</span>
-
-          {/* <span className="rounded-full bg-white/15 px-2 py-1 text-xs">
-            {selectedDuration.price} جنيه
-          </span> */}
+          {isSubmitting ? (
+            <>
+              <span
+                aria-hidden="true"
+                className="size-5 animate-spin rounded-full border-2 border-white/35 border-t-white"
+              />
+              <span className="sr-only">جاري التأكيد...</span>
+            </>
+          ) : (
+            <span>{selectedPaymentData.buttonText}</span>
+          )}
         </button>
       </form>
     </section>

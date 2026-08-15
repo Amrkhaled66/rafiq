@@ -1,7 +1,7 @@
 import { Icon } from "@iconify/react";
 import Image from "next/image";
 import InfoBadge from "@/src/components/shared/InfoBedge";
-import ctaAvatar from "@/src/assets/cta-avatr.png";
+import ctaAvatar from "@/src/assets/cta-avatr.webp";
 import LeadModalTrigger from "@/src/components/shared/LeadModalTrigger";
 
 export default function CTASection() {

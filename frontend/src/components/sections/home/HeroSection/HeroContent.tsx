@@ -1,10 +1,10 @@
 // "use client";
 import Image from "next/image";
-import studentImage from "@/src/assets/student.png";
+import studentImage from "@/src/assets/student.webp";
 import TasksCard from "./TasksCard";
 import WeeklyPlanCard from "./WeeklyPlanCard";
 import clsx from "clsx";
-import target from "@/src/assets/target.png";
+import target from "@/src/assets/target.webp";
 
 // import gsap from "gsap";
 // import { useGSAP } from "@gsap/react";

@@ -8,8 +8,9 @@ export type DurationOption = {
 };
 
 export type PaymentMethod = {
-    id: "instapay" | "vodafone_cash";
+    id: "instapay" | "fawry";
     label: string;
     description: string;
     icon: string | StaticImageData;
+    buttonText: string;
 };

@@ -3,7 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { Icon } from "@iconify/react";
-import seatIcon from "@/src/assets/seat-icon.png";
+import seatIcon from "@/src/assets/seat-icon.webp";
 
 type FloatingSeatBadgeProps = {
   href?: string;

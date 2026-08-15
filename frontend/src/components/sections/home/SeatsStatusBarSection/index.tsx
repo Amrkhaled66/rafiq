@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 import { Icon } from "@iconify/react";
-import calenderImg from "@/src/assets/calender-icon3.png";
+import calenderImg from "@/src/assets/calender-icon3.webp";
 
 const batchData = {
   totalSeats: 100,

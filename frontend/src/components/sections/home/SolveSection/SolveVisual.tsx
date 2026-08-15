@@ -1,10 +1,10 @@
 import clsx from "clsx";
 
-import sessionImage from "@/src/assets/session.png";
-import targetImage from "@/src/assets/target-icon2.png";
-import calendarImage from "@/src/assets/calender-icon2.png";
-import coachImage from "@/src/assets/coach.png";
-import mobileApp from "@/src/assets/mobile-app.png";
+import sessionImage from "@/src/assets/session.webp";
+import targetImage from "@/src/assets/target-icon2.webp";
+import calendarImage from "@/src/assets/calender-icon2.webp";
+import coachImage from "@/src/assets/coach.webp";
+import mobileApp from "@/src/assets/mobile-app.webp";
 import SolveCard, { SolveCardAccent, SolveCardItem } from "./SolveCard";
 const accents = {
   red: {

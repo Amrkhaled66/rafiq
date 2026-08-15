@@ -38,8 +38,8 @@ const PaymentCard = ({
                     icon={method.icon}
                     className={[
                         "text-4xl",
-                        method.id === "vodafone_cash"
-                            ? "text-brand-primary"
+                        method.id === "fawry"
+                            ? "text-[#f5a800]"
                             : "text-[#462B83]",
                     ].join(" ")}
                 />

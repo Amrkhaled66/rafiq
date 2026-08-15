@@ -6,11 +6,11 @@ import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import ProblemCard from "./ProblemCard";
-import studentConfusing from "@/src/assets/student-confusing.png";
-import targetIcon from "@/src/assets/target-icon.png";
-import questionIcon from "@/src/assets/question.png";
-import calenderIcon from "@/src/assets/calender-icon.png";
-import clockIcon from "@/src/assets/clock.png";
+import studentConfusing from "@/src/assets/student-confusing.webp";
+import targetIcon from "@/src/assets/target-icon.webp";
+import questionIcon from "@/src/assets/question.webp";
+import calenderIcon from "@/src/assets/calender-icon.webp";
+import clockIcon from "@/src/assets/clock.webp";
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
@@ -144,5 +144,4 @@ export default function ProblemVisual() {
     </div>
   );
 }
-
 

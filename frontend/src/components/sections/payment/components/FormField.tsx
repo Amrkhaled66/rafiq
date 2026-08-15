@@ -7,11 +7,13 @@ const FormField = ({
     name,
     placeholder,
     icon,
+    type = "tel",
 }: {
     label: string;
     name: string;
     placeholder: string;
     icon: string;
+    type?: "text" | "tel";
 }) => {
     return (
         <div>
@@ -22,7 +24,7 @@ const FormField = ({
                     required
                     dir="rtl"
                     name={name}
-                    type="tel"
+                    type={type}
                     placeholder={placeholder}
                     className="w-full bg-transparent text-sm font-semibold text-slate-900 outline-none placeholder:text-slate-400"
                 />
