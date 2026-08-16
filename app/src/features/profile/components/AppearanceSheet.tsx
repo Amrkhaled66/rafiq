@@ -1,5 +1,13 @@
 import { Ionicons } from "@expo/vector-icons";
-import { Modal, Pressable, StyleSheet, View } from "react-native";
+import { useEffect, useRef, useState } from "react";
+import {
+  Animated,
+  Easing,
+  Modal,
+  Pressable,
+  StyleSheet,
+  View,
+} from "react-native";
 
 import {
   type ThemePreference,
@@ -36,28 +44,88 @@ const OPTIONS: {
 ];
 
 export function AppearanceSheet({ visible, onClose }: AppearanceSheetProps) {
+  const overlayOpacity = useRef(new Animated.Value(0)).current;
+  const sheetTranslateY = useRef(new Animated.Value(320)).current;
+  const [shouldRender, setShouldRender] = useState(visible);
   const { colors, preference, setPreference } = useAppTheme();
   const dir = useDirection();
+
+  useEffect(() => {
+    if (visible) {
+      setShouldRender(true);
+
+      Animated.parallel([
+        Animated.timing(overlayOpacity, {
+          toValue: 1,
+          duration: 220,
+          easing: Easing.out(Easing.quad),
+          useNativeDriver: true,
+        }),
+        Animated.timing(sheetTranslateY, {
+          toValue: 0,
+          duration: 260,
+          easing: Easing.out(Easing.cubic),
+          useNativeDriver: true,
+        }),
+      ]).start();
+
+      return;
+    }
+
+    Animated.parallel([
+      Animated.timing(overlayOpacity, {
+        toValue: 0,
+        duration: 180,
+        easing: Easing.in(Easing.quad),
+        useNativeDriver: true,
+      }),
+      Animated.timing(sheetTranslateY, {
+        toValue: 320,
+        duration: 220,
+        easing: Easing.in(Easing.cubic),
+        useNativeDriver: true,
+      }),
+    ]).start(({ finished }) => {
+      if (finished) {
+        setShouldRender(false);
+      }
+    });
+  }, [overlayOpacity, sheetTranslateY, visible]);
 
   const selectPreference = async (nextPreference: ThemePreference) => {
     await setPreference(nextPreference);
   };
 
+  if (!shouldRender) {
+    return null;
+  }
+
   return (
     <Modal
       transparent
-      visible={visible}
-      animationType="slide"
+      visible={shouldRender}
+      animationType="none"
       onRequestClose={onClose}
     >
       <View className="flex-1 justify-end">
+        <Animated.View
+          pointerEvents="none"
+          style={[
+            StyleSheet.absoluteFillObject,
+            { backgroundColor: colors.overlay },
+            { opacity: overlayOpacity },
+          ]}
+        />
         <Pressable
-          style={[StyleSheet.absoluteFillObject, { backgroundColor: colors.overlay }]}
+          className="flex-1"
           onPress={onClose}
           accessibilityLabel="إغلاق نافذة المظهر"
         />
 
-        <View className="rounded-t-4xl bg-card px-5 pb-7 pt-3">
+        <Animated.View
+          className="rounded-t-4xl bg-card px-5 pb-7 pt-3"
+          style={{ transform: [{ translateY: sheetTranslateY }] }}
+        >
           <View className="mb-5 items-center">
             <View className="h-1 w-10 rounded-full bg-divider" />
           </View>
@@ -130,7 +198,7 @@ export function AppearanceSheet({ visible, onClose }: AppearanceSheetProps) {
               تم
             </AppText>
           </Pressable>
-        </View>
+        </Animated.View>
       </View>
     </Modal>
   );
