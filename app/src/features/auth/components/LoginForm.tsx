@@ -10,6 +10,7 @@ import type { LoginFormValues } from "@/features/auth/types";
 import type { AppLanguage } from "@/shared/i18n/translations";
 import { useForm } from "@/shared/hooks/use-form";
 import { AppFonts } from "@/shared/theme/theme";
+import { useAppTheme } from "@/shared/theme/appearance-provider";
 
 type LoginFormProps = {
   language: AppLanguage;
@@ -38,6 +39,7 @@ export default function LoginForm({
   const passwordInputRef = useRef<TextInput>(null);
   const { mutateAsync, isPending } = useLoginMutation();
   const auth = useAuth();
+  const { colors } = useAppTheme();
 
   async function submitLogin(values: LoginFormValues) {
     try {
@@ -81,11 +83,12 @@ export default function LoginForm({
     isPending || !form.values.phone.trim() || !form.values.password;
 
   return (
-    <View className="z-100! flex-1 gap-6 rounded-t-4xl bg-white px-4 py-6 sm:gap-8 sm:rounded-t-[40px] sm:px-8 sm:py-8">
+    <View className="z-100! flex-1 gap-6 rounded-t-4xl bg-card px-4 py-6 sm:gap-8 sm:rounded-t-[40px] sm:px-8 sm:py-8">
       <View>
         <Text
           style={{
             fontFamily: AppFonts[language].bold,
+            color: colors.text,
           }}
           className="py-2 text-center text-3xl sm:pt-0 sm:text-4xl"
         >
@@ -95,8 +98,9 @@ export default function LoginForm({
         <Text
           style={{
             fontFamily: AppFonts[language].bold,
+            color: colors.mutedText,
           }}
-          className="text-center text-base text-[#6b6b6b] sm:text-lg"
+          className="text-center text-base sm:text-lg"
         >
           سجل دخولك وشوف مهامك النهاردة
         </Text>

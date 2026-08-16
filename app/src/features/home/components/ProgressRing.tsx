@@ -1,7 +1,7 @@
 import { View } from "react-native";
 import Svg, { Circle } from "react-native-svg";
 
-import { Colors } from "@/shared/theme/theme";
+import { useAppTheme } from "@/shared/theme/appearance-provider";
 import { AppCaption, AppText } from "@/shared/ui/app-text";
 type ProgressRingProps = {
   progress: number;
@@ -23,6 +23,7 @@ export function ProgressRing({
     circumference - (circumference * normalizedProgress) / 100;
   const percentageFontSize = size >= 132 ? 28 : 24;
   const labelFontSize = size >= 132 ? 13 : 12;
+  const { colors } = useAppTheme();
 
   return (
     <View className="items-center justify-center">
@@ -35,7 +36,7 @@ export function ProgressRing({
             cx={size / 2}
             cy={size / 2}
             r={radius}
-            stroke="#F0F1F3"
+            stroke={colors.divider}
             strokeWidth={strokeWidth}
             fill="none"
           />
@@ -43,7 +44,7 @@ export function ProgressRing({
             cx={size / 2}
             cy={size / 2}
             r={radius}
-            stroke={Colors.light.tint}
+            stroke={colors.tint}
             strokeWidth={strokeWidth}
             fill="none"
             strokeLinecap="round"

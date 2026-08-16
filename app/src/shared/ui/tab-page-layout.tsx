@@ -7,6 +7,7 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { FocusedStatusBar } from "@/shared/ui/focused-status-bar";
+import { useAppTheme } from "@/shared/theme/appearance-provider";
 
 type TabPageLayoutProps = PropsWithChildren<{
   scrollProps?: ScrollViewProps;
@@ -16,10 +17,13 @@ export function TabPageLayout({ children, scrollProps }: TabPageLayoutProps) {
   const insets = useSafeAreaInsets();
   const { width } = useWindowDimensions();
   const isTablet = width >= 768;
+  const { effectiveColorScheme } = useAppTheme();
 
   return (
     <View className="flex-1 bg-background">
-      <FocusedStatusBar style="dark" />
+      <FocusedStatusBar
+        style={effectiveColorScheme === "dark" ? "light" : "dark"}
+      />
 
       <ScrollView
         showsVerticalScrollIndicator={false}

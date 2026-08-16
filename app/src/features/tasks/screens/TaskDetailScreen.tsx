@@ -16,9 +16,12 @@ import {
 } from "@/features/tasks/queries/taskQueries";
 import { AppText } from "@/shared/ui/app-text";
 import { FocusedStatusBar } from "@/shared/ui/focused-status-bar";
+import { useAppTheme } from "@/shared/theme/appearance-provider";
 
 export function TaskDetailScreen() {
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const { colors, effectiveColorScheme } = useAppTheme();
+  const statusBarStyle = effectiveColorScheme === "dark" ? "light" : "dark";
 
   const params = useLocalSearchParams<{ taskId?: string }>();
   const parsedTaskId = Number(params.taskId);
@@ -62,7 +65,7 @@ export function TaskDetailScreen() {
   if (!taskId || taskQuery.isError) {
     return (
       <View className="bg-background flex-1 items-center justify-center px-6">
-        <FocusedStatusBar style="dark" />
+        <FocusedStatusBar style={statusBarStyle} />
         <AppText className="text-lg md:text-xl" weight="bold">
           تعذر تحميل المهمة
         </AppText>
@@ -72,7 +75,7 @@ export function TaskDetailScreen() {
 
   return (
     <View className="bg-background flex-1">
-      <FocusedStatusBar style="dark" />
+      <FocusedStatusBar style={statusBarStyle} />
 
       <ScrollView
         showsVerticalScrollIndicator={false}
@@ -85,6 +88,9 @@ export function TaskDetailScreen() {
           <RefreshControl
             refreshing={isRefreshing}
             onRefresh={() => void handleRefresh()}
+            tintColor={colors.tint}
+            colors={[colors.tint]}
+            progressBackgroundColor={colors.card}
           />
         }
       >

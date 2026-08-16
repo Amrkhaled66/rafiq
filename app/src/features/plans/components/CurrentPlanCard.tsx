@@ -10,6 +10,7 @@ import {
 } from "@/features/plans/utils/plan-ui";
 import { useDirection } from "@/shared/hooks/use-direction";
 import { AppText } from "@/shared/ui/app-text";
+import { useAppTheme } from "@/shared/theme/appearance-provider";
 
 type CurrentPlanCardProps = {
   plan: StudyPlan;
@@ -23,7 +24,8 @@ export function CurrentPlanCard({
   isLoading = false,
 }: CurrentPlanCardProps) {
   const dir = useDirection();
-  const statusAppearance = getPlanStatusAppearance(plan.status);
+  const { colors } = useAppTheme();
+  const statusAppearance = getPlanStatusAppearance(plan.status, colors);
 
   if (isLoading) {
     return <CurrentPlanCardSkeleton />;

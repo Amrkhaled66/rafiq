@@ -9,6 +9,7 @@ import Svg, { Path } from "react-native-svg";
 
 import { useI18n } from "@/shared/i18n/I18nProvider";
 import { AppFonts } from "@/shared/theme/theme";
+import { useAppTheme } from "@/shared/theme/appearance-provider";
 
 import heroBg from "@assets/images/hero-bg.webp";
 import logoWhite from "@assets/images/logoWhite.webp";
@@ -20,9 +21,11 @@ type HomeHeaderProps = {
 function HeaderCurve({
   width,
   height = 54,
+  fill,
 }: {
   width: number;
   height?: number;
+  fill: string;
 }) {
   return (
     <Svg
@@ -50,7 +53,7 @@ function HeaderCurve({
     L 0 ${height}
     Z
   `}
-        fill="#FFFFFF"
+        fill={fill}
       />
     </Svg>
   );
@@ -59,6 +62,7 @@ function HeaderCurve({
 export function HomeHeader({ firstName }: HomeHeaderProps) {
   const { isRTL, language } = useI18n();
   const { width } = useWindowDimensions();
+  const { colors } = useAppTheme();
 
   const isTablet = width >= 768;
   const headerHeight = isTablet ? 300 : 240;
@@ -152,7 +156,7 @@ export function HomeHeader({ firstName }: HomeHeaderProps) {
           </View>
         </View>
 
-        <HeaderCurve width={width} height={curveHeight} />
+        <HeaderCurve width={width} height={curveHeight} fill={colors.background} />
       </ImageBackground>
     </View>
   );

@@ -9,6 +9,7 @@ import {
 } from "@/features/tasks/utils/task-session-ui";
 import { useDirection } from "@/shared/hooks/use-direction";
 import { AppText } from "@/shared/ui/app-text";
+import { useAppTheme } from "@/shared/theme/appearance-provider";
 
 type TaskSessionRowProps = {
   session: TaskSessionItem;
@@ -17,13 +18,14 @@ type TaskSessionRowProps = {
 
 export function TaskSessionRow({ session, index }: TaskSessionRowProps) {
   const dir = useDirection();
-  const appearance = getTaskSessionStatusAppearance(session.status);
+  const { colors } = useAppTheme();
+  const appearance = getTaskSessionStatusAppearance(session.status, colors);
 
   return (
     <View
       className="border-card-border bg-card rounded-3xl border px-4 py-4 active:opacity-90 md:px-5 md:py-4.5"
       style={{
-        shadowColor: "#000",
+        shadowColor: colors.shadow,
         shadowOffset: { width: 0, height: 4 },
         shadowOpacity: 0.04,
         shadowRadius: 10,

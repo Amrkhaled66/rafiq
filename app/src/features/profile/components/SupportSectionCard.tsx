@@ -3,7 +3,7 @@ import { Pressable, View } from "react-native";
 
 import { SupportSectionCardSkeleton } from "@/features/profile/components/skeletons";
 import { useDirection } from "@/shared/hooks/use-direction";
-import { Colors } from "@/shared/theme/theme";
+import { useAppTheme } from "@/shared/theme/appearance-provider";
 import { AppText } from "@/shared/ui/app-text";
 
 type SupportSectionCardProps = {
@@ -71,6 +71,8 @@ export function SupportSectionCard({
   onLogoutPress,
   isLoading = false,
 }: SupportSectionCardProps) {
+  const { colors } = useAppTheme();
+
   if (isLoading) {
     return <SupportSectionCardSkeleton />;
   }
@@ -79,7 +81,7 @@ export function SupportSectionCard({
     <View
       className="border-card-border bg-card overflow-hidden rounded-[26px] border"
       style={{
-        shadowColor: "#000",
+        shadowColor: colors.shadow,
         shadowOffset: { width: 0, height: 4 },
         shadowOpacity: 0.04,
         shadowRadius: 10,
@@ -89,15 +91,15 @@ export function SupportSectionCard({
       <SupportRow
         title="تواصل مع الدعم"
         icon="headset-outline"
-        iconColor={Colors.light.tint}
-        backgroundColor={Colors.light.soft}
+        iconColor={colors.tint}
+        backgroundColor={colors.soft}
         onPress={onSupportPress}
       />
       <SupportRow
         title="تسجيل الخروج"
         icon="log-out-outline"
-        iconColor={Colors.light.tint}
-        backgroundColor="#FDECEC"
+        iconColor={colors.tint}
+        backgroundColor={colors.soft}
         // textTone="tint"
         isLast
         onPress={onLogoutPress}

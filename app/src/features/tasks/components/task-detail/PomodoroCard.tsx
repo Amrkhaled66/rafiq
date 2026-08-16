@@ -6,6 +6,7 @@ import { CircularTimer } from "@/features/tasks/components/task-detail/CircularT
 import { PomodoroCardSkeleton } from "@/features/tasks/components/task-detail/skeletons";
 import type { TaskDetailStatus } from "@/features/tasks/types";
 import { AppText } from "@/shared/ui/app-text";
+import { useAppTheme } from "@/shared/theme/appearance-provider";
 
 type PomodoroCardProps = {
   taskStatus: TaskDetailStatus;
@@ -41,6 +42,8 @@ export function PomodoroCard({
   onCancel,
   isLoading = false,
 }: PomodoroCardProps) {
+  const { colors } = useAppTheme();
+
   if (isLoading) {
     return <PomodoroCardSkeleton />;
   }
@@ -86,9 +89,9 @@ export function PomodoroCard({
 
   return (
     <View
-      className="border-card-border relative h-fit overflow-hidden rounded-3xl border bg-[#FFFDFB] px-5 py-4 md:px-6 md:py-10"
+      className="border-card-border relative h-fit overflow-hidden rounded-3xl border bg-card px-5 py-4 md:px-6 md:py-10"
       style={{
-        shadowColor: "#000",
+        shadowColor: colors.shadow,
         shadowOpacity: 0.04,
         shadowRadius: 12,
         shadowOffset: { width: 0, height: 6 },
@@ -141,7 +144,7 @@ export function PomodoroCard({
             onPress={ctaAppearance.onPress}
             style={{
               backgroundColor: ctaAppearance.disabled
-                ? "#D1D5DB"
+                ? colors.disabled
                 : CARD_COLORS.red,
             }}
           >
@@ -157,7 +160,7 @@ export function PomodoroCard({
           </Pressable>
 
           <Pressable
-            className="h-12 flex-row items-center justify-center gap-2 rounded-2xl border bg-white active:opacity-80 md:h-13 md:gap-2.5"
+            className="h-12 flex-row items-center justify-center gap-2 rounded-2xl border bg-card active:opacity-80 md:h-13 md:gap-2.5"
             style={{
               borderColor: CARD_COLORS.red,
               opacity: showStopButton ? 1 : 0,

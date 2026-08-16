@@ -3,7 +3,7 @@ import { router } from "expo-router";
 import { Pressable } from "react-native";
 
 import { useDirection } from "@/shared/hooks/use-direction";
-import { Colors } from "@/shared/theme/theme";
+import { useAppTheme } from "@/shared/theme/appearance-provider";
 
 type BackButtonProps = {
   onPress?: () => void;
@@ -11,6 +11,7 @@ type BackButtonProps = {
 
 export function BackButton({ onPress }: BackButtonProps) {
   const dir = useDirection();
+  const { colors } = useAppTheme();
 
   return (
     <Pressable
@@ -27,7 +28,7 @@ export function BackButton({ onPress }: BackButtonProps) {
       <Ionicons
         name={dir.isRTL ? "chevron-back" : "chevron-forward"}
         size={22}
-        color={Colors.light.tint}
+        color={colors.tint}
       />
     </Pressable>
   );

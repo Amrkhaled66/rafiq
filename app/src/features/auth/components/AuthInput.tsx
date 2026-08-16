@@ -8,7 +8,8 @@ import {
 import { Text, TextInput, type TextInputProps, View } from "react-native";
 
 import { useI18n } from "@/shared/i18n/I18nProvider";
-import { AppFonts, Colors } from "@/shared/theme/theme";
+import { AppFonts } from "@/shared/theme/theme";
+import { useAppTheme } from "@/shared/theme/appearance-provider";
 
 type AuthInputProps = Omit<TextInputProps, "style"> & {
   iconName: ComponentProps<typeof Ionicons>["name"];
@@ -31,12 +32,13 @@ const AuthInput = forwardRef<TextInput, AuthInputProps>(function AuthInput(
   ref,
 ) {
   const { language } = useI18n();
+  const { colors } = useAppTheme();
   const [isFocused, setIsFocused] = useState(false);
   const borderColor = error
-    ? Colors.light.tint
+    ? colors.tint
     : isFocused
-      ? Colors.light.tint
-      : "#d1d5db";
+      ? colors.tint
+      : colors.disabled;
 
   return (
     <View className="mx-auto w-[86%] max-w-[520px] gap-2 sm:w-[68%]">
@@ -53,7 +55,7 @@ const AuthInput = forwardRef<TextInput, AuthInputProps>(function AuthInput(
               fontFamily: AppFonts[language].medium,
               textAlign: language === "ar" ? "right" : "left",
             }}
-            className="px-3 pb-1 text-sm text-[#6b6b6b] sm:text-base"
+            className="px-3 pb-1 text-sm text-muted-text sm:text-base"
           >
             {label}
           </Text>
@@ -72,10 +74,12 @@ const AuthInput = forwardRef<TextInput, AuthInputProps>(function AuthInput(
             }}
             style={{
               flex: 1,
+              color: colors.text,
               textAlign: language === "ar" ? "right" : "left",
               writingDirection: language === "ar" ? "rtl" : "ltr",
             }}
-            className={`px-3 py-3 text-base placeholder:text-gray-400 sm:py-4 sm:text-lg ${className ?? ""}`}
+            placeholderTextColor={colors.icon}
+            className={`px-3 py-3 text-base sm:py-4 sm:text-lg ${className ?? ""}`}
           />
 
           <Ionicons name={iconName} size={20} className="text-brand-primary" />

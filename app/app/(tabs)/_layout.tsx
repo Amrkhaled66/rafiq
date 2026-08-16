@@ -8,19 +8,19 @@ import {
   VectorIcon,
 } from "expo-router/unstable-native-tabs";
 
-import { useColorScheme } from "@/shared/hooks/use-color-scheme";
 import { useI18n } from "@/shared/i18n/I18nProvider";
 import { getDirectionalTabs } from "@/shared/navigation/tab-config";
 import { getTabTheme } from "@/shared/navigation/tab-theme";
 import { AppFonts } from "@/shared/theme/theme";
+import { useAppTheme } from "@/shared/theme/appearance-provider";
 import { AndroidTabBar } from "@/shared/ui/android-tab-bar";
 
 export default function TabsLayout() {
-  const colorScheme = useColorScheme() ?? "light";
+  const { effectiveColorScheme } = useAppTheme();
   const { t, isRTL, language } = useI18n();
   const currentFont = AppFonts[language];
   const tabs = getDirectionalTabs(isRTL);
-  const tabTheme = getTabTheme(colorScheme, currentFont);
+  const tabTheme = getTabTheme(effectiveColorScheme, currentFont);
 
   if (Platform.OS === "ios") {
     return (

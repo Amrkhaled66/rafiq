@@ -3,7 +3,7 @@ import { View } from "react-native";
 
 import type { MyTasksProgress } from "@/features/tasks/types";
 import { useDirection } from "@/shared/hooks/use-direction";
-import { Colors } from "@/shared/theme/theme";
+import { useAppTheme } from "@/shared/theme/appearance-provider";
 import { AppText } from "@/shared/ui/app-text";
 import { ProgressSummaryCardSkeleton } from "@/shared/ui/skeletons";
 
@@ -25,7 +25,7 @@ const STATUS_SUMMARY = [
     key: "remaining",
     label: "متبقية",
     icon: "time-outline" as const,
-    color: Colors.light.tint,
+    color: null,
   },
 ] as const;
 
@@ -36,6 +36,7 @@ export function LessonProgressCard({
   isLoading = false,
 }: LessonProgressCardProps) {
   const dir = useDirection();
+  const { colors } = useAppTheme();
 
   if (isLoading) {
     return <ProgressSummaryCardSkeleton summaryItemsCount={2} />;
@@ -62,7 +63,7 @@ export function LessonProgressCard({
               <Ionicons
                 name="school-outline"
                 size={20}
-                color={Colors.light.tint}
+                color={colors.tint}
               />
             </View>
 
@@ -111,6 +112,7 @@ export function LessonProgressCard({
       <View className={`mt-3 justify-between gap-2 md:mt-4 md:gap-3 ${dir.rowReverse}`}>
         {STATUS_SUMMARY.map((item) => {
           const count = item.key === "attended" ? attendedCount : remainingCount;
+          const itemColor = item.color ?? colors.tint;
 
           return (
             <View key={item.key} className="flex-1 items-center gap-0.5 md:gap-1">
@@ -118,12 +120,12 @@ export function LessonProgressCard({
                 <AppText
                   className="text-sm md:text-[15px]"
                   weight="bold"
-                  style={{ color: item.color }}
+                  style={{ color: itemColor }}
                 >
                   {count}
                 </AppText>
 
-                <Ionicons name={item.icon} size={15} color={item.color} />
+                <Ionicons name={item.icon} size={15} color={itemColor} />
               </View>
 
               <AppText

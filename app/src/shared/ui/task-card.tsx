@@ -2,7 +2,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { Pressable, View } from "react-native";
 
 import { useDirection } from "@/shared/hooks/use-direction";
-import { Colors } from "@/shared/theme/theme";
+import { useAppTheme } from "@/shared/theme/appearance-provider";
 import { AppText } from "@/shared/ui/app-text";
 
 type TaskCardProps = {
@@ -29,6 +29,7 @@ export function TaskCard({
   onPress,
 }: TaskCardProps) {
   const dir = useDirection();
+  const { colors } = useAppTheme();
 
   return (
     <Pressable
@@ -84,11 +85,11 @@ export function TaskCard({
           </View>
         </View>
 
-        <View className="size-9 md:size-10 items-center justify-center rounded-full bg-gray-50">
+        <View className="size-9 md:size-10 items-center justify-center rounded-full bg-input">
           <Ionicons
             name={dir.isRTL ? "chevron-back" : "chevron-forward"}
             size={19}
-            color={Colors.light.icon}
+            color={colors.icon}
           />
         </View>
       </View>

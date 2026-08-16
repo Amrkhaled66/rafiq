@@ -5,7 +5,7 @@ import { HomeStateCard } from "@/features/home/components/HomeStateCard";
 import { SectionTitle } from "@/features/home/components/SectionTitle";
 import { TodayLessonsSkeleton } from "@/features/home/components/skeletons";
 import { useDirection } from "@/shared/hooks/use-direction";
-import { Colors } from "@/shared/theme/theme";
+import { useAppTheme } from "@/shared/theme/appearance-provider";
 import { AppText } from "@/shared/ui/app-text";
 import {
   LessonChecklistRow,
@@ -29,6 +29,7 @@ export function TodayLessons({
   const dir = useDirection();
   const isTablet = width >= 768;
   const previewLessons = lessons.slice(0, ENDLESSONSINDEX);
+  const { colors } = useAppTheme();
 
   if (isLoading) {
     return <TodayLessonsSkeleton />;
@@ -53,7 +54,7 @@ export function TodayLessons({
             <Ionicons
               name={dir.isRTL ? "arrow-back-outline" : "arrow-forward-outline"}
               size={isTablet ? 18 : 16}
-              color={Colors.light.tint}
+              color={colors.tint}
             />
           </View>
         </Pressable>
@@ -64,8 +65,8 @@ export function TodayLessons({
       <View
         style={{
           borderWidth: 1,
-          borderColor: "#F1F1F1",
-          shadowColor: "#000",
+          borderColor: colors.border,
+          shadowColor: colors.shadow,
           shadowOffset: {
             width: 0,
             height: 4,
@@ -74,7 +75,7 @@ export function TodayLessons({
           shadowRadius: 10,
           elevation: 1,
         }}
-        className="rounded-2xl! bg-white"
+        className="rounded-2xl! bg-card"
       >
         {previewLessons.map((lesson, index) => (
           <LessonChecklistRow

@@ -3,6 +3,7 @@ import { View } from "react-native";
 
 import { TaskNoteSkeleton } from "@/features/tasks/components/task-detail/skeletons";
 import { AppText } from "@/shared/ui/app-text";
+import { useAppTheme } from "@/shared/theme/appearance-provider";
 
 type TaskNoteProps = {
   note?: string | null;
@@ -13,6 +14,8 @@ export function TaskNote({
   note,
   isLoading = false,
 }: TaskNoteProps) {
+  const { colors, effectiveColorScheme } = useAppTheme();
+
   if (isLoading) {
     return <TaskNoteSkeleton />;
   }
@@ -21,10 +24,10 @@ export function TaskNote({
 
   return (
     <View
-      className="relative overflow-hidden rounded-3xl border bg-[#FFFDFB] px-5 py-4 md:px-6 md:py-5"
+      className="relative overflow-hidden rounded-3xl border bg-card px-5 py-4 md:px-6 md:py-5"
       style={{
-        borderColor: "#FFE1D6",
-        shadowColor: "#000",
+        borderColor: effectiveColorScheme === "dark" ? colors.border : "#FFE1D6",
+        shadowColor: colors.shadow,
         shadowOpacity: 0.04,
         shadowRadius: 12,
         shadowOffset: { width: 0, height: 6 },
@@ -55,7 +58,7 @@ export function TaskNote({
           </AppText>
         </View>
 
-        <AppText className="max-w-[82%] text-right text-base leading-7 text-[#3F2A3F] md:text-[17px] md:leading-8">
+        <AppText className="max-w-[82%] text-right text-base leading-7 md:text-[17px] md:leading-8">
           {note}
         </AppText>
       </View>

@@ -3,7 +3,7 @@ import { View } from "react-native";
 
 import type { MyTaskStatus, MyTasksProgress } from "@/features/tasks/types";
 import { useDirection } from "@/shared/hooks/use-direction";
-import { Colors } from "@/shared/theme/theme";
+import { useAppTheme } from "@/shared/theme/appearance-provider";
 import { AppText } from "@/shared/ui/app-text";
 import { ProgressSummaryCardSkeleton } from "@/shared/ui/skeletons";
 
@@ -17,7 +17,7 @@ const STATUS_SUMMARY: {
   key: MyTaskStatus;
   label: string;
   icon: keyof typeof Ionicons.glyphMap;
-  color: string;
+  color: string | null;
 }[] = [
   {
     key: "completed",
@@ -29,7 +29,7 @@ const STATUS_SUMMARY: {
     key: "in_progress",
     label: "قيد التنفيذ",
     icon: "time-outline",
-    color: Colors.light.tint,
+    color: null,
   },
   {
     key: "not_started",
@@ -45,6 +45,7 @@ export function TaskProgressCard({
   isLoading = false,
 }: TaskProgressCardProps) {
   const dir = useDirection();
+  const { colors } = useAppTheme();
 
   if (isLoading) {
     return <ProgressSummaryCardSkeleton summaryItemsCount={3} />;
@@ -54,7 +55,7 @@ export function TaskProgressCard({
     <View
       className="border-card-border bg-card overflow-hidden rounded-3xl border px-4 py-4 md:px-5 md:py-5"
       style={{
-        shadowColor: "#000",
+        shadowColor: colors.shadow,
         shadowOffset: { width: 0, height: 4 },
         shadowOpacity: 0.04,
         shadowRadius: 10,
@@ -73,7 +74,7 @@ export function TaskProgressCard({
               <Ionicons
                 name="bar-chart-outline"
                 size={20}
-                color={Colors.light.tint}
+                color={colors.tint}
               />
             </View>
 
@@ -122,18 +123,21 @@ export function TaskProgressCard({
       <View
         className={`mt-3 justify-between gap-2 md:mt-4 md:gap-3 ${dir.rowReverse}`}
       >
-        {STATUS_SUMMARY.map((item) => (
-          <View key={item.key} className="flex-1 items-center gap-0.5 md:gap-1">
+        {STATUS_SUMMARY.map((item) => {
+          const itemColor = item.color ?? colors.tint;
+
+          return (
+            <View key={item.key} className="flex-1 items-center gap-0.5 md:gap-1">
             <View className="flex-row-reverse items-center gap-1 md:gap-1.5">
               <AppText
                 className="text-sm md:text-[15px]"
                 weight="bold"
-                style={{ color: item.color }}
+                style={{ color: itemColor }}
               >
                 {statusCounts[item.key]}
               </AppText>
 
-              <Ionicons name={item.icon} size={15} color={item.color} />
+              <Ionicons name={item.icon} size={15} color={itemColor} />
             </View>
 
             <AppText
@@ -144,8 +148,9 @@ export function TaskProgressCard({
             >
               {item.label}
             </AppText>
-          </View>
-        ))}
+            </View>
+          );
+        })}
       </View>
     </View>
   );

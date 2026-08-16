@@ -3,6 +3,7 @@ import { Pressable, View, useWindowDimensions } from "react-native";
 
 import { useDirection } from "@/shared/hooks/use-direction";
 import { AppText } from "@/shared/ui/app-text";
+import { useAppTheme } from "@/shared/theme/appearance-provider";
 
 export type TaskItem = {
   id: string;
@@ -23,17 +24,18 @@ export function TodayTaskCard({ task, onPress }: TodayTaskCardProps) {
   const { width } = useWindowDimensions();
   const dir = useDirection();
   const isTablet = width >= 768;
+  const { colors } = useAppTheme();
 
   return (
     <Pressable
-      className="w-[48.5%] rounded-2xl bg-white px-3 py-4 md:w-[48.5%] md:px-4.5 md:py-4.5"
+      className="w-[48.5%] rounded-2xl bg-card px-3 py-4 md:w-[48.5%] md:px-4.5 md:py-4.5"
       onPress={() => onPress?.(task)}
       disabled={!onPress}
       style={{
         borderWidth: 1,
-        borderColor: "#F1F1F1",
+        borderColor: colors.border,
 
-        shadowColor: "#000",
+        shadowColor: colors.shadow,
         shadowOffset: {
           width: 0,
           height: 4,

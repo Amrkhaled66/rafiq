@@ -5,7 +5,7 @@ import { PlanCard } from "@/features/plans/components/PlanCard";
 import { PlansSectionSkeleton } from "@/features/plans/components/skeletons";
 import type { StudyPlan } from "@/features/plans/types";
 import { useDirection } from "@/shared/hooks/use-direction";
-import { Colors } from "@/shared/theme/theme";
+import { useAppTheme } from "@/shared/theme/appearance-provider";
 import { AppText } from "@/shared/ui/app-text";
 
 type PlansSectionProps = {
@@ -20,6 +20,7 @@ export function PlansSection({
   isLoading = false,
 }: PlansSectionProps) {
   const dir = useDirection();
+  const { colors } = useAppTheme();
 
   if (isLoading) {
     return <PlansSectionSkeleton />;
@@ -51,7 +52,7 @@ export function PlansSection({
           <View
             className="border-card-border bg-card items-center gap-3 rounded-3xl border px-5 py-7 md:gap-3.5 md:px-6 md:py-8"
             style={{
-              shadowColor: "#000",
+              shadowColor: colors.shadow,
               shadowOffset: { width: 0, height: 4 },
               shadowOpacity: 0.04,
               shadowRadius: 10,
@@ -62,7 +63,7 @@ export function PlansSection({
               <Ionicons
                 name="calendar-outline"
                 size={25}
-                color={Colors.light.tint}
+                color={colors.tint}
               />
             </View>
 

@@ -2,7 +2,8 @@ import { type ReactNode } from "react";
 import { Text, type TextProps } from "react-native";
 
 import { useI18n } from "@/shared/i18n/I18nProvider";
-import { AppFonts, Colors } from "@/shared/theme/theme";
+import { AppFonts, type AppPalette } from "@/shared/theme/theme";
+import { useAppTheme } from "@/shared/theme/appearance-provider";
 
 type TextTone = "default" | "muted" | "tint" | "inverse";
 type TextWeight = "regular" | "medium" | "semibold" | "bold";
@@ -16,16 +17,16 @@ type BaseTextProps = TextProps & {
   align?: TextAlign;
 };
 
-function resolveColor(tone: TextTone) {
+function resolveColor(tone: TextTone, colors: AppPalette) {
   switch (tone) {
     case "muted":
-      return Colors.light.icon;
+      return colors.mutedText;
     case "tint":
-      return Colors.light.tint;
+      return colors.tint;
     case "inverse":
       return "#ffffff";
     default:
-      return Colors.light.text;
+      return colors.text;
   }
 }
 
@@ -53,6 +54,7 @@ export function AppText({
   ...props
 }: BaseTextProps) {
   const { isRTL, language } = useI18n();
+  const { colors } = useAppTheme();
   const textAlign =
     align === "auto" ? (isRTL ? "right" : "left") : align;
 
@@ -61,7 +63,7 @@ export function AppText({
       className={className}
       style={[
         {
-          color: resolveColor(tone),
+          color: resolveColor(tone, colors),
           fontFamily: resolveFont(weight, language),
           textAlign,
           writingDirection: isRTL ? "rtl" : "ltr",

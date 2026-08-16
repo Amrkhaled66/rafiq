@@ -8,7 +8,7 @@ import {
   getPlanStatusLabel,
 } from "@/features/plans/utils/plan-ui";
 import { useDirection } from "@/shared/hooks/use-direction";
-import { Colors } from "@/shared/theme/theme";
+import { useAppTheme } from "@/shared/theme/appearance-provider";
 import { AppText } from "@/shared/ui/app-text";
 
 type PlanCardProps = {
@@ -18,7 +18,8 @@ type PlanCardProps = {
 
 export function PlanCard({ plan, onPress }: PlanCardProps) {
   const dir = useDirection();
-  const statusAppearance = getPlanStatusAppearance(plan.status);
+  const { colors } = useAppTheme();
+  const statusAppearance = getPlanStatusAppearance(plan.status, colors);
 
   return (
     <Pressable
@@ -79,11 +80,11 @@ export function PlanCard({ plan, onPress }: PlanCardProps) {
           </AppText>
         </View>
 
-        <View className="size-9 md:size-10 items-center justify-center rounded-full bg-gray-50">
+        <View className="size-9 md:size-10 items-center justify-center rounded-full bg-input">
           <Ionicons
             name={dir.isRTL ? "chevron-back" : "chevron-forward"}
             size={19}
-            color={Colors.light.icon}
+            color={colors.icon}
           />
         </View>
       </View>

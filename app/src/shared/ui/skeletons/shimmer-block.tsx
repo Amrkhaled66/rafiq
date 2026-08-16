@@ -8,6 +8,8 @@ import {
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 
+import { useAppTheme } from "@/shared/theme/appearance-provider";
+
 type ShimmerBlockProps = {
   width: number;
   height: number;
@@ -20,10 +22,16 @@ export function ShimmerBlock({
   width,
   height,
   borderRadius,
-  backgroundColor = "#ECEFF3",
+  backgroundColor,
   style,
 }: ShimmerBlockProps) {
+  const { effectiveColorScheme, colors } = useAppTheme();
   const progress = useRef(new Animated.Value(0)).current;
+  const blockColor = backgroundColor ?? colors.divider;
+  const highlightColor =
+    effectiveColorScheme === "dark"
+      ? "rgba(255,255,255,0.12)"
+      : "rgba(255,255,255,0.72)";
 
   useEffect(() => {
     const animation = Animated.loop(
@@ -56,7 +64,7 @@ export function ShimmerBlock({
           width,
           height,
           borderRadius,
-          backgroundColor,
+          backgroundColor: blockColor,
         },
         style,
       ]}
@@ -71,7 +79,7 @@ export function ShimmerBlock({
         <LinearGradient
           colors={[
             "rgba(255,255,255,0)",
-            "rgba(255,255,255,0.72)",
+            highlightColor,
             "rgba(255,255,255,0)",
           ]}
           start={{ x: 0, y: 0.5 }}

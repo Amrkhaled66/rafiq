@@ -13,6 +13,7 @@ import {
 } from "@/features/subscriptions/utils/subscription-ui";
 import { useDirection } from "@/shared/hooks/use-direction";
 import { AppText } from "@/shared/ui/app-text";
+import { useAppTheme } from "@/shared/theme/appearance-provider";
 
 type SubscriptionCardProps = {
   subscription: SubscriptionItem;
@@ -28,13 +29,14 @@ export function SubscriptionCard({
   isLoading = false,
 }: SubscriptionCardProps) {
   const dir = useDirection();
+  const { colors } = useAppTheme();
 
   if (isLoading) {
     return <SubscriptionCardSkeleton />;
   }
 
   const status = getSubscriptionStatus(subscription);
-  const appearance = getSubscriptionStatusAppearance(status, isActive);
+  const appearance = getSubscriptionStatusAppearance(status, isActive, colors);
 
   return (
     <Pressable
@@ -44,7 +46,7 @@ export function SubscriptionCard({
         backgroundColor: appearance.cardBackgroundColor,
         borderColor: appearance.cardBorderColor,
         borderWidth: 1,
-        shadowColor: "#000",
+        shadowColor: colors.shadow,
         shadowOffset: { width: 0, height: 4 },
         shadowOpacity: isActive ? 0.08 : 0.04,
         shadowRadius: 10,

@@ -2,7 +2,7 @@ import type {
   SubscriptionItem,
   SubscriptionStatus,
 } from "@/features/subscriptions/types";
-import { Colors } from "@/shared/theme/theme";
+import { Colors, type AppPalette } from "@/shared/theme/theme";
 
 const MONTH_NAMES_AR = [
   "يناير",
@@ -37,7 +37,9 @@ export function getSubscriptionStatusLabel(status: SubscriptionStatus) {
 export function getSubscriptionStatusAppearance(
   status: SubscriptionStatus,
   isActiveCard = false,
+  palette: AppPalette = Colors.light,
 ) {
+  const isDark = palette === Colors.dark;
   if (isActiveCard && status === "active") {
     return {
       badgeBackgroundColor: "#FFFFFF",
@@ -55,39 +57,39 @@ export function getSubscriptionStatusAppearance(
   switch (status) {
     case "active":
       return {
-        badgeBackgroundColor: Colors.light.soft,
-        badgeTextColor: Colors.light.tint,
-        iconBackgroundColor: Colors.light.soft,
-        iconColor: Colors.light.tint,
-        titleColor: Colors.light.text,
-        secondaryColor: Colors.light.icon,
-        chevronColor: Colors.light.icon,
-        cardBackgroundColor: Colors.light.card,
-        cardBorderColor: Colors.light.border,
+        badgeBackgroundColor: palette.soft,
+        badgeTextColor: palette.tint,
+        iconBackgroundColor: palette.soft,
+        iconColor: palette.tint,
+        titleColor: palette.text,
+        secondaryColor: palette.mutedText,
+        chevronColor: palette.icon,
+        cardBackgroundColor: palette.card,
+        cardBorderColor: palette.border,
       };
     case "upcoming":
       return {
-        badgeBackgroundColor: "#FEF3C7",
-        badgeTextColor: "#B45309",
-        iconBackgroundColor: "#FEF3C7",
-        iconColor: "#B45309",
-        titleColor: Colors.light.text,
-        secondaryColor: Colors.light.icon,
-        chevronColor: Colors.light.icon,
-        cardBackgroundColor: Colors.light.card,
-        cardBorderColor: Colors.light.border,
+        badgeBackgroundColor: isDark ? "#4A3514" : "#FEF3C7",
+        badgeTextColor: isDark ? "#FCD34D" : "#B45309",
+        iconBackgroundColor: isDark ? "#4A3514" : "#FEF3C7",
+        iconColor: isDark ? "#FCD34D" : "#B45309",
+        titleColor: palette.text,
+        secondaryColor: palette.mutedText,
+        chevronColor: palette.icon,
+        cardBackgroundColor: palette.card,
+        cardBorderColor: palette.border,
       };
     default:
       return {
-        badgeBackgroundColor: "#F3F4F6",
-        badgeTextColor: "#6B7280",
-        iconBackgroundColor: "#F3F4F6",
-        iconColor: "#6B7280",
-        titleColor: Colors.light.text,
-        secondaryColor: Colors.light.icon,
-        chevronColor: Colors.light.icon,
-        cardBackgroundColor: Colors.light.card,
-        cardBorderColor: Colors.light.border,
+        badgeBackgroundColor: isDark ? "#342B2C" : "#F3F4F6",
+        badgeTextColor: isDark ? "#BFAEB0" : "#6B7280",
+        iconBackgroundColor: isDark ? "#342B2C" : "#F3F4F6",
+        iconColor: isDark ? "#BFAEB0" : "#6B7280",
+        titleColor: palette.text,
+        secondaryColor: palette.mutedText,
+        chevronColor: palette.icon,
+        cardBackgroundColor: palette.card,
+        cardBorderColor: palette.border,
       };
   }
 }

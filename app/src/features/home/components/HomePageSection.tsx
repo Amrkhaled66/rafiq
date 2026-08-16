@@ -28,7 +28,7 @@ export function HomePageSection({
 
   return (
     <ElevatedView
-      className={`rounded-[28px] bg-white px-5 py-5 md:px-6 md:py-6 ${className}`}
+      className={`rounded-[28px] bg-card px-5 py-5 md:px-6 md:py-6 ${className}`}
       style={style}
     >
       <View className={contentClassName}>

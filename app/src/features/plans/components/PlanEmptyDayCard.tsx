@@ -3,7 +3,7 @@ import { View } from "react-native";
 
 import { PlanCardSkeleton } from "@/features/plans/components/skeletons";
 import { useDirection } from "@/shared/hooks/use-direction";
-import { Colors } from "@/shared/theme/theme";
+import { useAppTheme } from "@/shared/theme/appearance-provider";
 import { AppText } from "@/shared/ui/app-text";
 
 type PlanEmptyDayCardProps = {
@@ -14,6 +14,7 @@ export function PlanEmptyDayCard({
   isLoading = false,
 }: PlanEmptyDayCardProps) {
   const dir = useDirection();
+  const { colors } = useAppTheme();
 
   if (isLoading) {
     return <PlanCardSkeleton />;
@@ -23,7 +24,7 @@ export function PlanEmptyDayCard({
     <View
       className="border-card-border bg-card rounded-3xl border px-4 py-5 md:px-5 md:py-6"
       style={{
-        shadowColor: "#000",
+        shadowColor: colors.shadow,
         shadowOffset: { width: 0, height: 4 },
         shadowOpacity: 0.04,
         shadowRadius: 10,
@@ -35,7 +36,7 @@ export function PlanEmptyDayCard({
           <Ionicons
             name="calendar-clear-outline"
             size={21}
-            color={Colors.light.tint}
+            color={colors.tint}
           />
         </View>
         <AppText

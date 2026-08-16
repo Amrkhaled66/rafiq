@@ -10,22 +10,12 @@ import {
 
 import { Colors } from "@/shared/theme/theme";
 import { AppText } from "@/shared/ui/app-text";
+import { useAppTheme } from "@/shared/theme/appearance-provider";
 
 type FloatingCompleteTaskButtonProps = {
   disabled?: boolean;
   isSubmitting?: boolean;
   onConfirm: () => Promise<boolean>;
-};
-
-const PALETTE = {
-  brand: Colors.light.tint,
-  brandSoft: Colors.light.soft,
-  brandMuted: "#EFA9AB",
-  white: "#FFFFFF",
-  textPrimary: Colors.light.text,
-  textMuted: Colors.light.icon,
-  border: Colors.light.border,
-  success: "#16A34A",
 };
 
 export function FloatingCompleteTaskButton({
@@ -36,6 +26,18 @@ export function FloatingCompleteTaskButton({
   const { width } = useWindowDimensions();
   const isTablet = width >= 768;
   const [isConfirming, setIsConfirming] = useState(false);
+  const { colors } = useAppTheme();
+  const palette = {
+    brand: Colors.light.tint,
+    brandSoft: colors.soft,
+    brandMuted: "#EFA9AB",
+    white: "#FFFFFF",
+    surface: colors.card,
+    textPrimary: colors.text,
+    textMuted: colors.mutedText,
+    border: colors.border,
+    disabled: colors.disabled,
+  };
 
   const shellProgress = useRef(new Animated.Value(0)).current;
   const contentOpacity = useRef(new Animated.Value(0)).current;
@@ -153,7 +155,7 @@ export function FloatingCompleteTaskButton({
           height: heightAnimated,
           borderRadius,
           overflow: "hidden",
-          backgroundColor: PALETTE.white,
+          backgroundColor: palette.surface,
           shadowColor: "#000",
           shadowOpacity: 0.12,
           shadowRadius: 16,
@@ -175,13 +177,13 @@ export function FloatingCompleteTaskButton({
             onPress={openConfirm}
             className="h-full w-full flex-row items-center justify-center gap-2 rounded-full px-5 active:opacity-90 md:gap-2.5 md:px-6"
             style={{
-              backgroundColor: disabled ? "#D1D5DB" : PALETTE.brand,
+              backgroundColor: disabled ? palette.disabled : palette.brand,
             }}
           >
             <Ionicons
               name="checkmark-circle"
               size={isTablet ? 22 : 20}
-              color={PALETTE.white}
+              color={palette.white}
             />
 
             <AppText
@@ -206,19 +208,19 @@ export function FloatingCompleteTaskButton({
           <View
             className="h-full w-full items-center justify-center border px-4 py-3.5 md:px-5"
             style={{
-              backgroundColor: PALETTE.white,
-              borderColor: PALETTE.border,
+              backgroundColor: palette.surface,
+              borderColor: palette.border,
             }}
           >
             <View className="mb-3 flex-row-reverse items-center gap-2.5 md:gap-3">
               <View
                 className="size-9 items-center justify-center rounded-full md:size-14"
-                style={{ backgroundColor: PALETTE.brandSoft }}
+                style={{ backgroundColor: palette.brandSoft }}
               >
                 <Ionicons
                   name="checkmark"
                   size={isTablet ? 30 : 18}
-                  color={PALETTE.textMuted}
+                  color={palette.textMuted}
                 />
               </View>
 
@@ -226,7 +228,7 @@ export function FloatingCompleteTaskButton({
                 <AppText
                   className="text-right text-[15px] md:text-xl"
                   weight="bold"
-                  style={{ color: PALETTE.textPrimary }}
+                  style={{ color: palette.textPrimary }}
                 >
                   متأكد إنك خلصته؟
                 </AppText>
@@ -234,7 +236,7 @@ export function FloatingCompleteTaskButton({
                 <AppText
                   className="mt-0.5 text-right text-[11px] md:text-base"
                   weight="medium"
-                  style={{ color: PALETTE.textMuted }}
+                  style={{ color: palette.textMuted }}
                 >
                   هنعلم المهمة كمكتملة في الخطة
                 </AppText>
@@ -247,12 +249,12 @@ export function FloatingCompleteTaskButton({
                 onPress={() => void confirmAndClose()}
                 className="h-11 flex-1 flex-row items-center justify-center gap-2 rounded-full px-5 active:opacity-90 md:h-12 md:px-6"
                 style={{
-                  backgroundColor: PALETTE.brand,
+                  backgroundColor: palette.brand,
                   opacity: isSubmitting ? 0.7 : 1,
                 }}
               >
                 {isSubmitting && (
-                  <ActivityIndicator size="small" color={PALETTE.white} />
+                  <ActivityIndicator size="small" color={palette.white} />
                 )}
                 <AppText
                   className="text-sm md:text-[15px]"
@@ -268,8 +270,8 @@ export function FloatingCompleteTaskButton({
                 onPress={closeConfirm}
                 className="h-11 flex-1 flex-row items-center justify-center gap-2 rounded-full border px-5 active:opacity-90 md:h-12 md:px-6"
                 style={{
-                  backgroundColor: PALETTE.white,
-                  borderColor: PALETTE.brandMuted,
+                  backgroundColor: palette.surface,
+                  borderColor: palette.brandMuted,
                   opacity: isSubmitting ? 0.6 : 1,
                 }}
               >
@@ -277,7 +279,7 @@ export function FloatingCompleteTaskButton({
                   className="text-sm md:text-[15px]"
                   tone="tint"
                   weight="bold"
-                  style={{ color: PALETTE.brand }}
+                  style={{ color: palette.brand }}
                 >
                   لسه
                 </AppText>

@@ -10,6 +10,7 @@ import {
 } from "@/features/plans/utils/plan-ui";
 import { useDirection } from "@/shared/hooks/use-direction";
 import { AppText } from "@/shared/ui/app-text";
+import { useAppTheme } from "@/shared/theme/appearance-provider";
 
 type PlanDaysCarouselProps = {
   days: PlanDetailDay[];
@@ -27,6 +28,7 @@ export function PlanDaysCarousel({
   isLoading = false,
 }: PlanDaysCarouselProps) {
   const dir = useDirection();
+  const { colors } = useAppTheme();
   const orderedDays = useMemo(
     () => [...days].sort((left, right) => left.date.localeCompare(right.date)),
     [days],
@@ -69,10 +71,10 @@ export function PlanDaysCarousel({
                 className="rounded-3xl px-3 py-4 active:opacity-90 md:px-4 md:py-5"
                 onPress={() => onSelect(day.date)}
                 style={{
-                  backgroundColor: isSelected ? "#D00507" : "#FFFFFF",
-                  borderColor: isSelected ? "#D00507" : "rgba(208, 5, 7, 0.12)",
+                  backgroundColor: isSelected ? "#D00507" : colors.card,
+                  borderColor: isSelected ? "#D00507" : colors.border,
                   borderWidth: 1,
-                  shadowColor: "#000",
+                  shadowColor: colors.shadow,
                   shadowOffset: { width: 0, height: 4 },
                   shadowOpacity: isSelected ? 0.08 : 0.04,
                   shadowRadius: 10,

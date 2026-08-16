@@ -3,6 +3,7 @@ import { View } from "react-native";
 
 import { TaskSessionsStatsCardSkeleton } from "@/features/tasks/components/task-detail/skeletons";
 import { AppText } from "@/shared/ui/app-text";
+import { useAppTheme } from "@/shared/theme/appearance-provider";
 
 type TaskSessionsStatsCardProps = {
   totalFocusMinutes: number;
@@ -20,19 +21,9 @@ type MiniStatCardProps = {
   borderColor: string;
   iconBgColor: string;
   iconColor: string;
-};
-
-const STATS_COLORS = {
-  textDark: "#321334",
-  textMuted: "#6B5A6E",
-  focusBg: "#EFFAF0",
-  focusBorder: "#CDEFD1",
-  focusIconBg: "#D9F5DD",
-  focusIcon: "#21A447",
-  sessionsBg: "#F7EEFF",
-  sessionsBorder: "#E4CCFF",
-  sessionsIconBg: "#EAD7FF",
-  sessionsIcon: "#8B35D8",
+  textColor: string;
+  mutedTextColor: string;
+  shadowColor: string;
 };
 
 function MiniStatCard({
@@ -44,6 +35,9 @@ function MiniStatCard({
   borderColor,
   iconBgColor,
   iconColor,
+  textColor,
+  mutedTextColor,
+  shadowColor,
 }: MiniStatCardProps) {
   return (
     <View
@@ -51,7 +45,7 @@ function MiniStatCard({
       style={{
         backgroundColor: bgColor,
         borderColor,
-        shadowColor: "#000",
+        shadowColor,
         shadowOffset: { width: 0, height: 4 },
         shadowOpacity: 0.04,
         shadowRadius: 10,
@@ -70,7 +64,7 @@ function MiniStatCard({
           <AppText
             className="text-right text-[13px] md:text-[14px]"
             weight="medium"
-            style={{ color: STATS_COLORS.textMuted }}
+            style={{ color: mutedTextColor }}
           >
             {label}
           </AppText>
@@ -79,7 +73,7 @@ function MiniStatCard({
             <AppText
               className="text-right text-[28px] md:text-[30px]"
               weight="bold"
-              style={{ color: STATS_COLORS.textDark }}
+              style={{ color: textColor }}
             >
               {value}
             </AppText>
@@ -88,7 +82,7 @@ function MiniStatCard({
               <AppText
                 className="text-right text-xs md:text-[13px]"
                 weight="semibold"
-                style={{ color: STATS_COLORS.textMuted }}
+                style={{ color: mutedTextColor }}
               >
                 {unit}
               </AppText>
@@ -106,6 +100,19 @@ export function TaskSessionsStatsCard({
   completedSessions,
   isLoading = false,
 }: TaskSessionsStatsCardProps) {
+  const { effectiveColorScheme, colors } = useAppTheme();
+  const isDark = effectiveColorScheme === "dark";
+  const statsColors = {
+    focusBg: isDark ? "#153424" : "#EFFAF0",
+    focusBorder: isDark ? "#27603F" : "#CDEFD1",
+    focusIconBg: isDark ? "#1B482F" : "#D9F5DD",
+    focusIcon: isDark ? "#62D98A" : "#21A447",
+    sessionsBg: isDark ? "#301D3D" : "#F7EEFF",
+    sessionsBorder: isDark ? "#54336D" : "#E4CCFF",
+    sessionsIconBg: isDark ? "#422655" : "#EAD7FF",
+    sessionsIcon: isDark ? "#C69AF4" : "#8B35D8",
+  };
+
   if (isLoading) {
     return <TaskSessionsStatsCardSkeleton />;
   }
@@ -117,20 +124,26 @@ export function TaskSessionsStatsCard({
         value={totalFocusMinutes}
         unit="د"
         label="وقت التركيز"
-        bgColor={STATS_COLORS.focusBg}
-        borderColor={STATS_COLORS.focusBorder}
-        iconBgColor={STATS_COLORS.focusIconBg}
-        iconColor={STATS_COLORS.focusIcon}
+        bgColor={statsColors.focusBg}
+        borderColor={statsColors.focusBorder}
+        iconBgColor={statsColors.focusIconBg}
+        iconColor={statsColors.focusIcon}
+        textColor={colors.text}
+        mutedTextColor={colors.mutedText}
+        shadowColor={colors.shadow}
       />
 
       <MiniStatCard
         icon="telescope-outline"
         value={completedSessions}
         label="جلسات مكتملة"
-        bgColor={STATS_COLORS.sessionsBg}
-        borderColor={STATS_COLORS.sessionsBorder}
-        iconBgColor={STATS_COLORS.sessionsIconBg}
-        iconColor={STATS_COLORS.sessionsIcon}
+        bgColor={statsColors.sessionsBg}
+        borderColor={statsColors.sessionsBorder}
+        iconBgColor={statsColors.sessionsIconBg}
+        iconColor={statsColors.sessionsIcon}
+        textColor={colors.text}
+        mutedTextColor={colors.mutedText}
+        shadowColor={colors.shadow}
       />
     </View>
   );

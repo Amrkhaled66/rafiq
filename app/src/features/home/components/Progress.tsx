@@ -33,7 +33,7 @@ export function Progress({
       title="تقدمك النهاردة"
       icon="sparkles-outline"
       contentClassName="gap-0"
-      className="rounded-[28px] bg-white px-4 pt-4 md:px-7 md:py-6"
+      className="rounded-[28px] bg-card px-4 pt-4 md:px-7 md:py-6"
     >
       <View className={`items-center justify-between ${dir.rowReverse}`}>
         <View className="flex-1 gap-3">

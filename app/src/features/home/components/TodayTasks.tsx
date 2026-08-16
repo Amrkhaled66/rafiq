@@ -10,7 +10,7 @@ import {
   type TaskItem,
 } from "@/features/home/components/TodayTaskCard";
 import { useDirection } from "@/shared/hooks/use-direction";
-import { Colors } from "@/shared/theme/theme";
+import { useAppTheme } from "@/shared/theme/appearance-provider";
 import { AppText } from "@/shared/ui/app-text";
 
 type TodayTasksProps = {
@@ -22,6 +22,7 @@ const ENDPREVIEWINDEX = 4;
 
 export function TodayTasks({ tasks, isLoading = false }: TodayTasksProps) {
   const dir = useDirection();
+  const { colors } = useAppTheme();
   const previewTasks = tasks.slice(0, ENDPREVIEWINDEX);
 
   const handleTaskPress = (task: TaskItem) => {
@@ -51,7 +52,7 @@ export function TodayTasks({ tasks, isLoading = false }: TodayTasksProps) {
             <Ionicons
               name={dir.isRTL ? "arrow-back-outline" : "arrow-forward-outline"}
               size={16}
-              color={Colors.light.tint}
+              color={colors.tint}
             />
           </View>
         </Pressable>

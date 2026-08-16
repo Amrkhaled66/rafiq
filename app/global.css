@@ -5,7 +5,7 @@
 @import "nativewind/theme";
 
 :root {
-  --background: #ffff;
+  --background: #f8f7f5;
   --foreground: #171717;
 
   --brand-primary: #d00507;
@@ -16,7 +16,34 @@
 
   --sub-title: #6b6b6b;
   --card: #ffffff;
+  --surface-elevated: #ffffff;
+  --input: #fafafa;
   --card-border: rgba(208, 5, 7, 0.12);
+  --divider: #ece4e4;
+  --muted-text: #6b6b6b;
+  --disabled: #d1d5db;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #14090a;
+    --foreground: #f8eeee;
+
+    --brand-primary: #d00507;
+    --brand-primary-soft: #3a1618;
+    --brand-primary-muted: #7f4143;
+    --brand-primary-hover: #ef4c4f;
+    --brand-primary-active: #ff6f71;
+
+    --sub-title: #c8aaab;
+    --card: #231112;
+    --surface-elevated: #2d1718;
+    --input: #1c0e0f;
+    --card-border: rgba(239, 169, 171, 0.18);
+    --divider: #432426;
+    --muted-text: #c8aaab;
+    --disabled: #59484a;
+  }
 }
 
 @theme inline {
@@ -30,5 +57,10 @@
   --color-brand-primary-active: var(--brand-primary-active);
   --color-sub-title: var(--sub-title);
   --color-card: var(--card);
+  --color-surface-elevated: var(--surface-elevated);
+  --color-input: var(--input);
   --color-card-border: var(--card-border);
+  --color-divider: var(--divider);
+  --color-muted-text: var(--muted-text);
+  --color-disabled: var(--disabled);
 }

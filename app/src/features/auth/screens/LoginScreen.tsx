@@ -23,7 +23,7 @@ export function LoginScreen() {
   }, [user]);
 
   return (
-    <View className="flex-1 bg-white">
+    <View className="flex-1 bg-background">
       <FocusedStatusBar style="light" />
       <LoginHeader />
       <KeyboardScreenView>

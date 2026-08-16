@@ -2,6 +2,7 @@ import { View } from "react-native";
 
 import { PlanDetailStatsSkeleton } from "@/features/plans/components/skeletons";
 import { PlanStatCard } from "@/features/plans/components/PlanStatCard";
+import { useAppTheme } from "@/shared/theme/appearance-provider";
 
 type PlanDetailStatsProps = {
   totalDays: number;
@@ -16,6 +17,9 @@ export function PlanDetailStats({
   progressPercentage,
   isLoading = false,
 }: PlanDetailStatsProps) {
+  const { effectiveColorScheme } = useAppTheme();
+  const isDark = effectiveColorScheme === "dark";
+
   if (isLoading) {
     return <PlanDetailStatsSkeleton />;
   }
@@ -27,30 +31,30 @@ export function PlanDetailStats({
         value={String(totalDays)}
         subtitle="أيام في هذه الخطة"
         icon="calendar-outline"
-        backgroundColor="#FFF1F2"
-        borderColor="#FFD5D9"
-        iconBackgroundColor="#FEE2E2"
-        iconColor="#D00507"
+        backgroundColor={isDark ? "#3D1719" : "#FFF1F2"}
+        borderColor={isDark ? "#692528" : "#FFD5D9"}
+        iconBackgroundColor={isDark ? "#521D20" : "#FEE2E2"}
+        iconColor={isDark ? "#FF9C9E" : "#D00507"}
       />
       <PlanStatCard
         title="إجمالي المهام"
         value={String(totalTasks)}
         subtitle="مهمة في هذه الخطة"
         icon="checkmark-done-outline"
-        backgroundColor="#EFF6FF"
-        borderColor="#BFDBFE"
-        iconBackgroundColor="#DBEAFE"
-        iconColor="#2563EB"
+        backgroundColor={isDark ? "#17283D" : "#EFF6FF"}
+        borderColor={isDark ? "#284A71" : "#BFDBFE"}
+        iconBackgroundColor={isDark ? "#1E3857" : "#DBEAFE"}
+        iconColor={isDark ? "#7DB5FF" : "#2563EB"}
       />
       <PlanStatCard
         title="نسبة التقدم"
         value={`${progressPercentage}%`}
         subtitle="من الخطة مكتملة"
         icon="bar-chart-outline"
-        backgroundColor="#F0FDF4"
-        borderColor="#BBF7D0"
-        iconBackgroundColor="#DCFCE7"
-        iconColor="#16A34A"
+        backgroundColor={isDark ? "#153424" : "#F0FDF4"}
+        borderColor={isDark ? "#27603F" : "#BBF7D0"}
+        iconBackgroundColor={isDark ? "#1B482F" : "#DCFCE7"}
+        iconColor={isDark ? "#62D98A" : "#16A34A"}
       />
     </View>
   );

@@ -23,9 +23,9 @@ export function SegmentedFilterTabs<T extends string>({
   value,
   onChange,
   selectedClassName = "bg-brand-primary",
-  unselectedClassName = "bg-white",
+  unselectedClassName = "bg-card",
   selectedTextClassName = "text-white!",
-  unselectedTextClassName = "text-card-border",
+  unselectedTextClassName = "text-muted-text",
 }: SegmentedFilterTabsProps<T>) {
   const dir = useDirection();
 

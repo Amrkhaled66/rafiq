@@ -1,7 +1,7 @@
 import { Ionicons } from "@expo/vector-icons";
 import { Pressable, View, useWindowDimensions } from "react-native";
 
-import { Colors } from "@/shared/theme/theme";
+import { useAppTheme } from "@/shared/theme/appearance-provider";
 import { AppCaption, AppHeading, AppText } from "@/shared/ui/app-text";
 import { ElevatedView } from "@/shared/ui/elevated-view";
 
@@ -22,10 +22,11 @@ export function HomeStateCard({
 }: HomeStateCardProps) {
   const { width } = useWindowDimensions();
   const isTablet = width >= 768;
+  const { colors } = useAppTheme();
 
   return (
     <ElevatedView
-      className="rounded-[28px] bg-white"
+      className="rounded-[28px] bg-card"
       style={{
         paddingHorizontal: isTablet ? 28 : 20,
         paddingVertical: isTablet ? 24 : 20,
@@ -42,7 +43,7 @@ export function HomeStateCard({
           <Ionicons
             name={icon}
             size={isTablet ? 26 : 22}
-            color={Colors.light.tint}
+            color={colors.tint}
           />
         </View>
 

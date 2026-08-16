@@ -10,6 +10,7 @@ import tomato from "@assets/images/tomato.webp";
 import tomatoHead from "@assets/images/tomato-head.webp";
 import { formatTaskTimer } from "@/features/tasks/utils/task-session-ui";
 import { AppText } from "@/shared/ui/app-text";
+import { useAppTheme } from "@/shared/theme/appearance-provider";
 
 type CircularTimerProps = {
   durationSeconds: number;
@@ -18,8 +19,6 @@ type CircularTimerProps = {
 };
 
 const TIMER_COLORS = {
-  title: "#321334",
-  muted: "#5F4B61",
   red: "#EF233C",
   orange: "#FF6B1A",
   track: "#FFE2E2",
@@ -30,6 +29,7 @@ export function CircularTimer({
   remainingSeconds,
   progress,
 }: CircularTimerProps) {
+  const { effectiveColorScheme, colors } = useAppTheme();
   const { width } = useWindowDimensions();
   const isTablet = width >= 768;
 
@@ -97,7 +97,9 @@ export function CircularTimer({
             cx={size / 2}
             cy={size / 2}
             r={radius}
-            stroke={TIMER_COLORS.track}
+            stroke={
+              effectiveColorScheme === "dark" ? colors.divider : TIMER_COLORS.track
+            }
             strokeWidth={strokeWidth}
             fill="none"
           />
@@ -149,7 +151,7 @@ export function CircularTimer({
           <AppText
             weight="medium"
             style={{
-              color: TIMER_COLORS.muted,
+              color: colors.mutedText,
               fontSize: labelFontSize,
               lineHeight: labelLineHeight,
               includeFontPadding: false,
@@ -166,7 +168,7 @@ export function CircularTimer({
             style={{
               width: timerWidth,
               textAlign: "center",
-              color: TIMER_COLORS.title,
+              color: colors.text,
               fontSize: timerFontSize,
               lineHeight: timerLineHeight,
               includeFontPadding: false,

@@ -10,7 +10,7 @@ import {
 } from "react-native";
 
 import { useDirection } from "@/shared/hooks/use-direction";
-import { Colors } from "@/shared/theme/theme";
+import { useAppTheme } from "@/shared/theme/appearance-provider";
 import { AppText } from "@/shared/ui/app-text";
 
 type PersonalInfoSheetProps = {
@@ -30,11 +30,12 @@ type InfoRowProps = {
 
 function InfoRow({ label, value, icon }: InfoRowProps) {
   const dir = useDirection();
+  const { colors } = useAppTheme();
 
   return (
     <View className={`items-center gap-3 ${dir.rowReverse}`}>
       <View className="h-10 w-10 items-center justify-center rounded-2xl bg-brand-primary-soft">
-        <Ionicons name={icon} size={18} color={Colors.light.tint} />
+        <Ionicons name={icon} size={18} color={colors.tint} />
       </View>
 
       <View className="flex-1">
@@ -60,6 +61,7 @@ export function PersonalInfoSheet({
   const overlayOpacity = useRef(new Animated.Value(0)).current;
   const sheetTranslateY = useRef(new Animated.Value(320)).current;
   const [shouldRender, setShouldRender] = useState(visible);
+  const { colors } = useAppTheme();
 
   useEffect(() => {
     if (visible) {
@@ -119,7 +121,7 @@ export function PersonalInfoSheet({
           pointerEvents="none"
           style={[
             StyleSheet.absoluteFillObject,
-            styles.overlay,
+            { backgroundColor: colors.overlay },
             { opacity: overlayOpacity },
           ]}
         />
@@ -170,9 +172,3 @@ export function PersonalInfoSheet({
     </Modal>
   );
 }
-
-const styles = StyleSheet.create({
-  overlay: {
-    backgroundColor: "rgba(0, 0, 0, 0.4)",
-  },
-});

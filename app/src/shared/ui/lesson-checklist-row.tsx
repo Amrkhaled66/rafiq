@@ -2,7 +2,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { Pressable, View } from "react-native";
 
 import { useDirection } from "@/shared/hooks/use-direction";
-import { Colors } from "@/shared/theme/theme";
+import { useAppTheme } from "@/shared/theme/appearance-provider";
 import { AppText } from "@/shared/ui/app-text";
 
 export type LessonChecklistItem = {
@@ -28,6 +28,7 @@ export function LessonChecklistRow({
   disabled = false,
 }: LessonChecklistRowProps) {
   const dir = useDirection();
+  const { colors } = useAppTheme();
 
   return (
     <Pressable
@@ -42,8 +43,8 @@ export function LessonChecklistRow({
         <View
           className="h-7 w-7 items-center justify-center rounded-lg border md:h-8 md:w-8"
           style={{
-            backgroundColor: lesson.checked ? Colors.light.tint : Colors.light.card,
-            borderColor: lesson.checked ? Colors.light.tint : "#D1D5DB",
+            backgroundColor: lesson.checked ? colors.tint : colors.card,
+            borderColor: lesson.checked ? colors.tint : colors.disabled,
           }}
         >
           {lesson.checked ? (

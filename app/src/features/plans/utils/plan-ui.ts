@@ -1,4 +1,4 @@
-import { Colors } from "@/shared/theme/theme";
+import { Colors, type AppPalette } from "@/shared/theme/theme";
 import { getSubjectUi } from "@/shared/utils/subject-ui";
 
 import type {
@@ -34,28 +34,33 @@ export function getPlanStatusLabel(status: PlanStatus) {
   }
 }
 
-export function getPlanStatusAppearance(status: PlanStatus) {
+export function getPlanStatusAppearance(
+  status: PlanStatus,
+  palette: AppPalette = Colors.light,
+) {
+  const isDark = palette === Colors.dark;
+
   switch (status) {
     case "active":
       return {
-        backgroundColor: Colors.light.soft,
-        textColor: Colors.light.tint,
-        iconBackgroundColor: Colors.light.soft,
-        iconColor: Colors.light.tint,
+        backgroundColor: palette.soft,
+        textColor: palette.tint,
+        iconBackgroundColor: palette.soft,
+        iconColor: palette.tint,
       };
     case "upcoming":
       return {
-        backgroundColor: "#FEF3C7",
-        textColor: "#B45309",
-        iconBackgroundColor: "#FEF3C7",
-        iconColor: "#B45309",
+        backgroundColor: isDark ? "#4A3514" : "#FEF3C7",
+        textColor: isDark ? "#FCD34D" : "#B45309",
+        iconBackgroundColor: isDark ? "#4A3514" : "#FEF3C7",
+        iconColor: isDark ? "#FCD34D" : "#B45309",
       };
     default:
       return {
-        backgroundColor: "#F3F4F6",
-        textColor: "#6B7280",
-        iconBackgroundColor: "#F3F4F6",
-        iconColor: "#6B7280",
+        backgroundColor: isDark ? "#342B2C" : "#F3F4F6",
+        textColor: isDark ? "#BFAEB0" : "#6B7280",
+        iconBackgroundColor: isDark ? "#342B2C" : "#F3F4F6",
+        iconColor: isDark ? "#BFAEB0" : "#6B7280",
       };
   }
 }
@@ -178,31 +183,36 @@ export function getDefaultSelectedPlanDay(days: { date: string }[]) {
   return days.find((day) => day.date === today)?.date ?? days[0]?.date ?? null;
 }
 
-export function getPlanTaskStatusAppearance(status: PlanTaskStatus) {
+export function getPlanTaskStatusAppearance(
+  status: PlanTaskStatus,
+  palette: AppPalette = Colors.light,
+) {
+  const isDark = palette === Colors.dark;
+
   switch (status) {
     case "done":
       return {
         label: "مكتملة",
-        backgroundColor: "#DCFCE7",
-        textColor: "#166534",
+        backgroundColor: isDark ? "#143A27" : "#DCFCE7",
+        textColor: isDark ? "#86EFAC" : "#166534",
       };
     case "missed":
       return {
         label: "فاتت",
-        backgroundColor: "#FEE2E2",
-        textColor: "#DC2626",
+        backgroundColor: isDark ? "#4A1D20" : "#FEE2E2",
+        textColor: isDark ? "#FCA5A5" : "#DC2626",
       };
     case "in_progress":
       return {
         label: "قيد التنفيذ",
-        backgroundColor: Colors.light.soft,
-        textColor: Colors.light.tint,
+        backgroundColor: palette.soft,
+        textColor: palette.tint,
       };
     default:
       return {
         label: "لم تبدأ",
-        backgroundColor: "#FEF3C7",
-        textColor: "#B45309",
+        backgroundColor: isDark ? "#4A3514" : "#FEF3C7",
+        textColor: isDark ? "#FCD34D" : "#B45309",
       };
   }
 }

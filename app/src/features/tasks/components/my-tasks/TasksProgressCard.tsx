@@ -3,7 +3,7 @@ import { View } from "react-native";
 
 import type { MyTasksProgress } from "@/features/tasks/types";
 import { useDirection } from "@/shared/hooks/use-direction";
-import { Colors } from "@/shared/theme/theme";
+import { useAppTheme } from "@/shared/theme/appearance-provider";
 import { AppText } from "@/shared/ui/app-text";
 
 type TasksProgressCardProps = {
@@ -18,6 +18,7 @@ export function TasksProgressCard({
   title = "تقدمك النهارده",
 }: TasksProgressCardProps) {
   const dir = useDirection();
+  const { colors } = useAppTheme();
   const segmentCount = Math.max(progress.totalCount, 1);
   const segments = Array.from({ length: segmentCount }, (_, index) => index);
 
@@ -25,7 +26,7 @@ export function TasksProgressCard({
     <View
       className="border-card-border bg-card rounded-3xl border px-4 py-3.5 md:px-5 md:py-4"
       style={{
-        shadowColor: "#000",
+        shadowColor: colors.shadow,
         shadowOffset: { width: 0, height: 5 },
         shadowOpacity: 0.04,
         shadowRadius: 12,
@@ -38,7 +39,7 @@ export function TasksProgressCard({
             <Ionicons
               name="stats-chart-outline"
               size={20}
-              color={Colors.light.tint}
+              color={colors.tint}
             />
           </View>
 
@@ -57,8 +58,8 @@ export function TasksProgressCard({
                 className="h-2 flex-1 rounded-full"
                 style={{
                   backgroundColor: isActive
-                    ? Colors.light.tint
-                    : Colors.light.soft,
+                    ? colors.tint
+                    : colors.soft,
                 }}
               />
             );

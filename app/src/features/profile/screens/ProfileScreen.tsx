@@ -5,6 +5,7 @@ import { View } from "react-native";
 
 import { useAuth } from "@/features/auth/context/AuthProvider";
 import { PersonalInfoSheet } from "@/features/profile/components/PersonalInfoSheet";
+import { AppearanceSheet } from "@/features/profile/components/AppearanceSheet";
 import { ProfileActionCard } from "@/features/profile/components/ProfileActionCard";
 import { ProfileHeroCard } from "@/features/profile/components/ProfileHeroCard";
 import {
@@ -16,6 +17,13 @@ import { useDirection } from "@/shared/hooks/use-direction";
 import { AppText } from "@/shared/ui/app-text";
 import { PageTitle } from "@/shared/ui/page-title";
 import { TabPageLayout } from "@/shared/ui/tab-page-layout";
+import { useAppTheme } from "@/shared/theme/appearance-provider";
+
+const APPEARANCE_LABELS = {
+  system: "حسب الجهاز",
+  light: "فاتح",
+  dark: "داكن",
+} as const;
 
 function getInitialFromName(fullName: string) {
   const trimmedName = fullName.trim();
@@ -32,6 +40,8 @@ export function ProfileScreen() {
   const { user, logout } = useAuth();
   const dir = useDirection();
   const [isPersonalInfoVisible, setIsPersonalInfoVisible] = useState(false);
+  const [isAppearanceVisible, setIsAppearanceVisible] = useState(false);
+  const { colors, preference } = useAppTheme();
 
   const studentName = user?.fullName?.trim() || PROFILE_FALLBACK.fullName;
   const studentInitial = useMemo(
@@ -74,7 +84,7 @@ export function ProfileScreen() {
           ) : (
             <View className={`items-center ${dir.rowReverse}`}>
               <View className="size-10 items-center justify-center rounded-2xl">
-                <Ionicons name="grid-outline" size={18} color="#D00507" />
+                <Ionicons name="grid-outline" size={18} color={colors.tint} />
               </View>
               <AppText className="text-lg md:text-xl" weight="bold">
                 الخدمات
@@ -104,7 +114,7 @@ export function ProfileScreen() {
           ) : (
             <View className={`items-center ${dir.rowReverse}`}>
               <View className="size-10 items-center justify-center rounded-2xl">
-                <Ionicons name="settings-outline" size={18} color="#D00507" />
+                <Ionicons name="settings-outline" size={18} color={colors.tint} />
               </View>
               <AppText className="text-lg md:text-xl" weight="bold">
                 الدعم والحساب
@@ -112,6 +122,13 @@ export function ProfileScreen() {
             </View>
           )}
 
+          <ProfileActionCard
+            isLoading={isLoading}
+            title="المظهر"
+            value={APPEARANCE_LABELS[preference]}
+            icon="color-palette-outline"
+            onPress={() => setIsAppearanceVisible(true)}
+          />
           <SupportSectionCard
             isLoading={isLoading}
             onSupportPress={handleSupportPress}
@@ -127,6 +144,10 @@ export function ProfileScreen() {
         city={PROFILE_FALLBACK.city}
         parentPhone={PROFILE_FALLBACK.parentPhone}
         studyStage={PROFILE_FALLBACK.studyStage}
+      />
+      <AppearanceSheet
+        visible={isAppearanceVisible}
+        onClose={() => setIsAppearanceVisible(false)}
       />
     </>
   );

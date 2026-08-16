@@ -19,6 +19,7 @@ import {
 } from "@/features/plans/utils/plan-ui";
 import { FocusedStatusBar } from "@/shared/ui/focused-status-bar";
 import { TaskCard } from "@/shared/ui/task-card";
+import { useAppTheme } from "@/shared/theme/appearance-provider";
 
 export function PlanDetailScreen() {
   const insets = useSafeAreaInsets();
@@ -30,6 +31,8 @@ export function PlanDetailScreen() {
       : null;
   const { data, isLoading, isError, refetch } = useStudentPlanDetail(planId);
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
+  const { colors, effectiveColorScheme } = useAppTheme();
+  const statusBarStyle = effectiveColorScheme === "dark" ? "light" : "dark";
 
   useEffect(() => {
     if (!data?.days.length) {
@@ -54,7 +57,7 @@ export function PlanDetailScreen() {
   if (!planId || isError) {
     return (
       <View className="flex-1 items-center justify-center bg-background px-6">
-        <FocusedStatusBar style="dark" />
+        <FocusedStatusBar style={statusBarStyle} />
         <HomeStateCard
           icon="alert-circle-outline"
           title="تعذر تحميل الخطة"
@@ -72,7 +75,7 @@ export function PlanDetailScreen() {
 
   return (
     <View className="flex-1 bg-background">
-      <FocusedStatusBar style="dark" />
+      <FocusedStatusBar style={statusBarStyle} />
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{
@@ -118,7 +121,10 @@ export function PlanDetailScreen() {
             ) : selectedDay?.tasks.length ? (
               selectedDay.tasks.map((task) => {
                 const taskCardData = mapPlanTaskToTaskCard(task);
-                const statusAppearance = getPlanTaskStatusAppearance(task.status);
+                const statusAppearance = getPlanTaskStatusAppearance(
+                  task.status,
+                  colors,
+                );
 
                 return (
                   <TaskCard

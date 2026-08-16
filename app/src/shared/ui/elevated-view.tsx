@@ -1,6 +1,8 @@
 import { type ReactNode } from "react";
 import { Platform, type StyleProp, type ViewStyle, View } from "react-native";
 
+import { useAppTheme } from "@/shared/theme/appearance-provider";
+
 type ElevatedViewProps = {
   children: ReactNode;
   className?: string;
@@ -20,23 +22,25 @@ export function ElevatedView({
   className,
   style,
   androidElevation = 2,
-  shadowColor = "#000000",
+  shadowColor,
   shadowOpacity = 0.1,
   shadowRadius = 10,
   shadowOffset = { width: 0, height: 10 },
 }: ElevatedViewProps) {
+  const { colors } = useAppTheme();
+  const resolvedShadowColor = shadowColor ?? colors.shadow;
   const platformShadow: ViewStyle = Platform.select({
     android: {
       elevation: androidElevation,
     },
     ios: {
-      shadowColor,
+      shadowColor: resolvedShadowColor,
       shadowOffset,
       shadowOpacity,
       shadowRadius,
     },
     default: {
-      shadowColor,
+      shadowColor: resolvedShadowColor,
       shadowOffset,
       shadowOpacity,
       shadowRadius,

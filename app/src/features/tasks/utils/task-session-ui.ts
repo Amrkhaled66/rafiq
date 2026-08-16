@@ -1,44 +1,49 @@
-import { Colors } from "@/shared/theme/theme";
+import { Colors, type AppPalette } from "@/shared/theme/theme";
 
 import type { TaskSessionItem, TaskSessionStatus } from "@/features/tasks/types";
 
-export function getTaskSessionStatusAppearance(status: TaskSessionStatus) {
+export function getTaskSessionStatusAppearance(
+  status: TaskSessionStatus,
+  palette: AppPalette = Colors.light,
+) {
+  const isDark = palette === Colors.dark;
+
   switch (status) {
     case "completed":
       return {
         label: "مكتملة",
         icon: "checkmark",
-        badgeBackgroundColor: "#DCFCE7",
-        badgeTextColor: "#166534",
-        iconBackgroundColor: "#DCFCE7",
-        iconColor: "#16A34A",
+        badgeBackgroundColor: isDark ? "#143A27" : "#DCFCE7",
+        badgeTextColor: isDark ? "#86EFAC" : "#166534",
+        iconBackgroundColor: isDark ? "#143A27" : "#DCFCE7",
+        iconColor: isDark ? "#4ADE80" : "#16A34A",
       };
     case "running":
       return {
         label: "جارية",
         icon: "play",
-        badgeBackgroundColor: "#DBEAFE",
-        badgeTextColor: "#1D4ED8",
-        iconBackgroundColor: "#DBEAFE",
-        iconColor: "#2563EB",
+        badgeBackgroundColor: isDark ? "#172F4A" : "#DBEAFE",
+        badgeTextColor: isDark ? "#93C5FD" : "#1D4ED8",
+        iconBackgroundColor: isDark ? "#172F4A" : "#DBEAFE",
+        iconColor: isDark ? "#60A5FA" : "#2563EB",
       };
     case "paused":
       return {
         label: "متوقفة مؤقتًا",
         icon: "pause",
-        badgeBackgroundColor: "#FEF3C7",
-        badgeTextColor: "#B45309",
-        iconBackgroundColor: "#FEF3C7",
-        iconColor: "#F59E0B",
+        badgeBackgroundColor: isDark ? "#4A3514" : "#FEF3C7",
+        badgeTextColor: isDark ? "#FCD34D" : "#B45309",
+        iconBackgroundColor: isDark ? "#4A3514" : "#FEF3C7",
+        iconColor: isDark ? "#FBBF24" : "#F59E0B",
       };
     default:
       return {
         label: "ملغاة",
         icon: "close",
-        badgeBackgroundColor: "#F3F4F6",
-        badgeTextColor: "#6B7280",
-        iconBackgroundColor: "#F3F4F6",
-        iconColor: Colors.light.icon,
+        badgeBackgroundColor: isDark ? "#342B2C" : "#F3F4F6",
+        badgeTextColor: isDark ? "#BFAEB0" : "#6B7280",
+        iconBackgroundColor: isDark ? "#342B2C" : "#F3F4F6",
+        iconColor: palette.icon,
       };
   }
 }

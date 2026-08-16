@@ -14,7 +14,7 @@ export function LessonChecklistCardSkeleton({
   const isTablet = width >= 768;
 
   return (
-    <SkeletonSurface className="rounded-2xl! bg-white">
+    <SkeletonSurface className="rounded-2xl! bg-card">
       {Array.from({ length: rowsCount }).map((_, index) => (
         <View
           key={index}
