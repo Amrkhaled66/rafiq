@@ -1,10 +1,11 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { and, desc, eq, sql } from 'drizzle-orm';
+import { and, desc, eq, gt, gte, lt, lte, sql } from 'drizzle-orm';
 import { plans, tasks, users } from '../db';
 import { db } from '../db/db.module';
 import type { Database } from '../db/db.module';
 import { ListCoachPlansQueryDto } from './dto/list-coach-plans-query.dto';
 import { ListStudentPlansQueryDto } from './dto/list-student-plans-query.dto';
+import type { SchoolSubjectKey } from '../common/constants';
 
 export type StudentPlanListRow = {
   id: number;
@@ -42,10 +43,23 @@ export type PlanTaskDetailRow = {
 export class PlansRepository {
   constructor(@Inject(db) private readonly database: Database) {}
 
-  async listStudentPlans(studentId: number, query: ListStudentPlansQueryDto) {
+  async listStudentPlans(
+    studentId: number,
+    query: ListStudentPlansQueryDto,
+    today: string,
+  ) {
     const page = query.page ?? 1;
     const limit = query.limit ?? 10;
     const offset = (page - 1) * limit;
+    const statusCondition =
+      query.status === 'active'
+        ? and(lte(plans.startsOn, today), gte(plans.endsOn, today))
+        : query.status === 'upcoming'
+          ? gt(plans.startsOn, today)
+          : query.status === 'ended'
+            ? lt(plans.endsOn, today)
+            : undefined;
+    const filters = and(eq(plans.studentId, studentId), statusCondition);
 
     const items = await this.database
       .select({
@@ -60,7 +74,7 @@ export class PlansRepository {
       })
       .from(plans)
       .leftJoin(tasks, eq(tasks.planId, plans.id))
-      .where(eq(plans.studentId, studentId))
+      .where(filters)
       .groupBy(plans.id)
       .orderBy(desc(plans.createdAt))
       .limit(limit)
@@ -69,7 +83,7 @@ export class PlansRepository {
     const [{ total }] = await this.database
       .select({ total: sql<number>`count(*)` })
       .from(plans)
-      .where(eq(plans.studentId, studentId));
+      .where(filters);
 
     return {
       items: items as StudentPlanListRow[],
@@ -192,7 +206,7 @@ export class PlansRepository {
     tasks: Array<{
       title: string;
       note: string | null;
-      subject: string;
+      subject: SchoolSubjectKey;
       dueOn: string;
     }>;
   }) {
@@ -212,8 +226,7 @@ export class PlansRepository {
         planId: createdPlan.id,
         title: t.title,
         note: t.note,
-        // subject is validated in service/DTO; keep as string for Drizzle enum column.
-        subject: t.subject as any,
+        subject: t.subject,
         dueAt: t.dueOn,
       }));
 
@@ -246,7 +259,7 @@ export class PlansRepository {
       .where(eq(tasks.planId, planId))
       .orderBy(tasks.dueAt, tasks.createdAt);
 
-    return rows as PlanTaskDetailRow[];
+    return rows;
   }
 
   async deletePlanById(planId: number, studentId: number): Promise<boolean> {
@@ -290,7 +303,7 @@ export class PlansRepository {
     tasks: Array<{
       title: string;
       note: string | null;
-      subject: string;
+      subject: SchoolSubjectKey;
       dueOn: string;
     }>;
   }) {
@@ -304,7 +317,9 @@ export class PlansRepository {
           endsOn: input.endsOn,
           updatedAt: new Date(),
         })
-        .where(and(eq(plans.id, input.planId), eq(plans.studentId, input.studentId)))
+        .where(
+          and(eq(plans.id, input.planId), eq(plans.studentId, input.studentId)),
+        )
         .returning({ id: plans.id });
 
       await tx.delete(tasks).where(eq(tasks.planId, input.planId));
@@ -313,7 +328,7 @@ export class PlansRepository {
         planId: input.planId,
         title: t.title,
         note: t.note,
-        subject: t.subject as any,
+        subject: t.subject,
         dueAt: t.dueOn,
       }));
 

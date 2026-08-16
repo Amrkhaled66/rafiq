@@ -1,4 +1,4 @@
-import type { PropsWithChildren } from "react";
+import type { PropsWithChildren, RefObject } from "react";
 import {
   ScrollView,
   type ScrollViewProps,
@@ -11,9 +11,14 @@ import { useAppTheme } from "@/shared/theme/appearance-provider";
 
 type TabPageLayoutProps = PropsWithChildren<{
   scrollProps?: ScrollViewProps;
+  scrollViewRef?: RefObject<ScrollView | null>;
 }>;
 
-export function TabPageLayout({ children, scrollProps }: TabPageLayoutProps) {
+export function TabPageLayout({
+  children,
+  scrollProps,
+  scrollViewRef,
+}: TabPageLayoutProps) {
   const insets = useSafeAreaInsets();
   const { width } = useWindowDimensions();
   const isTablet = width >= 768;
@@ -26,6 +31,7 @@ export function TabPageLayout({ children, scrollProps }: TabPageLayoutProps) {
       />
 
       <ScrollView
+        ref={scrollViewRef}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{
           paddingTop: 45,

@@ -6,13 +6,14 @@ import {
 import { CreateStudentPlanDto } from './dto/create-student-plan.dto';
 import { ListCoachPlansQueryDto } from './dto/list-coach-plans-query.dto';
 import { PlansRepository } from './plans.repository';
-import { ListStudentPlansQueryDto } from './dto/list-student-plans-query.dto';
+import {
+  ListStudentPlansQueryDto,
+  type StudentPlanStatus,
+} from './dto/list-student-plans-query.dto';
 import type { AuthenticatedUser } from '../authorization/types/authenticated-user.type';
 import { StudentsRepository } from '../students/students.repository';
 import { CoachesRepository } from '../coaches/coaches.repository';
 import { UpdateStudentPlanDto } from './dto/update-student-plan.dto';
-
-type StudentPlanStatus = 'active' | 'upcoming' | 'ended';
 
 @Injectable()
 export class PlansService {
@@ -29,11 +30,11 @@ export class PlansService {
       throw new NotFoundException('Student not found');
     }
 
+    const today = this.formatDateAsIso(this.getCairoNow());
     const [stats, list] = await Promise.all([
       this.plansRepository.getStudentPlansStats(studentId),
-      this.plansRepository.listStudentPlans(studentId, query),
+      this.plansRepository.listStudentPlans(studentId, query, today),
     ]);
-    const today = this.formatDateAsIso(this.getCairoNow());
 
     return {
       student,
@@ -130,7 +131,9 @@ export class PlansService {
     const days = Array.from(groupedDays.values())
       .sort((a, b) => a.date.localeCompare(b.date))
       .map((day) => {
-        const dayCompleted = day.tasks.filter((task) => task.status === 'done').length;
+        const dayCompleted = day.tasks.filter(
+          (task) => task.status === 'done',
+        ).length;
         const dayProgressPercent =
           day.tasks.length > 0
             ? Math.round((dayCompleted / day.tasks.length) * 100)
@@ -194,7 +197,11 @@ export class PlansService {
     await this.findPlanOrThrow(studentId, planId);
 
     const coachId = await this.resolveCoachId(studentId, dto.coachId, user);
-    const tasks = await this.validateAndNormalizePlanInput(studentId, dto, planId);
+    const tasks = await this.validateAndNormalizePlanInput(
+      studentId,
+      dto,
+      planId,
+    );
 
     const updated = await this.plansRepository.updateStudentPlan({
       planId,
@@ -230,7 +237,10 @@ export class PlansService {
   }
 
   private async findPlanOrThrow(studentId: number, planId: number) {
-    const plan = await this.plansRepository.findPlanByIdAndStudent(planId, studentId);
+    const plan = await this.plansRepository.findPlanByIdAndStudent(
+      planId,
+      studentId,
+    );
 
     if (!plan) {
       throw new NotFoundException('Plan not found');
@@ -294,7 +304,12 @@ export class PlansService {
       }
     }
 
-    await this.assertNoOverlap(studentId, dto.startsOn, dto.endsOn, excludePlanId);
+    await this.assertNoOverlap(
+      studentId,
+      dto.startsOn,
+      dto.endsOn,
+      excludePlanId,
+    );
 
     return tasks;
   }

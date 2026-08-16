@@ -10,12 +10,14 @@ import { AppText } from "@/shared/ui/app-text";
 
 type PlansSectionProps = {
   plans: StudyPlan[];
+  totalPlans: number;
   onPlanPress?: (plan: StudyPlan) => void;
   isLoading?: boolean;
 };
 
 export function PlansSection({
   plans,
+  totalPlans,
   onPlanPress,
   isLoading = false,
 }: PlansSectionProps) {
@@ -38,7 +40,7 @@ export function PlansSection({
             className="text-brand-primary items-center justify-center text-xs md:text-[13px]"
             weight="semibold"
           >
-            {plans.length} خطط
+            {totalPlans} خطط
           </AppText>
         </View>
       </View>

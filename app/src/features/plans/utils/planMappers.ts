@@ -29,5 +29,9 @@ function mapPlan(plan: StudentPlanListItem): StudyPlan {
 export function mapStudentPlansToViewModel(response: StudentPlansResponse) {
   return {
     plans: response.items.map(mapPlan),
+    page: response.page,
+    limit: response.limit,
+    total: response.total,
+    totalPages: Math.ceil(response.total / response.limit),
   };
 }

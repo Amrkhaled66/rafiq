@@ -4,6 +4,12 @@ export type PlanStatus = "active" | "upcoming" | "ended";
 export type PlanStatusFilterKey = "all" | PlanStatus;
 export type PlanTaskStatus = "pending" | "in_progress" | "done" | "missed";
 
+export type ListStudentPlansParams = {
+  page?: number;
+  limit?: number;
+  status?: PlanStatus;
+};
+
 export type StudentPlanListItem = {
   id: number;
   name: string;

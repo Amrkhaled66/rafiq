@@ -1,15 +1,18 @@
 import { api } from "@/lib/api";
 
 import type {
+  ListStudentPlansParams,
   PlanDetailResponse,
   StudentPlansResponse,
 } from "@/features/plans/types";
 
 export async function getStudentPlans(
   studentId: number,
+  params: ListStudentPlansParams = {},
 ): Promise<StudentPlansResponse> {
   const { data } = await api.get<StudentPlansResponse>(
     `/students/${studentId}/plans`,
+    { params },
   );
 
   return data;
