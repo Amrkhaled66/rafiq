@@ -4,6 +4,7 @@ import { SubscriptionSectionSkeleton } from "@/features/subscriptions/components
 import type { SubscriptionItem } from "@/features/subscriptions/types";
 import { useDirection } from "@/shared/hooks/use-direction";
 import { AppText } from "@/shared/ui/app-text";
+import { useAppTheme } from "@/shared/theme/appearance-provider";
 
 type SubscriptionSectionProps = {
   subscriptions: SubscriptionItem[];
@@ -15,6 +16,7 @@ export function SubscriptionSection({
   isLoading = false,
 }: SubscriptionSectionProps) {
   const dir = useDirection();
+  const { colors } = useAppTheme();
 
   if (isLoading) {
     return <SubscriptionSectionSkeleton />;
@@ -27,7 +29,11 @@ export function SubscriptionSection({
       </AppText>
 
       <View className="rounded-full bg-brand-primary-soft/50 px-3 py-1">
-        <AppText className="text-xs md:text-sm text-brand-primary!" weight="semibold">
+        <AppText
+          className="text-xs md:text-sm"
+          weight="semibold"
+          style={{ color: colors.tint }}
+        >
           {subscriptions.length} اشتراكات
         </AppText>
       </View>
