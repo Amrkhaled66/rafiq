@@ -1,5 +1,11 @@
 import { relations } from 'drizzle-orm';
-import { index, integer, pgTable, serial, timestamp } from 'drizzle-orm/pg-core';
+import {
+  index,
+  integer,
+  pgTable,
+  serial,
+  timestamp,
+} from 'drizzle-orm/pg-core';
 import { sessionStatusEnum } from './enum';
 import { tasks } from './tasks';
 import { users } from './users';
@@ -28,6 +34,7 @@ export const taskSessions = pgTable(
       .notNull(),
   },
   (table) => [
+    index('task_sessions_student_task_idx').on(table.studentId, table.taskId),
     index('task_sessions_status_expected_end_at_idx').on(
       table.status,
       table.expectedEndAt,

@@ -120,6 +120,41 @@
       "when": 1786651230238,
       "tag": "0016_living_terror",
       "breakpoints": true
+    },
+    {
+      "idx": 17,
+      "version": "7",
+      "when": 1786929962471,
+      "tag": "0017_abandoned_wrecker",
+      "breakpoints": true
+    },
+    {
+      "idx": 18,
+      "version": "7",
+      "when": 1786939029214,
+      "tag": "0018_mushy_bloodstrike",
+      "breakpoints": true
+    },
+    {
+      "idx": 19,
+      "version": "7",
+      "when": 1786986719402,
+      "tag": "0019_slippery_firebrand",
+      "breakpoints": true
+    },
+    {
+      "idx": 20,
+      "version": "7",
+      "when": 1786989878552,
+      "tag": "0020_good_cargill",
+      "breakpoints": true
+    },
+    {
+      "idx": 21,
+      "version": "7",
+      "when": 1787000000000,
+      "tag": "0021_update_school_subjects",
+      "breakpoints": true
     }
   ]
 }

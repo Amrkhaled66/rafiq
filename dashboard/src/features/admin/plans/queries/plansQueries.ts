@@ -47,10 +47,20 @@ export function useStudentPlanDetailQuery(studentId: number, planId: number) {
       studentId > 0 &&
       Number.isFinite(planId) &&
       planId > 0,
+    refetchInterval: (query) => {
+      const hasRunningSession = query.state.data?.days.some((day) =>
+        day.tasks.some((task) => task.sessionStats.runningSessions > 0),
+      );
+
+      return hasRunningSession ? 60_000 : false;
+    },
   });
 }
 
-export function useUpdateStudentPlanMutation(studentId: number, planId: number) {
+export function useUpdateStudentPlanMutation(
+  studentId: number,
+  planId: number,
+) {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -69,7 +79,10 @@ export function useUpdateStudentPlanMutation(studentId: number, planId: number) 
   });
 }
 
-export function useDeleteStudentPlanMutation(studentId: number, planId: number) {
+export function useDeleteStudentPlanMutation(
+  studentId: number,
+  planId: number,
+) {
   const queryClient = useQueryClient();
 
   return useMutation({

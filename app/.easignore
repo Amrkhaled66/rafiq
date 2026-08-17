@@ -1,0 +1,19 @@
+# Dependencies and generated output anywhere in the repository
+**/node_modules/
+**/.expo/
+**/.next/
+**/dist/
+**/build/
+**/coverage/
+**/*.log
+
+# Sibling projects not required by the Expo app
+/backend/
+/dashboard/
+/frontend/
+
+# Repository-only files
+/.git/
+/.github/
+/.vscode/
+*.pem

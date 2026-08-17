@@ -16,6 +16,7 @@ export const MOCK_PLAN_DETAILS: Record<number, PlanDetailResponse> = {
       pendingTasks: 3,
       missedTasks: 1,
       progressPercent: 43,
+      totalLessons: 0,
     },
     days: [
       {
@@ -88,6 +89,7 @@ export const MOCK_PLAN_DETAILS: Record<number, PlanDetailResponse> = {
         ],
       },
     ],
+    lessonDays: [],
   },
   2: {
     plan: {
@@ -104,6 +106,7 @@ export const MOCK_PLAN_DETAILS: Record<number, PlanDetailResponse> = {
       pendingTasks: 4,
       missedTasks: 0,
       progressPercent: 0,
+      totalLessons: 0,
     },
     days: [
       {
@@ -158,5 +161,6 @@ export const MOCK_PLAN_DETAILS: Record<number, PlanDetailResponse> = {
         ],
       },
     ],
+    lessonDays: [],
   },
 };

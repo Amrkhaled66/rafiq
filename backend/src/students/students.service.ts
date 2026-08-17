@@ -1,5 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import type { AuthenticatedUser } from '../authorization/types/authenticated-user.type';
+import { LessonOccurrencesService } from '../lesson-occurrences/lesson-occurrences.service';
 import { TasksRepository } from '../tasks/tasks.repository';
 import { UsersService } from '../users/users.service';
 import { CreateUserDto } from '../users/dto/create-user.dto';
@@ -31,6 +32,7 @@ export interface StudentOverviewTask {
 
 export interface StudentOverviewLesson {
   id: number;
+  lessonName: string;
   subject: string;
   scheduledAt: string;
 }
@@ -48,6 +50,7 @@ export class StudentsService {
   constructor(
     private readonly studentsRepository: StudentsRepository,
     private readonly tasksRepository: TasksRepository,
+    private readonly lessonOccurrencesService: LessonOccurrencesService,
     private readonly usersService: UsersService,
   ) {}
 
@@ -62,6 +65,12 @@ export class StudentsService {
       ),
     );
     const todayTasks = await this.tasksRepository.listTodayTasksByStudent(id, today);
+    const todayOccurrences =
+      await this.lessonOccurrencesService.listStudentOccurrencesInRange({
+        studentId: id,
+        from: today,
+        to: today,
+      });
 
     return {
       student,
@@ -81,7 +90,12 @@ export class StudentsService {
         dueAt: t.dueAt,
         planId: t.planId,
       })),
-      todayLessons: [],
+      todayLessons: todayOccurrences.map((o) => ({
+        id: o.id,
+        lessonName: o.lessonName,
+        subject: o.subject,
+        scheduledAt: o.scheduledForDate,
+      })),
     };
   }
 

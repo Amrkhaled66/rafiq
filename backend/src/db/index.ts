@@ -9,4 +9,5 @@ export * from './schemas/tasks';
 export * from './schemas/task-sessions';
 export * from './schemas/missed-task-resolutions';
 export * from './schemas/lessons';
-export * from './schemas/lesson-watches';
+export * from './schemas/lesson-occurrences';
+export * from './schemas/missed-lesson-resolutions';

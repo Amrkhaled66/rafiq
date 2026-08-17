@@ -8,6 +8,7 @@ import { expiringSubscriptionsRoutes } from "@/features/admin/expiring-subscript
 import DashboardHomePage from "@/features/admin/home/pages/DashboardHomePage";
 import DashBoardLayout from "@/features/admin/layouts/DashBoardLayout";
 import { missedTasksRoutes } from "@/features/admin/missed-tasks/routes";
+import { missedLessonsRoutes } from "@/features/admin/missed-lessons/routes";
 import { sessionsRoutes } from "@/features/admin/sessions/routes";
 import { studentsRoutes } from "@/features/admin/students/routes";
 import { subscriptionsRoutes } from "@/features/admin/subscriptions/routes";
@@ -19,7 +20,6 @@ import { useAuth } from "@/shared/context/authContext";
 
 function RouterProvidersLayout(): ReactElement {
   useScrollToTop();
-  
 
   return (
     <AppProviders>
@@ -52,9 +52,7 @@ export const router = createBrowserRouter([
 
           {
             element: <RequireAdminGuest />,
-            children: [
-              authRoutes,
-            ],
+            children: [authRoutes],
           },
 
           {
@@ -70,6 +68,7 @@ export const router = createBrowserRouter([
                   coachesRoutes,
                   expiringSubscriptionsRoutes,
                   missedTasksRoutes,
+                  missedLessonsRoutes,
                   sessionsRoutes,
                   subscriptionsRoutes,
                   studentsRoutes,

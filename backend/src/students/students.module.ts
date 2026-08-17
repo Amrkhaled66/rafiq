@@ -2,6 +2,7 @@ import { Module, forwardRef } from '@nestjs/common';
 import { AuthModule } from '../auth/auth.module';
 import { AuthorizationModule } from '../authorization/authorization.module';
 import { DbModule } from '../db/db.module';
+import { LessonOccurrencesModule } from '../lesson-occurrences/lesson-occurrences.module';
 import { TasksModule } from '../tasks/tasks.module';
 import { UsersModule } from '../users/users.module';
 import { StudentsController } from './students.controller';
@@ -14,6 +15,7 @@ import { StudentsService } from './students.service';
     AuthorizationModule,
     DbModule,
     forwardRef(() => TasksModule),
+    LessonOccurrencesModule,
     UsersModule,
   ],
   controllers: [StudentsController],

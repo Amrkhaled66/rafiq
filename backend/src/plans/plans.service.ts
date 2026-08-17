@@ -14,6 +14,17 @@ import type { AuthenticatedUser } from '../authorization/types/authenticated-use
 import { StudentsRepository } from '../students/students.repository';
 import { CoachesRepository } from '../coaches/coaches.repository';
 import { UpdateStudentPlanDto } from './dto/update-student-plan.dto';
+import { TaskSessionsRepository } from '../task-sessions/task-sessions.repository';
+import { LessonOccurrencesService } from '../lesson-occurrences/lesson-occurrences.service';
+
+const EMPTY_TASK_SESSION_STATS = {
+  totalFocusSeconds: 0,
+  totalSessions: 0,
+  runningSessions: 0,
+  pausedSessions: 0,
+  completedSessions: 0,
+  cancelledSessions: 0,
+};
 
 @Injectable()
 export class PlansService {
@@ -21,6 +32,8 @@ export class PlansService {
     private readonly plansRepository: PlansRepository,
     private readonly studentsRepository: StudentsRepository,
     private readonly coachesRepository: CoachesRepository,
+    private readonly taskSessionsRepository: TaskSessionsRepository,
+    private readonly lessonOccurrencesService: LessonOccurrencesService,
   ) {}
 
   async getStudentPlans(studentId: number, query: ListStudentPlansQueryDto) {
@@ -77,7 +90,25 @@ export class PlansService {
   async getStudentPlanDetail(studentId: number, planId: number) {
     await this.findStudentOrThrow(studentId);
     const plan = await this.findPlanOrThrow(studentId, planId);
-    const taskRows = await this.plansRepository.listPlanTasks(planId);
+    const [taskRows, taskSessionStatsRows, lessonOccurrenceRows] =
+      await Promise.all([
+        this.plansRepository.listPlanTasks(planId),
+        this.taskSessionsRepository.getPlanTaskSessionStats({
+          studentId,
+          planId,
+        }),
+        this.lessonOccurrencesService.listStudentOccurrencesInRange({
+          studentId,
+          from: plan.startsOn,
+          to: plan.endsOn,
+        }),
+      ]);
+    const taskSessionStatsByTaskId = new Map(
+      taskSessionStatsRows.map(({ taskId, ...sessionStats }) => [
+        taskId,
+        sessionStats,
+      ]),
+    );
 
     const groupedDays = new Map<
       string,
@@ -90,6 +121,7 @@ export class PlansService {
           note: string | null;
           subject: string;
           status: string;
+          sessionStats: typeof EMPTY_TASK_SESSION_STATS;
         }>;
       }
     >();
@@ -119,6 +151,8 @@ export class PlansService {
         note: task.note,
         subject: task.subject,
         status: task.status,
+        sessionStats:
+          taskSessionStatsByTaskId.get(task.id) ?? EMPTY_TASK_SESSION_STATS,
       });
 
       groupedDays.set(task.dueAt, existing);
@@ -145,6 +179,46 @@ export class PlansService {
         };
       });
 
+    const lessonDays = Array.from(
+      lessonOccurrenceRows
+        .reduce(
+          (grouped, occurrence) => {
+            const day = grouped.get(occurrence.scheduledForDate) ?? {
+              date: occurrence.scheduledForDate,
+              weekday: this.getArabicWeekday(occurrence.scheduledForDate),
+              lessons: [],
+            };
+
+            day.lessons.push({
+              occurrenceId: occurrence.id,
+              lessonId: occurrence.lessonId,
+              name: occurrence.lessonName,
+              subject: occurrence.subject,
+              status: occurrence.status,
+              watchedOn: occurrence.watchedOn,
+            });
+            grouped.set(occurrence.scheduledForDate, day);
+            return grouped;
+          },
+          new Map<
+            string,
+            {
+              date: string;
+              weekday: string;
+              lessons: Array<{
+                occurrenceId: number;
+                lessonId: number;
+                name: string;
+                subject: string;
+                status: string;
+                watchedOn: string | null;
+              }>;
+            }
+          >(),
+        )
+        .values(),
+    ).sort((a, b) => a.date.localeCompare(b.date));
+
     return {
       plan: {
         id: plan.id,
@@ -160,8 +234,10 @@ export class PlansService {
         pendingTasks,
         missedTasks,
         progressPercent,
+        totalLessons: lessonOccurrenceRows.length,
       },
       days,
+      lessonDays,
     };
   }
 

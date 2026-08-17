@@ -4,6 +4,7 @@ import {
   Get,
   Param,
   ParseIntPipe,
+  Patch,
   Post,
   Query,
   UseGuards,
@@ -13,6 +14,7 @@ import { AuthorizationGuard } from '../authorization/authorization.guard';
 import { CurrentUser } from '../authorization/decorators/current-user.decorator';
 import { RequirePolicy } from '../authorization/decorators/require-policy.decorator';
 import type { AuthenticatedUser } from '../authorization/types/authenticated-user.type';
+import { CancelSubscriptionDto } from './dto/cancel-subscription.dto';
 import { CreateSubscriptionPackageDto } from './dto/create-subscription-package.dto';
 import { CreateSubscriptionDto } from './dto/create-subscription.dto';
 import { ListExpiringSubscriptionsQueryDto } from './dto/list-expiring-subscriptions-query.dto';
@@ -61,5 +63,19 @@ export class SubscriptionsController {
     @CurrentUser() user: AuthenticatedUser,
   ) {
     return this.subscriptionsService.createSubscription(dto, user);
+  }
+
+  @Patch('subscriptions/:subscriptionId/cancel')
+  @RequirePolicy('subscriptions.cancel')
+  cancelSubscription(
+    @Param('subscriptionId', ParseIntPipe) subscriptionId: number,
+    @Body() dto: CancelSubscriptionDto,
+    @CurrentUser() user: AuthenticatedUser,
+  ) {
+    return this.subscriptionsService.cancelSubscription(
+      subscriptionId,
+      dto,
+      user,
+    );
   }
 }

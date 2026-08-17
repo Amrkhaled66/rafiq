@@ -11,9 +11,7 @@ import {
 } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { AuthorizationGuard } from '../authorization/authorization.guard';
-import { CurrentUser } from '../authorization/decorators/current-user.decorator';
 import { RequirePolicy } from '../authorization/decorators/require-policy.decorator';
-import type { AuthenticatedUser } from '../authorization/types/authenticated-user.type';
 import { CreateLessonDto } from './dto/create-lesson.dto';
 import { UpdateLessonDto } from './dto/update-lesson.dto';
 import { LessonsService } from './lessons.service';
@@ -25,11 +23,8 @@ export class LessonsController {
 
   @Get('students/:studentId/lessons')
   @RequirePolicy('lessons.list_by_student')
-  listLessons(
-    @Param('studentId', ParseIntPipe) studentId: number,
-    @CurrentUser() user: AuthenticatedUser,
-  ) {
-    return this.lessonsService.listLessons(studentId, user);
+  listLessons(@Param('studentId', ParseIntPipe) studentId: number) {
+    return this.lessonsService.listLessons(studentId);
   }
 
   @Get('students/:studentId/lessons/today')
@@ -42,10 +37,9 @@ export class LessonsController {
   @RequirePolicy('lessons.create_by_student')
   createLesson(
     @Param('studentId', ParseIntPipe) studentId: number,
-    @CurrentUser() user: AuthenticatedUser,
     @Body() dto: CreateLessonDto,
   ) {
-    return this.lessonsService.createLesson(studentId, dto, user);
+    return this.lessonsService.createLesson(studentId, dto);
   }
 
   @Patch('students/:studentId/lessons/:lessonId')
@@ -53,10 +47,9 @@ export class LessonsController {
   updateLesson(
     @Param('studentId', ParseIntPipe) studentId: number,
     @Param('lessonId', ParseIntPipe) lessonId: number,
-    @CurrentUser() user: AuthenticatedUser,
     @Body() dto: UpdateLessonDto,
   ) {
-    return this.lessonsService.updateLesson(studentId, lessonId, dto, user);
+    return this.lessonsService.updateLesson(studentId, lessonId, dto);
   }
 
   @Delete('students/:studentId/lessons/:lessonId')
@@ -64,9 +57,8 @@ export class LessonsController {
   deleteLesson(
     @Param('studentId', ParseIntPipe) studentId: number,
     @Param('lessonId', ParseIntPipe) lessonId: number,
-    @CurrentUser() user: AuthenticatedUser,
   ) {
-    return this.lessonsService.deleteLesson(studentId, lessonId, user);
+    return this.lessonsService.deleteLesson(studentId, lessonId);
   }
 
   @Post('students/:studentId/lessons/:lessonId/watch')
@@ -74,9 +66,8 @@ export class LessonsController {
   markLessonWatched(
     @Param('studentId', ParseIntPipe) studentId: number,
     @Param('lessonId', ParseIntPipe) lessonId: number,
-    @CurrentUser() user: AuthenticatedUser,
   ) {
-    return this.lessonsService.markLessonWatched(studentId, lessonId, user);
+    return this.lessonsService.markLessonWatched(studentId, lessonId);
   }
 
   @Delete('students/:studentId/lessons/:lessonId/watch')
@@ -84,8 +75,7 @@ export class LessonsController {
   unmarkLessonWatched(
     @Param('studentId', ParseIntPipe) studentId: number,
     @Param('lessonId', ParseIntPipe) lessonId: number,
-    @CurrentUser() user: AuthenticatedUser,
   ) {
-    return this.lessonsService.unmarkLessonWatched(studentId, lessonId, user);
+    return this.lessonsService.unmarkLessonWatched(studentId, lessonId);
   }
 }

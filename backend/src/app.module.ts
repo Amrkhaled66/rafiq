@@ -7,7 +7,9 @@ import { AuthorizationModule } from './authorization/authorization.module';
 import { CoachesModule } from './coaches/coaches.module';
 import { HomeModule } from './home/home.module';
 import { LessonsModule } from './lessons/lessons.module';
+import { LessonOccurrencesModule } from './lesson-occurrences/lesson-occurrences.module';
 import { MissedTasksModule } from './missed-tasks/missed-tasks.module';
+import { MissedLessonsModule } from './missed-lessons/missed-lessons.module';
 import { PlansModule } from './plans/plans.module';
 import { StudentsModule } from './students/students.module';
 import { SubscriptionsModule } from './subscriptions/subscriptions.module';
@@ -26,7 +28,9 @@ import { UsersModule } from './users/users.module';
     TasksModule,
     HomeModule,
     LessonsModule,
+    LessonOccurrencesModule,
     MissedTasksModule,
+    MissedLessonsModule,
     PlansModule,
     SubscriptionsModule,
     TaskSessionsModule,

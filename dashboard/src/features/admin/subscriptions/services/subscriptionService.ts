@@ -24,6 +24,8 @@ export type SubscriptionRow = {
   startsAt: string;
   endsAt: string;
   status: SubscriptionStatus;
+  cancelledAt?: string | null;
+  cancellationReason?: string | null;
 };
 
 export type SubscriptionStats = {
@@ -60,6 +62,10 @@ export type CreateSubscriptionPayload = {
   amountPaid: number;
 };
 
+export type CancelSubscriptionPayload = {
+  reason: string;
+};
+
 export async function listSubscriptionPackages(): Promise<
   SubscriptionPackage[]
 > {
@@ -90,5 +96,16 @@ export async function createSubscription(
   payload: CreateSubscriptionPayload,
 ): Promise<SubscriptionRow> {
   const { data } = await api.post<SubscriptionRow>("/subscriptions", payload);
+  return data;
+}
+
+export async function cancelSubscription(
+  subscriptionId: number,
+  payload: CancelSubscriptionPayload,
+): Promise<SubscriptionRow> {
+  const { data } = await api.patch<SubscriptionRow>(
+    `/subscriptions/${subscriptionId}/cancel`,
+    payload,
+  );
   return data;
 }

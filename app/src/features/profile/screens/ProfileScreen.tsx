@@ -105,6 +105,13 @@ export function ProfileScreen() {
               icon="card-outline"
               onPress={handleSubscriptionsPress}
             />
+            <ProfileActionCard
+              isLoading={isLoading}
+              title="المظهر"
+              value={APPEARANCE_LABELS[preference]}
+              icon="color-palette-outline"
+              onPress={() => setIsAppearanceVisible(true)}
+            />
           </View>
         </View>
 
@@ -122,13 +129,6 @@ export function ProfileScreen() {
             </View>
           )}
 
-          <ProfileActionCard
-            isLoading={isLoading}
-            title="المظهر"
-            value={APPEARANCE_LABELS[preference]}
-            icon="color-palette-outline"
-            onPress={() => setIsAppearanceVisible(true)}
-          />
           <SupportSectionCard
             isLoading={isLoading}
             onSupportPress={handleSupportPress}

@@ -1,6 +1,7 @@
 import { Icon } from "@iconify/react";
 import { useNavigate } from "react-router-dom";
 
+import CancelSubscriptionModal from "@/features/admin/subscriptions/components/SubscriptionsPage/CancelSubscriptionModal";
 import CreateSubscriptionModal from "@/features/admin/subscriptions/components/SubscriptionsPage/CreateSubscriptionModal";
 import SubscriptionsStatsSection from "@/features/admin/subscriptions/components/SubscriptionsPage/SubscriptionsStatsSection";
 import SubscriptionsTable from "@/features/admin/subscriptions/components/SubscriptionsPage/SubscriptionsTable";
@@ -90,6 +91,7 @@ export default function SubscriptionsPage() {
         page={page}
         limit={limit}
         isLoading={subscriptionsQuery.isFetching}
+        onCancelSubscription={actions.openCancelModal}
         onChangePage={pagination.setPage}
         onChangeRowsPerPage={pagination.onChangeRowsPerPage}
       />
@@ -100,6 +102,15 @@ export default function SubscriptionsPage() {
         onSubmit={actions.handleCreate}
         isSubmitting={actions.isCreating}
         packages={packagesQuery.data ?? []}
+      />
+
+      <CancelSubscriptionModal
+        key={actions.cancellingSubscription?.id ?? "cancel-subscription"}
+        isOpen={Boolean(actions.cancellingSubscription)}
+        subscription={actions.cancellingSubscription}
+        onClose={actions.closeCancelModal}
+        onSubmit={actions.handleCancel}
+        isSubmitting={actions.isCancelling}
       />
     </div>
   );

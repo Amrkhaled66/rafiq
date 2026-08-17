@@ -7,6 +7,7 @@ import { useAppTheme } from "@/shared/theme/appearance-provider";
 type PlanDetailStatsProps = {
   totalDays: number;
   totalTasks: number;
+  totalLessons: number;
   progressPercentage: number;
   isLoading?: boolean;
 };
@@ -14,6 +15,7 @@ type PlanDetailStatsProps = {
 export function PlanDetailStats({
   totalDays,
   totalTasks,
+  totalLessons,
   progressPercentage,
   isLoading = false,
 }: PlanDetailStatsProps) {
@@ -35,6 +37,16 @@ export function PlanDetailStats({
         borderColor={isDark ? "#692528" : "#FFD5D9"}
         iconBackgroundColor={isDark ? "#521D20" : "#FEE2E2"}
         iconColor={isDark ? "#FF9C9E" : "#D00507"}
+      />
+      <PlanStatCard
+        title="إجمالي الحصص"
+        value={String(totalLessons)}
+        subtitle="حصة في مدة الخطة"
+        icon="videocam-outline"
+        backgroundColor={isDark ? "#342414" : "#FFF7ED"}
+        borderColor={isDark ? "#684A24" : "#FED7AA"}
+        iconBackgroundColor={isDark ? "#493119" : "#FFEDD5"}
+        iconColor={isDark ? "#FDBA74" : "#EA580C"}
       />
       <PlanStatCard
         title="إجمالي المهام"

@@ -49,6 +49,16 @@ export type TaskSessionRow = {
   status: TaskSessionStatus;
 };
 
+export type PlanTaskSessionStatsRow = {
+  taskId: number;
+  totalFocusSeconds: number;
+  totalSessions: number;
+  runningSessions: number;
+  pausedSessions: number;
+  completedSessions: number;
+  cancelledSessions: number;
+};
+
 @Injectable()
 export class TaskSessionsRepository {
   constructor(@Inject(db) private readonly database: Database) {}
@@ -210,10 +220,13 @@ export class TaskSessionsRepository {
       ...row,
       accumulatedSeconds: Number(row.accumulatedSeconds ?? 0),
       durationSeconds: Number(row.durationSeconds ?? 0),
-    })) as TaskSessionRow[];
+    }));
   }
 
-  async getTaskSessionStatsByTask(input: { studentId: number; taskId: number }) {
+  async getTaskSessionStatsByTask(input: {
+    studentId: number;
+    taskId: number;
+  }) {
     const [stats] = await this.database
       .select({
         totalSessions: count(taskSessions.id),
@@ -235,6 +248,41 @@ export class TaskSessionsRepository {
       totalSessions: Number(stats?.totalSessions ?? 0),
       completedSessions: Number(stats?.completedSessions ?? 0),
     };
+  }
+
+  async getPlanTaskSessionStats(input: {
+    studentId: number;
+    planId: number;
+  }): Promise<PlanTaskSessionStatsRow[]> {
+    const rows = await this.database
+      .select({
+        taskId: taskSessions.taskId,
+        totalFocusSeconds: sql<number>`coalesce(sum(${this.durationSecondsSql()}), 0)`,
+        totalSessions: count(taskSessions.id),
+        runningSessions: sql<number>`count(${taskSessions.id}) filter (where ${taskSessions.status} = 'running')`,
+        pausedSessions: sql<number>`count(${taskSessions.id}) filter (where ${taskSessions.status} = 'paused')`,
+        completedSessions: sql<number>`count(${taskSessions.id}) filter (where ${taskSessions.status} = 'completed')`,
+        cancelledSessions: sql<number>`count(${taskSessions.id}) filter (where ${taskSessions.status} = 'cancelled')`,
+      })
+      .from(taskSessions)
+      .innerJoin(tasks, eq(taskSessions.taskId, tasks.id))
+      .where(
+        and(
+          eq(taskSessions.studentId, input.studentId),
+          eq(tasks.planId, input.planId),
+        ),
+      )
+      .groupBy(taskSessions.taskId);
+
+    return rows.map((row) => ({
+      taskId: row.taskId,
+      totalFocusSeconds: Number(row.totalFocusSeconds ?? 0),
+      totalSessions: Number(row.totalSessions ?? 0),
+      runningSessions: Number(row.runningSessions ?? 0),
+      pausedSessions: Number(row.pausedSessions ?? 0),
+      completedSessions: Number(row.completedSessions ?? 0),
+      cancelledSessions: Number(row.cancelledSessions ?? 0),
+    }));
   }
 
   async findActiveTaskSession(input: {
@@ -303,7 +351,7 @@ export class TaskSessionsRepository {
     return {
       ...created,
       durationSeconds: 0,
-    } as TaskSessionRow;
+    };
   }
 
   async updateTaskSession(input: {
@@ -335,7 +383,7 @@ export class TaskSessionsRepository {
     return {
       ...updated,
       durationSeconds: this.calculateDurationSeconds(updated, input.updatedAt),
-    } as TaskSessionRow;
+    };
   }
 
   async completeExpiredRunningSessions(input: {
@@ -370,7 +418,7 @@ export class TaskSessionsRepository {
     return updated.map((session) => ({
       ...session,
       durationSeconds: this.calculateDurationSeconds(session, input.now),
-    })) as TaskSessionRow[];
+    }));
   }
 
   private buildWhereConditions(input: {

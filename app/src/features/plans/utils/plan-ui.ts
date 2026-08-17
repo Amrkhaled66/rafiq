@@ -3,6 +3,9 @@ import { getSubjectUi } from "@/shared/utils/subject-ui";
 
 import type {
   PlanDetailTask,
+  PlanDetailDay,
+  PlanDetailLessonDay,
+  PlanDetailTimelineDay,
   PlanStatus,
   PlanTaskStatus,
   StudyPlan,
@@ -69,7 +72,10 @@ export function formatPlanDateRange(plan: StudyPlan) {
   return `${formatShortArabicDate(plan.startsOn)} - ${formatShortArabicDate(plan.endsOn)}`;
 }
 
-export function formatPlanDateRangeFromValues(startsOn: string, endsOn: string) {
+export function formatPlanDateRangeFromValues(
+  startsOn: string,
+  endsOn: string,
+) {
   return `${formatShortArabicDate(startsOn)} - ${formatFullArabicDate(endsOn)}`;
 }
 
@@ -181,6 +187,32 @@ export function formatArabicTodayDateLabel() {
 export function getDefaultSelectedPlanDay(days: { date: string }[]) {
   const today = getTodayCairoDateString();
   return days.find((day) => day.date === today)?.date ?? days[0]?.date ?? null;
+}
+
+export function mergePlanTimelineDays(
+  taskDays: PlanDetailDay[],
+  lessonDays: PlanDetailLessonDay[],
+): PlanDetailTimelineDay[] {
+  const timeline = new Map<string, PlanDetailTimelineDay>();
+
+  for (const day of taskDays) {
+    timeline.set(day.date, { ...day, lessons: [] });
+  }
+
+  for (const lessonDay of lessonDays) {
+    const current = timeline.get(lessonDay.date);
+    timeline.set(lessonDay.date, {
+      date: lessonDay.date,
+      weekday: lessonDay.weekday,
+      progressPercent: current?.progressPercent ?? 0,
+      tasks: current?.tasks ?? [],
+      lessons: lessonDay.lessons,
+    });
+  }
+
+  return Array.from(timeline.values()).sort((left, right) =>
+    left.date.localeCompare(right.date),
+  );
 }
 
 export function getPlanTaskStatusAppearance(

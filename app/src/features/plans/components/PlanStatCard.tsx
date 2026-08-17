@@ -29,14 +29,16 @@ export function PlanStatCard({
 
   return (
     <View
-      className="min-w-[31%] flex-1 rounded-3xl px-4 py-4 md:px-5 md:py-5"
+      className="min-w-[45%] flex-1 rounded-3xl px-4 py-4 md:min-w-[22%] md:px-5 md:py-5"
       style={{
         backgroundColor,
         borderColor,
         borderWidth: 1,
       }}
     >
-      <View className={`mx-auto w-fit items-center gap-3 md:gap-3.5 ${dir.itemsAlign}`}>
+      <View
+        className={`mx-auto w-fit items-center gap-3 md:gap-3.5 ${dir.itemsAlign}`}
+      >
         <View
           className="mx-auto size-11 items-center justify-center rounded-2xl md:size-12"
           style={{ backgroundColor: iconBackgroundColor }}
@@ -45,10 +47,17 @@ export function PlanStatCard({
         </View>
 
         <View className={`gap-1 md:gap-1.5 ${dir.itemsAlign}`}>
-          <AppText className="text-sm md:text-[15px]" tone="muted" weight="semibold">
+          <AppText
+            className="text-sm md:text-[15px]"
+            tone="muted"
+            weight="semibold"
+          >
             {title}
           </AppText>
-          <AppText className="mx-auto text-2xl leading-7.5 md:text-[28px] md:leading-8" weight="bold">
+          <AppText
+            className="mx-auto text-2xl leading-7.5 md:text-[28px] md:leading-8"
+            weight="bold"
+          >
             {value}
           </AppText>
         </View>

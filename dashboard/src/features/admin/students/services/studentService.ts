@@ -50,6 +50,7 @@ export type StudentOverviewTask = {
 
 export type StudentOverviewLesson = {
   id: number;
+  lessonName: string;
   subject: string;
   scheduledAt: string;
 };

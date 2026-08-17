@@ -60,7 +60,22 @@ export type StudentPlanDetailTask = {
   note: string | null;
   subject: string;
   status: string;
+  sessionStats: StudentPlanTaskSessionStats;
 };
+
+export type StudentPlanTaskSessionStats = {
+  totalFocusSeconds: number;
+  totalSessions: number;
+  runningSessions: number;
+  pausedSessions: number;
+  completedSessions: number;
+  cancelledSessions: number;
+};
+
+export type CompletedStudentPlanTask = Omit<
+  StudentPlanDetailTask,
+  "sessionStats"
+>;
 
 export type StudentPlanDetailDay = {
   date: string;
@@ -153,8 +168,8 @@ export async function completeStudentPlanTask(
   studentId: number,
   planId: number,
   taskId: number,
-): Promise<StudentPlanDetailTask> {
-  const { data } = await api.patch<StudentPlanDetailTask>(
+): Promise<CompletedStudentPlanTask> {
+  const { data } = await api.patch<CompletedStudentPlanTask>(
     `/students/${studentId}/plans/${planId}/tasks/${taskId}/complete`,
   );
 

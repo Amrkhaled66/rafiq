@@ -9,9 +9,16 @@
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.amrkhaled66.rafiq",
+      "buildNumber": "1",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
     },
     "android": {
+      "package": "com.amrkhaled66.rafiq",
+      "versionCode": 1,
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#A60F12"
@@ -29,18 +36,23 @@
       [
         "expo-splash-screen",
         {
-          "image": "./assets/images/splash-icon.png",
+          "image": "./assets/images/adaptive-icon.png",
           "imageWidth": 200,
           "resizeMode": "contain",
-          "backgroundColor": "#ffffff",
-          "dark": {
-            "backgroundColor": "#14090a"
-          }
+          "backgroundColor": "#A60F12",
         }
       ],
       "expo-secure-store",
       "expo-font",
-      "expo-localization",
+      [
+        "expo-localization",
+        {
+          "supportedLocales": {
+            "android": ["ar"],
+            "ios": ["ar"]
+          }
+        }
+      ],
       [
         "expo-notifications",
         {
@@ -52,6 +64,14 @@
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
+    },
+    "extra": {
+      "supportsRTL": false,
+      "forcesRTL": false,
+      "router": {},
+      "eas": {
+        "projectId": "3a56f135-b69f-4092-b575-efb902e827cf"
+      }
     }
   }
 }

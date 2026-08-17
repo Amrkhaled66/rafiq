@@ -103,6 +103,22 @@ export const namedAuthorizationPolicies: NamedAuthorizationPolicy[] = [
     ],
   },
   {
+    name: 'lesson_occurrences.watch_by_student',
+    lookup: { key: 'studentId', kind: 'studentId', source: 'params' },
+    requirements: [
+      requireAnyRole(['student', 'coach', 'super_admin']),
+      requireStudentResourceAccess('student_profile'),
+    ],
+  },
+  {
+    name: 'lesson_occurrences.unwatch_by_student',
+    lookup: { key: 'studentId', kind: 'studentId', source: 'params' },
+    requirements: [
+      requireAnyRole(['student', 'coach', 'super_admin']),
+      requireStudentResourceAccess('student_profile'),
+    ],
+  },
+  {
     name: 'home.read_by_student',
     lookup: { key: 'studentId', kind: 'studentId', source: 'params' },
     requirements: [
@@ -179,6 +195,18 @@ export const namedAuthorizationPolicies: NamedAuthorizationPolicy[] = [
     requirements: [requireAnyRole(['coach', 'super_admin'])],
   },
   {
+    name: 'missed_lessons.list',
+    requirements: [requireAnyRole(['coach', 'super_admin'])],
+  },
+  {
+    name: 'missed_lessons.resolve',
+    requirements: [requireAnyRole(['coach', 'super_admin'])],
+  },
+  {
+    name: 'missed_lessons.unresolve',
+    requirements: [requireAnyRole(['coach', 'super_admin'])],
+  },
+  {
     name: 'missed_tasks.resolve',
     lookup: { key: 'taskId', kind: 'taskId', source: 'params' },
     requirements: [
@@ -220,6 +248,10 @@ export const namedAuthorizationPolicies: NamedAuthorizationPolicy[] = [
   },
   {
     name: 'subscriptions.create',
+    requirements: [requireRole('super_admin')],
+  },
+  {
+    name: 'subscriptions.cancel',
     requirements: [requireRole('super_admin')],
   },
   {

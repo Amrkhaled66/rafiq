@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { AuthModule } from '../auth/auth.module';
 import { AuthorizationModule } from '../authorization/authorization.module';
 import { DbModule } from '../db/db.module';
+import { LessonOccurrencesModule } from '../lesson-occurrences/lesson-occurrences.module';
 import { StudentsModule } from '../students/students.module';
 import { UsersModule } from '../users/users.module';
 import { SubscriptionsController } from './subscriptions.controller';
@@ -13,6 +14,7 @@ import { SubscriptionsService } from './subscriptions.service';
     AuthModule,
     DbModule,
     AuthorizationModule,
+    LessonOccurrencesModule,
     StudentsModule,
     UsersModule,
   ],

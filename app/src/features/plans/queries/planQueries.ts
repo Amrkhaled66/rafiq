@@ -1,11 +1,21 @@
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 
 import { useAuth } from "@/features/auth/context/AuthProvider";
 import type { ListStudentPlansParams } from "@/features/plans/types";
 import {
   getStudentPlanDetail,
   getStudentPlans,
+  markPlanLessonWatched,
+  unmarkPlanLessonWatched,
 } from "@/features/plans/services/planService";
+import { queryClient } from "@/lib/react-query";
+
+function getStudentPlanDetailQueryKey(
+  studentId?: number,
+  planId?: number | null,
+) {
+  return ["student-plan-detail", studentId, planId];
+}
 
 export function useStudentPlans(params: ListStudentPlansParams = {}) {
   const { user } = useAuth();
@@ -21,8 +31,7 @@ export function useStudentPlans(params: ListStudentPlansParams = {}) {
     enabled: Boolean(user?.id),
     placeholderData: (previousData, previousQuery) => {
       const previousParams = previousQuery?.queryKey[2] as
-        | ListStudentPlansParams
-        | undefined;
+        ListStudentPlansParams | undefined;
 
       return previousParams?.status === requestParams.status
         ? previousData
@@ -50,8 +59,35 @@ export function useStudentPlanDetail(planId: number | null) {
   const { user } = useAuth();
 
   return useQuery({
-    queryKey: ["student-plan-detail", user?.id, planId],
+    queryKey: getStudentPlanDetailQueryKey(user?.id, planId),
     queryFn: () => getStudentPlanDetail(user!.id, planId!),
     enabled: Boolean(user?.id && planId),
   });
+}
+
+export function usePlanLessonWatchActions(planId: number | null) {
+  const { user } = useAuth();
+  const invalidate = async () => {
+    await Promise.all([
+      queryClient.invalidateQueries({
+        queryKey: getStudentPlanDetailQueryKey(user?.id, planId),
+      }),
+      queryClient.invalidateQueries({
+        queryKey: ["student-today-lessons", user?.id],
+      }),
+    ]);
+  };
+
+  const markMutation = useMutation({
+    mutationFn: (occurrenceId: number) =>
+      markPlanLessonWatched(user!.id, occurrenceId),
+    onSuccess: invalidate,
+  });
+  const unmarkMutation = useMutation({
+    mutationFn: (occurrenceId: number) =>
+      unmarkPlanLessonWatched(user!.id, occurrenceId),
+    onSuccess: invalidate,
+  });
+
+  return { markMutation, unmarkMutation };
 }

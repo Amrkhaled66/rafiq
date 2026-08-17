@@ -2,18 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { LessonsRepository } from '../lessons/lessons.repository';
 import { StudentsRepository } from '../students/students.repository';
 import { TasksRepository } from '../tasks/tasks.repository';
-
-const LESSON_WEEKDAY_ORDER = [
-  'saturday',
-  'sunday',
-  'monday',
-  'tuesday',
-  'wednesday',
-  'thursday',
-  'friday',
-] as const;
-
-type LessonWeekday = (typeof LESSON_WEEKDAY_ORDER)[number];
+import type { LessonWeekday } from '../common/dates/cairo-date';
 
 const JS_DAY_TO_LESSON_WEEKDAY: Record<number, LessonWeekday> = {
   0: 'sunday',
@@ -46,11 +35,19 @@ export class HomeService {
 
     const [todayTasks, todayLessons] = await Promise.all([
       this.tasksRepository.listTodayTasksByStudent(studentId, today),
-      this.lessonsRepository.listTodayLessonsByStudent(studentId, weekday, today),
+      this.lessonsRepository.listTodayLessonsByStudent(
+        studentId,
+        weekday,
+        today,
+      ),
     ]);
 
-    const completedTasks = todayTasks.filter((task) => task.status === 'done').length;
-    const checkedLessons = todayLessons.filter((lesson) => lesson.checked).length;
+    const completedTasks = todayTasks.filter(
+      (task) => task.status === 'done',
+    ).length;
+    const checkedLessons = todayLessons.filter(
+      (lesson) => lesson.checked,
+    ).length;
     const completedCount = completedTasks + checkedLessons;
     const totalCount = todayTasks.length + todayLessons.length;
 
@@ -59,7 +56,9 @@ export class HomeService {
         completedCount,
         totalCount,
         progressPercent:
-          totalCount === 0 ? 0 : Math.round((completedCount / totalCount) * 100),
+          totalCount === 0
+            ? 0
+            : Math.round((completedCount / totalCount) * 100),
       },
       todayTasks,
       todayLessons,

@@ -8,10 +8,12 @@ import { AppText } from "@/shared/ui/app-text";
 
 type PlanEmptyDayCardProps = {
   isLoading?: boolean;
+  message?: string;
 };
 
 export function PlanEmptyDayCard({
   isLoading = false,
+  message = "مفيش مهام مضافة لليوم ده",
 }: PlanEmptyDayCardProps) {
   const dir = useDirection();
   const { colors } = useAppTheme();
@@ -44,7 +46,7 @@ export function PlanEmptyDayCard({
           tone="muted"
           weight="medium"
         >
-          مفيش مهام مضافة لليوم ده
+          {message}
         </AppText>
       </View>
     </View>

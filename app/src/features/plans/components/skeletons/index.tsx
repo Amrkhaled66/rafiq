@@ -133,8 +133,12 @@ export function PlanDetailHeaderSkeleton() {
 
   return (
     <View className="relative items-center gap-2 md:gap-2.5">
-      <View className="absolute left-0 top-2 md:top-2.5">
-        <ShimmerBlock width={isTablet ? 52 : 44} height={isTablet ? 52 : 44} borderRadius={18} />
+      <View className="absolute top-2 left-0 md:top-2.5">
+        <ShimmerBlock
+          width={isTablet ? 52 : 44}
+          height={isTablet ? 52 : 44}
+          borderRadius={18}
+        />
       </View>
       <ShimmerBlock
         width={isTablet ? 320 : 190}
@@ -153,17 +157,13 @@ export function PlanDetailHeaderSkeleton() {
 export function PlanDetailStatsSkeleton() {
   return (
     <View className="flex-row flex-wrap gap-3 md:gap-5">
-      {[0, 1, 2].map((item) => (
+      {[0, 1, 2, 3].map((item) => (
         <SkeletonSurface
           key={item}
-          className="min-w-[31%] flex-1 rounded-3xl px-4 py-4 md:px-6 md:py-6"
+          className="min-w-[45%] flex-1 rounded-3xl px-4 py-4 md:min-w-[22%] md:px-6 md:py-6"
         >
           <View className="items-center gap-3 md:gap-4.5">
-            <ShimmerBlock
-              width={64}
-              height={64}
-              borderRadius={20}
-            />
+            <ShimmerBlock width={64} height={64} borderRadius={20} />
             <View className="items-center gap-1.5 md:gap-2">
               <ShimmerBlock width={120} height={20} borderRadius={999} />
               <ShimmerBlock width={74} height={40} borderRadius={999} />

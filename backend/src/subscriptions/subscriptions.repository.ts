@@ -1,6 +1,22 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { and, asc, count, desc, eq, isNull, lte, gte, sql } from 'drizzle-orm';
-import { subscriptionPackages, subscriptions, users } from '../db';
+import {
+  and,
+  asc,
+  count,
+  desc,
+  eq,
+  gt,
+  isNull,
+  lte,
+  gte,
+  sql,
+} from 'drizzle-orm';
+import {
+  lessonOccurrences,
+  subscriptionPackages,
+  subscriptions,
+  users,
+} from '../db';
 import { db } from '../db/db.module';
 import type { Database } from '../db/db.module';
 
@@ -16,6 +32,8 @@ export type SubscriptionListRow = {
   startsAt: string;
   endsAt: string;
   status: 'active' | 'upcoming' | 'ended' | 'cancelled';
+  cancelledAt: Date | null;
+  cancellationReason: string | null;
 };
 
 export type StudentSubscriptionRow = {
@@ -68,6 +86,12 @@ export class SubscriptionsRepository {
   async findPackageById(id: number): Promise<PackageRow | undefined> {
     return this.database.query.subscriptionPackages.findFirst({
       where: eq(subscriptionPackages.id, id),
+    });
+  }
+
+  async findSubscriptionById(id: number): Promise<SubscriptionRow | undefined> {
+    return this.database.query.subscriptions.findFirst({
+      where: eq(subscriptions.id, id),
     });
   }
 
@@ -166,6 +190,8 @@ export class SubscriptionsRepository {
         packageName: subscriptionPackages.name,
         startsAt: subscriptions.startsAt,
         endsAt: subscriptions.endsAt,
+        cancelledAt: subscriptions.cancelledAt,
+        cancellationReason: subscriptions.cancellationReason,
         status: sql<'active' | 'upcoming' | 'ended' | 'cancelled'>`
           case
             when ${subscriptions.cancelledAt} is not null then 'cancelled'
@@ -317,5 +343,38 @@ export class SubscriptionsRepository {
       soonEndingSubscriptions: Number(stats?.soonEndingSubscriptions ?? 0),
       endedSubscriptions: Number(stats?.endedSubscriptions ?? 0),
     };
+  }
+
+  async cancelSubscription(input: {
+    subscriptionId: number;
+    cancelledBy: number;
+    reason: string;
+    today: string;
+  }): Promise<SubscriptionRow | undefined> {
+    return this.database.transaction(async (transaction) => {
+      const now = new Date();
+      const [updated] = await transaction
+        .update(subscriptions)
+        .set({
+          cancelledAt: now,
+          cancelledBy: input.cancelledBy,
+          cancellationReason: input.reason,
+          updatedAt: now,
+        })
+        .where(eq(subscriptions.id, input.subscriptionId))
+        .returning();
+
+      await transaction
+        .delete(lessonOccurrences)
+        .where(
+          and(
+            eq(lessonOccurrences.subscriptionId, input.subscriptionId),
+            eq(lessonOccurrences.status, 'scheduled'),
+            gt(lessonOccurrences.scheduledForDate, input.today),
+          ),
+        );
+
+      return updated;
+    });
   }
 }

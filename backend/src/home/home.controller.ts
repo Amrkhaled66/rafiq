@@ -10,7 +10,6 @@ import { AuthorizationGuard } from '../authorization/authorization.guard';
 import { RequirePolicy } from '../authorization/decorators/require-policy.decorator';
 import { HomeService } from './home.service';
 
-
 @Controller()
 @UseGuards(JwtAuthGuard, AuthorizationGuard)
 export class HomeController {

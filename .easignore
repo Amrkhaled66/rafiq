@@ -1,0 +1,19 @@
+# Only the Expo app is needed by this EAS project.
+/backend/
+/dashboard/
+/frontend/
+
+# Dependencies and generated output are recreated by EAS Build.
+**/node_modules/
+**/.expo/
+**/.next/
+**/dist/
+**/build/
+**/coverage/
+**/*.log
+
+# Repository and local-only files.
+/.git/
+/.github/
+/.vscode/
+*.pem

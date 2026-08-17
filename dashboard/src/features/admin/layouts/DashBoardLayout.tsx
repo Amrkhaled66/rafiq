@@ -3,7 +3,9 @@ import { Icon } from "@iconify/react";
 import { Outlet } from "react-router-dom";
 
 import logo from "@/assets/logo1.svg";
-import ReusableSidebar, { type SidebarMenuItem } from "@/shared/components/SideBar";
+import ReusableSidebar, {
+  type SidebarMenuItem,
+} from "@/shared/components/SideBar";
 import { useAuth } from "@/shared/context/authContext";
 import { can, type Action, type Resource } from "@/shared/auth/can";
 
@@ -32,6 +34,11 @@ const SIDEBAR_ITEMS: SidebarItem[] = [
     icon: "material-symbols:event-busy-outline",
     label: "المهام الفائتة",
     path: "missed-tasks",
+  },
+  {
+    icon: "solar:videocamera-record-linear",
+    label: "الحصص الفائتة",
+    path: "missed-lessons",
   },
   {
     icon: "material-symbols:subscriptions-outline",

@@ -1,14 +1,17 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import {
+  cancelSubscription,
   createSubscription,
   createSubscriptionPackage,
   listSubscriptionPackages,
   listSubscriptions,
+  type CancelSubscriptionPayload,
   type CreateSubscriptionPackagePayload,
   type CreateSubscriptionPayload,
   type ListSubscriptionsParams,
 } from "@/features/admin/subscriptions/services/subscriptionService";
+import { missedLessonsQueryKey } from "@/features/admin/missed-lessons/queries/missedLessonsQueries";
 
 export const subscriptionPackagesQueryKey = [
   "admin-subscription-packages",
@@ -56,6 +59,30 @@ export function useCreateSubscriptionMutation() {
         }),
         queryClient.invalidateQueries({
           queryKey: subscriptionPackagesQueryKey,
+        }),
+      ]);
+    },
+  });
+}
+
+export function useCancelSubscriptionMutation() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({
+      subscriptionId,
+      payload,
+    }: {
+      subscriptionId: number;
+      payload: CancelSubscriptionPayload;
+    }) => cancelSubscription(subscriptionId, payload),
+    onSuccess: async () => {
+      await Promise.all([
+        queryClient.invalidateQueries({
+          queryKey: subscriptionsQueryKey,
+        }),
+        queryClient.invalidateQueries({
+          queryKey: missedLessonsQueryKey,
         }),
       ]);
     },

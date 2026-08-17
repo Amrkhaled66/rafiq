@@ -1,11 +1,15 @@
 import {
   BadRequestException,
+  ConflictException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
 import type { AuthenticatedUser } from '../authorization/types/authenticated-user.type';
+import { getCairoDateString } from '../common/dates/cairo-date';
+import { LessonOccurrencesService } from '../lesson-occurrences/lesson-occurrences.service';
 import { StudentsRepository } from '../students/students.repository';
 import { UsersService } from '../users/users.service';
+import { CancelSubscriptionDto } from './dto/cancel-subscription.dto';
 import { CreateSubscriptionPackageDto } from './dto/create-subscription-package.dto';
 import { CreateSubscriptionDto } from './dto/create-subscription.dto';
 import { ListExpiringSubscriptionsQueryDto } from './dto/list-expiring-subscriptions-query.dto';
@@ -18,6 +22,7 @@ export class SubscriptionsService {
     private readonly subscriptionsRepository: SubscriptionsRepository,
     private readonly studentsRepository: StudentsRepository,
     private readonly usersService: UsersService,
+    private readonly lessonOccurrencesService: LessonOccurrencesService,
   ) {}
 
   listPackages() {
@@ -116,7 +121,7 @@ export class SubscriptionsService {
       );
     }
 
-    return this.subscriptionsRepository.createSubscription({
+    const created = await this.subscriptionsRepository.createSubscription({
       studentId: student.id,
       packageId: subscriptionPackage.id,
       startsAt: startsOn,
@@ -124,6 +129,52 @@ export class SubscriptionsService {
       amountPaid: dto.amountPaid,
       createdBy: actor.sub,
     });
+
+    await this.lessonOccurrencesService.generateForSubscription(created.id);
+    return created;
+  }
+
+  async cancelSubscription(
+    subscriptionId: number,
+    dto: CancelSubscriptionDto,
+    actor: AuthenticatedUser,
+  ) {
+    const reason = dto.reason.trim();
+
+    if (!reason) {
+      throw new BadRequestException('Cancellation reason is required');
+    }
+
+    const subscription =
+      await this.subscriptionsRepository.findSubscriptionById(subscriptionId);
+
+    if (!subscription) {
+      throw new NotFoundException('Subscription not found');
+    }
+
+    if (subscription.cancelledAt) {
+      throw new ConflictException('Subscription is already cancelled');
+    }
+
+    if (subscription.endsAt < getCairoDateString()) {
+      throw new ConflictException('Ended subscriptions cannot be cancelled');
+    }
+
+    const cancelled = await this.subscriptionsRepository.cancelSubscription({
+      subscriptionId,
+      cancelledBy: actor.sub,
+      reason,
+      today: getCairoDateString(),
+    });
+
+    if (!cancelled) {
+      throw new NotFoundException('Subscription not found');
+    }
+
+    return {
+      ...cancelled,
+      status: 'cancelled' as const,
+    };
   }
 
   private addDays(date: string, days: number) {

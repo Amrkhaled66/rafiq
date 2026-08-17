@@ -2,10 +2,12 @@ import { Image, View, useWindowDimensions } from "react-native";
 import Svg, { Path } from "react-native-svg";
 
 import authBg from "@assets/images/auth-bg.webp";
+import { useAppTheme } from "@/shared/theme/appearance-provider";
 
 export default function LoginHeader() {
   const { width } = useWindowDimensions();
-
+  const { effectiveColorScheme } = useAppTheme();
+  const isDark = effectiveColorScheme === "dark";
   return (
     <View className="relative h-[45%] overflow-hidden bg-red-700 sm:h-[50%]">
       <Image source={authBg} resizeMode="cover" className="h-full w-full" />
@@ -36,7 +38,7 @@ export default function LoginHeader() {
               L 0 70
               Z
             `}
-            fill="#FFFFFF"
+            fill={isDark ? "#121212" : "#fff"}
           />
         </Svg>
       </View>

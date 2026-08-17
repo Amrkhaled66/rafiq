@@ -30,7 +30,7 @@ export function ProfileActionCard({
 
   return (
     <Pressable
-      className="border-card-border bg-card rounded-[24px] border px-4 py-4 active:opacity-90"
+      className="border-card-border bg-card rounded-3xl border px-4 py-4 active:opacity-90"
       onPress={onPress}
       style={{
         shadowColor: "#000",

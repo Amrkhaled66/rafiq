@@ -28,3 +28,23 @@ export async function getStudentPlanDetail(
 
   return data;
 }
+
+export async function markPlanLessonWatched(
+  studentId: number,
+  occurrenceId: number,
+) {
+  const { data } = await api.post(
+    `/students/${studentId}/lesson-occurrences/${occurrenceId}/watch`,
+  );
+  return data;
+}
+
+export async function unmarkPlanLessonWatched(
+  studentId: number,
+  occurrenceId: number,
+) {
+  const { data } = await api.delete(
+    `/students/${studentId}/lesson-occurrences/${occurrenceId}/watch`,
+  );
+  return data;
+}

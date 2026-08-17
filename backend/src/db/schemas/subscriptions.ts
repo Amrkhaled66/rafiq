@@ -26,6 +26,7 @@ export const subscriptions = pgTable(
     amountPaid: integer('amount_paid').notNull(),
     cancelledAt: timestamp('cancelled_at', { withTimezone: true }),
     cancellationReason: text('cancellation_reason'),
+    cancelledBy: integer('cancelled_by').references(() => users.id),
     createdBy: integer('created_by')
       .notNull()
       .references(() => users.id),
@@ -60,5 +61,10 @@ export const subscriptionsRelations = relations(subscriptions, ({ one }) => ({
     fields: [subscriptions.createdBy],
     references: [users.id],
     relationName: 'subscriptions_creator',
+  }),
+  canceller: one(users, {
+    fields: [subscriptions.cancelledBy],
+    references: [users.id],
+    relationName: 'subscriptions_canceller',
   }),
 }));

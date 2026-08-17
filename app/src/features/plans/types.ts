@@ -64,12 +64,35 @@ export type PlanDetailDay = {
   tasks: PlanDetailTask[];
 };
 
+export type PlanLessonOccurrenceStatus =
+  "scheduled" | "watched_on_time" | "missed" | "watched_late";
+
+export type PlanDetailLesson = {
+  occurrenceId: number;
+  lessonId: number;
+  name: string;
+  subject: string;
+  status: PlanLessonOccurrenceStatus;
+  watchedOn: string | null;
+};
+
+export type PlanDetailLessonDay = {
+  date: string;
+  weekday: string;
+  lessons: PlanDetailLesson[];
+};
+
+export type PlanDetailTimelineDay = PlanDetailDay & {
+  lessons: PlanDetailLesson[];
+};
+
 export type PlanDetailStats = {
   totalTasks: number;
   completedTasks: number;
   pendingTasks: number;
   missedTasks: number;
   progressPercent: number;
+  totalLessons: number;
 };
 
 export type PlanDetailResponse = {
@@ -83,4 +106,5 @@ export type PlanDetailResponse = {
   };
   stats: PlanDetailStats;
   days: PlanDetailDay[];
+  lessonDays: PlanDetailLessonDay[];
 };

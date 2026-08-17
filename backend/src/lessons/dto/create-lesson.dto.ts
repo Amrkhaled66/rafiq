@@ -13,4 +13,3 @@ export class CreateLessonDto {
   @IsEnum(lessonWeekdayEnum.enumValues)
   weekday!: (typeof lessonWeekdayEnum.enumValues)[number];
 }
-

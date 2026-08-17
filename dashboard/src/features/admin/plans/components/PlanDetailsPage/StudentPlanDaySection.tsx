@@ -4,12 +4,76 @@ import type { TableColumn } from "react-data-table-component";
 import type {
   StudentPlanDetailDay,
   StudentPlanDetailTask,
+  StudentPlanTaskSessionStats,
 } from "@/features/admin/plans/services/plansService";
+import {
+  SESSION_STATUS_BADGE_CONFIG,
+  type SessionStatus,
+} from "@/features/admin/sessions/constants/sessionStatus";
 import ProgressCell from "@/features/admin/shared/components/ProgressCell";
 import Button from "@/shared/components/Button";
 import Table from "@/shared/components/Table";
 import { SCHOOL_SUBJECT_LABELS } from "@/shared/const/subjects";
 import { formatDateArShort } from "@/shared/utils/dates";
+
+const SESSION_STATUS_BREAKDOWN: Array<{
+  status: SessionStatus;
+  countKey: keyof Pick<
+    StudentPlanTaskSessionStats,
+    | "runningSessions"
+    | "pausedSessions"
+    | "completedSessions"
+    | "cancelledSessions"
+  >;
+}> = [
+  { status: "completed", countKey: "completedSessions" },
+  { status: "running", countKey: "runningSessions" },
+  { status: "paused", countKey: "pausedSessions" },
+  { status: "cancelled", countKey: "cancelledSessions" },
+];
+
+function formatTotalFocusDuration(totalFocusSeconds: number) {
+  const safeSeconds = Number.isFinite(totalFocusSeconds)
+    ? Math.max(0, totalFocusSeconds)
+    : 0;
+  const totalMinutes = Math.floor(safeSeconds / 60);
+  const hours = Math.floor(totalMinutes / 60);
+  const minutes = totalMinutes % 60;
+
+  if (hours === 0) {
+    return `${minutes} دقيقة`;
+  }
+
+  if (minutes === 0) {
+    return `${hours} ساعة`;
+  }
+
+  return `${hours} ساعة و${minutes} دقيقة`;
+}
+
+function SessionStatusBreakdown({
+  stats,
+}: {
+  stats: StudentPlanTaskSessionStats;
+}) {
+  return (
+    <div className="flex min-w-max items-center gap-1.5 whitespace-nowrap">
+      {SESSION_STATUS_BREAKDOWN.map(({ status, countKey }) => {
+        const config = SESSION_STATUS_BADGE_CONFIG[status];
+
+        return (
+          <span
+            key={status}
+            className={`inline-flex items-center gap-1 rounded-full px-2 py-1 text-xs font-medium ${config.className}`}
+          >
+            <span>{config.label}</span>
+            <span>{stats[countKey]}</span>
+          </span>
+        );
+      })}
+    </div>
+  );
+}
 
 function TaskStatusBadge({ status }: { status: string }) {
   const statusMap: Record<string, { label: string; className: string }> = {
@@ -37,7 +101,9 @@ function TaskStatusBadge({ status }: { status: string }) {
   };
 
   return (
-    <span className={`inline-flex rounded-full px-3 py-1 text-xs font-medium ${display.className}`}>
+    <span
+      className={`inline-flex rounded-full px-3 py-1 text-xs font-medium ${display.className}`}
+    >
       {display.label}
     </span>
   );
@@ -66,6 +132,25 @@ export default function StudentPlanDaySection({
       {
         name: "الحالة",
         cell: (row) => <TaskStatusBadge status={row.status} />,
+      },
+      {
+        name: "إجمالي الوقت",
+        cell: (row) =>
+          formatTotalFocusDuration(row.sessionStats.totalFocusSeconds),
+        width: "140px",
+        center: true,
+      },
+      {
+        name: "عدد الجلسات",
+        selector: (row) => row.sessionStats.totalSessions,
+        width: "110px",
+        center: true,
+      },
+      {
+        name: "حالات الجلسات",
+        cell: (row) => <SessionStatusBreakdown stats={row.sessionStats} />,
+        minWidth: "330px",
+        grow: 1.5,
       },
       {
         name: "",
@@ -104,7 +189,9 @@ export default function StudentPlanDaySection({
         responsive
         persistTableHead
         noDataComponent={
-          <div className="py-6 text-sm text-subTitle">لا توجد مهام لهذا اليوم.</div>
+          <div className="text-subTitle py-6 text-sm">
+            لا توجد مهام لهذا اليوم.
+          </div>
         }
       />
     </section>

@@ -1,9 +1,13 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
-import type { AuthenticatedUser } from '../authorization/types/authenticated-user.type';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { StudentsRepository } from '../students/students.repository';
 import { LessonsRepository } from './lessons.repository';
 import { CreateLessonDto } from './dto/create-lesson.dto';
 import { UpdateLessonDto } from './dto/update-lesson.dto';
+import { LessonOccurrencesService } from '../lesson-occurrences/lesson-occurrences.service';
 
 const LESSON_WEEKDAY_ORDER = [
   'saturday',
@@ -32,9 +36,10 @@ export class LessonsService {
   constructor(
     private readonly lessonsRepository: LessonsRepository,
     private readonly studentsRepository: StudentsRepository,
+    private readonly lessonOccurrencesService: LessonOccurrencesService,
   ) {}
 
-  async listLessons(studentId: number, _actor: AuthenticatedUser) {
+  async listLessons(studentId: number) {
     await this.findStudentOrThrow(studentId);
 
     return this.lessonsRepository.listLessonsByStudent(studentId);
@@ -69,26 +74,35 @@ export class LessonsService {
     };
   }
 
-  async createLesson(
-    studentId: number,
-    dto: CreateLessonDto,
-    _actor: AuthenticatedUser,
-  ) {
+  async createLesson(studentId: number, dto: CreateLessonDto) {
     await this.findStudentOrThrow(studentId);
 
-    return this.lessonsRepository.createLesson({
+    const hasSubscription =
+      await this.lessonOccurrencesService.hasActiveOrUpcomingSubscription(
+        studentId,
+      );
+
+    if (!hasSubscription) {
+      throw new BadRequestException(
+        'Student has no active or upcoming subscription',
+      );
+    }
+
+    const lesson = await this.lessonsRepository.createLesson({
       studentId,
       name: dto.name.trim(),
       subject: dto.subject,
       weekday: dto.weekday,
     });
+
+    await this.lessonOccurrencesService.generateForLesson(lesson.id);
+    return lesson;
   }
 
   async updateLesson(
     studentId: number,
     lessonId: number,
     dto: UpdateLessonDto,
-    _actor: AuthenticatedUser,
   ) {
     await this.findStudentOrThrow(studentId);
     await this.findLessonOrThrow(lessonId, studentId);
@@ -121,38 +135,34 @@ export class LessonsService {
       throw new NotFoundException('Lesson not found');
     }
 
+    await this.lessonOccurrencesService.resetFutureOccurrences(lessonId);
+    await this.lessonOccurrencesService.generateForLesson(lessonId);
+
     return updated;
   }
 
-  async deleteLesson(
-    studentId: number,
-    lessonId: number,
-    _actor: AuthenticatedUser,
-  ) {
+  async deleteLesson(studentId: number, lessonId: number) {
     await this.findStudentOrThrow(studentId);
     await this.findLessonOrThrow(lessonId, studentId);
 
-    const hasHistory = await this.lessonsRepository.hasWatchHistory(
-      lessonId,
-      studentId,
-    );
+    const hasHistory =
+      await this.lessonOccurrencesService.hasHistoricalOccurrences(lessonId);
 
     if (hasHistory) {
       throw new BadRequestException(
-        'Lesson cannot be deleted because it has watch history',
+        'Lesson cannot be deleted because it has historical occurrences',
       );
     }
 
+    await this.lessonOccurrencesService.deleteFutureScheduledOccurrences(
+      lessonId,
+    );
     await this.lessonsRepository.deleteLessonById(lessonId, studentId);
 
     return { ok: true as const };
   }
 
-  async markLessonWatched(
-    studentId: number,
-    lessonId: number,
-    _actor: AuthenticatedUser,
-  ) {
+  async markLessonWatched(studentId: number, lessonId: number) {
     await this.findStudentOrThrow(studentId);
     const lesson = await this.findLessonOrThrow(lessonId, studentId);
 
@@ -178,42 +188,19 @@ export class LessonsService {
     scheduledForDateObject.setDate(startOfWeek.getDate() + lessonWeekdayIndex);
     const scheduledForDate = this.formatDateAsIso(scheduledForDateObject);
 
-    const existingWatch =
-      await this.lessonsRepository.findWatchByLessonAndScheduledDate(
-        lessonId,
-        studentId,
-        scheduledForDate,
-      );
-
-    if (existingWatch) {
-      return {
-        ok: true as const,
-        watchedOn: existingWatch.watchedOn,
-        alreadyMarked: true,
-      };
-    }
-
-    const inserted = await this.lessonsRepository.markLessonWatched({
-      lessonId,
+    const result = await this.lessonOccurrencesService.watchLessonForDate(
       studentId,
+      lessonId,
       scheduledForDate,
-      scheduledWeekday: lesson.weekday,
-      watchedOn,
-      watchedOnTime: lessonWeekdayIndex === currentWeekdayIndex,
-    });
+    );
 
     return {
-      ok: true as const,
+      ...result,
       watchedOn,
-      alreadyMarked: !inserted,
     };
   }
 
-  async unmarkLessonWatched(
-    studentId: number,
-    lessonId: number,
-    _actor: AuthenticatedUser,
-  ) {
+  async unmarkLessonWatched(studentId: number, lessonId: number) {
     await this.findStudentOrThrow(studentId);
     const lesson = await this.findLessonOrThrow(lessonId, studentId);
 
@@ -232,16 +219,11 @@ export class LessonsService {
     scheduledForDateObject.setDate(startOfWeek.getDate() + lessonWeekdayIndex);
     const scheduledForDate = this.formatDateAsIso(scheduledForDateObject);
 
-    const removed = await this.lessonsRepository.deleteWatchByLessonAndScheduledDate(
-      lessonId,
+    return this.lessonOccurrencesService.unwatchLessonForDate(
       studentId,
+      lessonId,
       scheduledForDate,
     );
-
-    return {
-      ok: true as const,
-      removed,
-    };
   }
 
   private getCairoNow() {

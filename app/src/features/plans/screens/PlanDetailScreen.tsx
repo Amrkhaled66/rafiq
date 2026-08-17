@@ -8,7 +8,12 @@ import { PlanDaysCarousel } from "@/features/plans/components/PlanDaysCarousel";
 import { PlanDetailHeader } from "@/features/plans/components/PlanDetailHeader";
 import { PlanDetailStats } from "@/features/plans/components/PlanDetailStats";
 import { PlanEmptyDayCard } from "@/features/plans/components/PlanEmptyDayCard";
-import { useStudentPlanDetail } from "@/features/plans/queries/planQueries";
+import { PlanDaySection } from "@/features/plans/components/PlanDaySection";
+import { PlanLessonCard } from "@/features/plans/components/PlanLessonCard";
+import {
+  usePlanLessonWatchActions,
+  useStudentPlanDetail,
+} from "@/features/plans/queries/planQueries";
 import { PlanCardSkeleton } from "@/features/plans/components/skeletons";
 import {
   calculateInclusivePlanDays,
@@ -16,6 +21,7 @@ import {
   getDefaultSelectedPlanDay,
   getPlanTaskStatusAppearance,
   mapPlanTaskToTaskCard,
+  mergePlanTimelineDays,
 } from "@/features/plans/utils/plan-ui";
 import { FocusedStatusBar } from "@/shared/ui/focused-status-bar";
 import { TaskCard } from "@/shared/ui/task-card";
@@ -31,32 +37,58 @@ export function PlanDetailScreen() {
       : null;
   const { data, isLoading, isError, refetch } = useStudentPlanDetail(planId);
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
+  const [pendingOccurrenceId, setPendingOccurrenceId] = useState<number | null>(
+    null,
+  );
+  const lessonActions = usePlanLessonWatchActions(planId);
   const { colors, effectiveColorScheme } = useAppTheme();
   const statusBarStyle = effectiveColorScheme === "dark" ? "light" : "dark";
 
   useEffect(() => {
-    if (!data?.days.length) {
+    const timelineDays = data
+      ? mergePlanTimelineDays(data.days, data.lessonDays ?? [])
+      : [];
+    if (!timelineDays.length) {
       setSelectedDate(null);
       return;
     }
 
     setSelectedDate((current) => {
-      if (current && data.days.some((day) => day.date === current)) {
+      if (current && timelineDays.some((day) => day.date === current)) {
         return current;
       }
 
-      return getDefaultSelectedPlanDay(data.days);
+      return getDefaultSelectedPlanDay(timelineDays);
     });
   }, [data]);
 
-  const selectedDay = useMemo(
-    () => data?.days.find((day) => day.date === selectedDate) ?? null,
-    [data, selectedDate],
+  const timelineDays = useMemo(
+    () => (data ? mergePlanTimelineDays(data.days, data.lessonDays ?? []) : []),
+    [data],
   );
+
+  const selectedDay = useMemo(
+    () => timelineDays.find((day) => day.date === selectedDate) ?? null,
+    [timelineDays, selectedDate],
+  );
+
+  const handleLessonPress = async (occurrenceId: number, status: string) => {
+    if (pendingOccurrenceId) return;
+    setPendingOccurrenceId(occurrenceId);
+    try {
+      if (status === "watched_on_time") {
+        await lessonActions.unmarkMutation.mutateAsync(occurrenceId);
+      } else {
+        await lessonActions.markMutation.mutateAsync(occurrenceId);
+      }
+    } finally {
+      setPendingOccurrenceId(null);
+    }
+  };
 
   if (!planId || isError) {
     return (
-      <View className="flex-1 items-center justify-center bg-background px-6">
+      <View className="bg-background flex-1 items-center justify-center px-6">
         <FocusedStatusBar style={statusBarStyle} />
         <HomeStateCard
           icon="alert-circle-outline"
@@ -74,7 +106,7 @@ export function PlanDetailScreen() {
   }
 
   return (
-    <View className="flex-1 bg-background">
+    <View className="bg-background flex-1">
       <FocusedStatusBar style={statusBarStyle} />
       <ScrollView
         showsVerticalScrollIndicator={false}
@@ -101,46 +133,83 @@ export function PlanDetailScreen() {
               data?.plan.endsOn ?? "",
             )}
             totalTasks={data?.stats.totalTasks ?? 0}
+            totalLessons={data?.stats.totalLessons ?? 0}
             progressPercentage={data?.stats.progressPercent ?? 0}
           />
 
           <PlanDaysCarousel
             isLoading={isLoading}
-            days={data?.days ?? []}
+            days={timelineDays}
             selectedDate={selectedDate}
             onSelect={setSelectedDate}
           />
 
-          <View className="gap-2.5 md:gap-3">
+          <View className="gap-5 md:gap-6">
             {isLoading ? (
               <>
                 <PlanCardSkeleton />
                 <PlanCardSkeleton />
                 <PlanCardSkeleton />
               </>
-            ) : selectedDay?.tasks.length ? (
-              selectedDay.tasks.map((task) => {
-                const taskCardData = mapPlanTaskToTaskCard(task);
-                const statusAppearance = getPlanTaskStatusAppearance(
-                  task.status,
-                  colors,
-                );
+            ) : selectedDay ? (
+              <>
+                <PlanDaySection
+                  title="مهام اليوم"
+                  count={selectedDay.tasks.length}
+                >
+                  {selectedDay.tasks.length ? (
+                    selectedDay.tasks.map((task) => {
+                      const taskCardData = mapPlanTaskToTaskCard(task);
+                      const statusAppearance = getPlanTaskStatusAppearance(
+                        task.status,
+                        colors,
+                      );
 
-                return (
-                  <TaskCard
-                    key={task.id}
-                    title={task.title}
-                    subject={taskCardData.subject}
-                    icon={taskCardData.icon}
-                    iconBackgroundColor={taskCardData.iconBackgroundColor}
-                    iconColor={taskCardData.iconColor}
-                    statusLabel={statusAppearance.label}
-                    statusBackgroundColor={statusAppearance.backgroundColor}
-                    statusTextColor={statusAppearance.textColor}
-                    onPress={() => router.push(`/tasks/${task.id}`)}
-                  />
-                );
-              })
+                      return (
+                        <TaskCard
+                          key={task.id}
+                          title={task.title}
+                          subject={taskCardData.subject}
+                          icon={taskCardData.icon}
+                          iconBackgroundColor={taskCardData.iconBackgroundColor}
+                          iconColor={taskCardData.iconColor}
+                          statusLabel={statusAppearance.label}
+                          statusBackgroundColor={
+                            statusAppearance.backgroundColor
+                          }
+                          statusTextColor={statusAppearance.textColor}
+                          onPress={() => router.push(`/tasks/${task.id}`)}
+                        />
+                      );
+                    })
+                  ) : (
+                    <PlanEmptyDayCard />
+                  )}
+                </PlanDaySection>
+                <PlanDaySection
+                  title="حصص اليوم"
+                  count={selectedDay.lessons.length}
+                >
+                  {selectedDay.lessons.length ? (
+                    selectedDay.lessons.map((lesson) => (
+                      <PlanLessonCard
+                        key={lesson.occurrenceId}
+                        lesson={lesson}
+                        date={selectedDay.date}
+                        isLoading={pendingOccurrenceId === lesson.occurrenceId}
+                        onPress={() =>
+                          void handleLessonPress(
+                            lesson.occurrenceId,
+                            lesson.status,
+                          )
+                        }
+                      />
+                    ))
+                  ) : (
+                    <PlanEmptyDayCard message="مفيش حصص مضافة لليوم ده" />
+                  )}
+                </PlanDaySection>
+              </>
             ) : (
               <PlanEmptyDayCard />
             )}

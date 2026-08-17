@@ -1,4 +1,4 @@
-import { formatDateArLong, formatTimeAr } from "@/shared/utils/dates";
+import { formatDateArLong, formatTimeAr ,getDayNameAr} from "@/shared/utils/dates";
 
 export function getStudentInitials(name: string) {
   return name
@@ -15,7 +15,7 @@ export function formatStudentDate(value: string) {
 }
 
 export function formatStudentTime(value: string) {
-  return formatTimeAr(value);
+  return getDayNameAr(value);
 }
 
 export function normalizePhoneForWhatsapp(phone: string) {

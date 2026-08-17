@@ -46,3 +46,10 @@ export const lessonWeekdayEnum = pgEnum('lesson_weekday', [
   'thursday',
   'friday',
 ]);
+
+export const lessonOccurrenceStatusEnum = pgEnum('lesson_occurrence_status', [
+  'scheduled',
+  'watched_on_time',
+  'missed',
+  'watched_late',
+]);

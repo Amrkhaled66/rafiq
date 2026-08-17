@@ -1,5 +1,6 @@
-import { relations } from 'drizzle-orm';
+import { relations, sql } from 'drizzle-orm';
 import {
+  date,
   index,
   integer,
   pgTable,
@@ -8,7 +9,6 @@ import {
   varchar,
 } from 'drizzle-orm/pg-core';
 import { lessonWeekdayEnum, schoolSubjectEnum } from './enum';
-import { lessonWatches } from './lesson-watches';
 import { users } from './users';
 
 export const lessons = pgTable(
@@ -21,6 +21,9 @@ export const lessons = pgTable(
     name: varchar('name', { length: 255 }).notNull(),
     subject: schoolSubjectEnum('subject').notNull(),
     weekday: lessonWeekdayEnum('weekday').notNull(),
+    trackingStartsOn: date('tracking_starts_on')
+      .default(sql`(now() at time zone 'Africa/Cairo')::date`)
+      .notNull(),
     createdAt: timestamp('created_at', { withTimezone: true })
       .defaultNow()
       .notNull(),
@@ -33,10 +36,9 @@ export const lessons = pgTable(
   ],
 );
 
-export const lessonsRelations = relations(lessons, ({ many, one }) => ({
+export const lessonsRelations = relations(lessons, ({ one }) => ({
   student: one(users, {
     fields: [lessons.studentId],
     references: [users.id],
   }),
-  watchHistory: many(lessonWatches),
 }));
