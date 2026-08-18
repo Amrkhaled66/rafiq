@@ -6,6 +6,7 @@ import {
   eq,
   exists,
   gte,
+  ilike,
   inArray,
   lte,
   sql,
@@ -38,6 +39,8 @@ export class MissedLessonsRepository {
       to?: string;
       status?: 'resolved' | 'unresolved';
       watchStatus?: 'unwatched' | 'watched_late';
+      studentPhone?: string;
+      studentId?: number;
     },
   ) {
     const conditions = this.buildConditions(input);
@@ -187,6 +190,8 @@ export class MissedLessonsRepository {
       to?: string;
       status?: 'resolved' | 'unresolved';
       watchStatus?: 'unwatched' | 'watched_late';
+      studentPhone?: string;
+      studentId?: number;
     },
     includeFilters = true,
   ): SQL[] {
@@ -233,6 +238,16 @@ export class MissedLessonsRepository {
       conditions.push(sql`${missedLessonResolutions.id} is not null`);
     } else if (input.status === 'unresolved') {
       conditions.push(sql`${missedLessonResolutions.id} is null`);
+    }
+
+    if (input.studentPhone?.trim()) {
+      conditions.push(
+        ilike(users.phone, `%${input.studentPhone.trim()}%`),
+      );
+    }
+
+    if (input.studentId) {
+      conditions.push(eq(lessonOccurrences.studentId, input.studentId));
     }
 
     return conditions;

@@ -11,6 +11,8 @@ import {
   getStudentOverview,
   listStudents,
   updateStudent,
+  watchLessonOccurrence,
+  unwatchLessonOccurrence,
   type ListStudentsParams,
 } from "@/features/admin/students/services/studentService";
 import type { UpdateStudentFormValues } from "@/features/admin/students/schema/updateStudentSchema";
@@ -105,6 +107,34 @@ export function useRemoveCoachFromStudentMutation(studentId: number) {
           queryKey: [...studentCoachesQueryKey, studentId],
         }),
       ]);
+    },
+  });
+}
+
+export function useWatchLessonOccurrenceMutation(studentId: number) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (occurrenceId: number) =>
+      watchLessonOccurrence(studentId, occurrenceId),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({
+        queryKey: [...studentOverviewQueryKey, studentId],
+      });
+    },
+  });
+}
+
+export function useUnwatchLessonOccurrenceMutation(studentId: number) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (occurrenceId: number) =>
+      unwatchLessonOccurrence(studentId, occurrenceId),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({
+        queryKey: [...studentOverviewQueryKey, studentId],
+      });
     },
   });
 }

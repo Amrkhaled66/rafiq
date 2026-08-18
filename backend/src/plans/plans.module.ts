@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { AuthModule } from '../auth/auth.module';
 import { AuthorizationModule } from '../authorization/authorization.module';
 import { CoachesModule } from '../coaches/coaches.module';
@@ -16,11 +16,12 @@ import { PlansService } from './plans.service';
     AuthorizationModule,
     CoachesModule,
     DbModule,
-    StudentsModule,
+    forwardRef(() => StudentsModule),
     TaskSessionsModule,
     LessonOccurrencesModule,
   ],
   controllers: [PlansController],
   providers: [PlansRepository, PlansService],
+  exports: [PlansRepository],
 })
 export class PlansModule {}

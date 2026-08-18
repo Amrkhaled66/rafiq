@@ -6,6 +6,7 @@ import {
   desc,
   eq,
   gt,
+  ilike,
   isNull,
   lte,
   gte,
@@ -170,6 +171,7 @@ export class SubscriptionsRepository {
     page: number;
     limit: number;
     endingSoon?: boolean;
+    studentPhone?: string;
   }) {
     const offset = (input.page - 1) * input.limit;
     const endingSoonCondition = input.endingSoon
@@ -180,6 +182,10 @@ export class SubscriptionsRepository {
           lte(subscriptions.endsAt, sql`current_date + interval '7 days'`),
         )
       : undefined;
+    const phoneFilter = input.studentPhone?.trim()
+      ? ilike(users.phone, `%${input.studentPhone.trim()}%`)
+      : undefined;
+    const conditions = and(endingSoonCondition, phoneFilter);
 
     const items = await this.database
       .select({
@@ -207,7 +213,7 @@ export class SubscriptionsRepository {
         subscriptionPackages,
         eq(subscriptions.packageId, subscriptionPackages.id),
       )
-      .where(endingSoonCondition)
+      .where(conditions)
       .orderBy(desc(subscriptions.createdAt))
       .limit(input.limit)
       .offset(offset);
@@ -215,7 +221,8 @@ export class SubscriptionsRepository {
     const [{ total }] = await this.database
       .select({ total: count() })
       .from(subscriptions)
-      .where(endingSoonCondition);
+      .innerJoin(users, eq(subscriptions.studentId, users.id))
+      .where(conditions);
 
     return {
       items: items as SubscriptionListRow[],

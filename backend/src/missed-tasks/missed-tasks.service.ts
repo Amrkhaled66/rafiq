@@ -39,6 +39,7 @@ export class MissedTasksService {
         to: query.to,
         status: query.status,
         coachId: query.coachId,
+        studentPhone: query.studentPhone,
       }),
     ]);
 

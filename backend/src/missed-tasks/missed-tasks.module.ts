@@ -10,5 +10,6 @@ import { TasksModule } from '../tasks/tasks.module';
   imports: [AuthModule, DbModule, AuthorizationModule, TasksModule],
   controllers: [MissedTasksController],
   providers: [MissedTasksRepository, MissedTasksService],
+  exports: [MissedTasksRepository],
 })
 export class MissedTasksModule {}

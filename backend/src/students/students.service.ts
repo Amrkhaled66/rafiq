@@ -12,6 +12,10 @@ import {
   StudentAggregate,
   StudentsRepository,
 } from './students.repository';
+import { MissedTasksRepository } from '../missed-tasks/missed-tasks.repository';
+import { MissedLessonsRepository } from '../missed-lessons/missed-lessons.repository';
+import { PlansRepository } from '../plans/plans.repository';
+import { LessonsRepository } from '../lessons/lessons.repository';
 
 export interface StudentOverviewStats {
   totalTasks: number;
@@ -34,6 +38,7 @@ export interface StudentOverviewLesson {
   id: number;
   lessonName: string;
   subject: string;
+  status: string;
   scheduledAt: string;
 }
 
@@ -52,6 +57,10 @@ export class StudentsService {
     private readonly tasksRepository: TasksRepository,
     private readonly lessonOccurrencesService: LessonOccurrencesService,
     private readonly usersService: UsersService,
+    private readonly missedTasksRepository: MissedTasksRepository,
+    private readonly missedLessonsRepository: MissedLessonsRepository,
+    private readonly plansRepository: PlansRepository,
+    private readonly lessonsRepository: LessonsRepository,
   ) {}
 
   async getStudentOverview(id: number): Promise<StudentOverview> {
@@ -94,8 +103,80 @@ export class StudentsService {
         id: o.id,
         lessonName: o.lessonName,
         subject: o.subject,
+        status: o.status,
         scheduledAt: o.scheduledForDate,
       })),
+    };
+  }
+
+  async searchByPhone(phone: string) {
+    const student = await this.studentsRepository.findByPhone(phone);
+    if (!student) {
+      throw new NotFoundException('Student not found');
+    }
+    return { id: student.id, fullName: student.fullName, phone: student.phone };
+  }
+
+  async getStudentProfile(id: number) {
+    const student = await this.findStudentByIdOrThrow(id);
+    const assignedCoaches = await this.studentsRepository.listAssignedCoaches(id);
+    const today = this.formatDateAsIso(this.getCairoNow());
+
+    const [todayTasks, todayOccurrences, missedTasks, missedLessons, plans, lessons] =
+      await Promise.all([
+        this.tasksRepository.listTodayTasksByStudent(id, today),
+        this.lessonOccurrencesService.listStudentOccurrencesInRange({
+          studentId: id,
+          from: today,
+          to: today,
+        }),
+        this.missedTasksRepository.listMissedTasks({
+          role: 'super_admin',
+          userId: id,
+          page: 1,
+          limit: 100,
+          studentId: id,
+        }),
+        this.missedLessonsRepository.listMissedLessons({
+          role: 'super_admin',
+          userId: id,
+          page: 1,
+          limit: 100,
+          studentId: id,
+        }),
+        this.plansRepository.listStudentPlans(id, { page: 1, limit: 100 }, today),
+        this.lessonsRepository.listLessonsByStudent(id),
+      ]);
+
+    return {
+      student,
+      assignedCoaches,
+      stats: {
+        totalTasks: todayTasks.length,
+        completedTasks: 0,
+        remainingTasks: 0,
+        missedTasks: 0,
+        completionRate: 0,
+      },
+      todayTasks: todayTasks.map((t) => ({
+        id: t.id,
+        title: t.title,
+        subject: t.subject,
+        status: t.status,
+        dueAt: t.dueAt,
+        planId: t.planId,
+      })),
+      todayLessons: todayOccurrences.map((o) => ({
+        id: o.id,
+        lessonName: o.lessonName,
+        subject: o.subject,
+        status: o.status,
+        scheduledAt: o.scheduledForDate,
+      })),
+      missedTasks: missedTasks.items,
+      missedLessons: missedLessons.items,
+      plans: plans.items,
+      lessons,
     };
   }
 
@@ -228,5 +309,13 @@ export class StudentsService {
     const day = parts.find((part) => part.type === 'day')?.value;
 
     return `${year}-${month}-${day}`;
+  }
+
+  private getCairoNow() {
+    return new Date(
+      new Date().toLocaleString('en-US', {
+        timeZone: 'Africa/Cairo',
+      }),
+    );
   }
 }

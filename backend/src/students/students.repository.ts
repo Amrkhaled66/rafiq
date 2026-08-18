@@ -65,6 +65,15 @@ export class StudentsRepository {
     return student;
   }
 
+  async findByPhone(phone: string): Promise<StudentAggregate | undefined> {
+    const normalized = phone.replace(/\D/g, '');
+    const [student] = await this.baseStudentSelect()
+      .where(ilike(users.phone, `%${normalized}%`))
+      .limit(1);
+
+    return student;
+  }
+
   async listAssignedCoaches(studentId: number): Promise<AssignedCoachRow[]> {
     const rows = await this.database
       .select({

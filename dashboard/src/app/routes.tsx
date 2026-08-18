@@ -10,6 +10,7 @@ import DashBoardLayout from "@/features/admin/layouts/DashBoardLayout";
 import { missedTasksRoutes } from "@/features/admin/missed-tasks/routes";
 import { missedLessonsRoutes } from "@/features/admin/missed-lessons/routes";
 import { sessionsRoutes } from "@/features/admin/sessions/routes";
+import { studentProfileRoutes } from "@/features/admin/student-profile/routes";
 import { studentsRoutes } from "@/features/admin/students/routes";
 import { subscriptionsRoutes } from "@/features/admin/subscriptions/routes";
 import { urls } from "@/shared/const/urls";
@@ -70,6 +71,7 @@ export const router = createBrowserRouter([
                   missedTasksRoutes,
                   missedLessonsRoutes,
                   sessionsRoutes,
+                  studentProfileRoutes,
                   subscriptionsRoutes,
                   studentsRoutes,
                 ],

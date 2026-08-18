@@ -29,6 +29,7 @@ export type ListMissedTasksParams = {
   to?: string;
   status?: "resolved" | "unresolved";
   coachId?: number;
+  studentPhone?: string;
   page?: number;
   limit?: number;
 };

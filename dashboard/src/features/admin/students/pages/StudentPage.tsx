@@ -50,7 +50,7 @@ export default function StudentPage() {
       />
       <StudentStatsSection stats={stats} />
       <StudentTasksSection tasks={todayTasks} />
-      <StudentLessonsSection lessons={todayLessons} />
+      <StudentLessonsSection studentId={studentId} lessons={todayLessons} />
     </div>
   );
 }

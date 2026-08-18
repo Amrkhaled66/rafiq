@@ -1,5 +1,6 @@
 import DropdownField from "@/shared/components/DropDownMenu";
 import FormInput from "@/shared/components/FormInput";
+import DebouncedSearchField from "@/features/admin/shared/components/DebouncedSearchField";
 
 type Props = {
   from: string;
@@ -7,18 +8,26 @@ type Props = {
   status: "" | "resolved" | "unresolved";
   watchStatus: "" | "unwatched" | "watched_late";
   coachId: string;
+  studentPhone: string;
   showCoach: boolean;
   coachOptions: Array<{ label: string; value: string }>;
   coachesLoading: boolean;
   onChange: (
-    key: "from" | "to" | "status" | "watchStatus" | "coachId",
+    key: "from" | "to" | "status" | "watchStatus" | "coachId" | "studentPhone",
     value: string,
   ) => void;
 };
 
 export default function MissedLessonsFilters(props: Props) {
   return (
-    <section className="dashboard-card grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-5">
+    <section className="dashboard-card grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-6">
+      <DebouncedSearchField
+        label="رقم هاتف الطالب"
+        name="missed-lessons-student-phone"
+        placeholder="ابحث برقم الهاتف"
+        value={props.studentPhone}
+        onChange={(value) => props.onChange("studentPhone", value)}
+      />
       <FormInput
         label="من"
         type="date"

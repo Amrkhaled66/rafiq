@@ -26,6 +26,7 @@ export default function MissedLessonsPage() {
     status: filters.status || undefined,
     watchStatus: filters.watchStatus || undefined,
     coachId: filters.coachId ? Number(filters.coachId) : undefined,
+    studentPhone: filters.studentPhone || undefined,
     page: pagination.page,
     limit: pagination.limit,
   });
@@ -45,6 +46,7 @@ export default function MissedLessonsPage() {
     status: filters.setStatus,
     watchStatus: filters.setWatchStatus,
     coachId: filters.setCoachId,
+    studentPhone: filters.setStudentPhone,
   };
 
   return (
@@ -60,6 +62,7 @@ export default function MissedLessonsPage() {
         status={filters.status}
         watchStatus={filters.watchStatus}
         coachId={filters.coachId}
+        studentPhone={filters.studentPhone}
         showCoach={showCoach}
         coachOptions={coachOptions}
         coachesLoading={coaches.isLoading}

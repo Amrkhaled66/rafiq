@@ -35,10 +35,22 @@ export class StudentsController {
     return this.studentsService.listStudents(user, query);
   }
 
+  @Get('search')
+  @RequirePolicy('students.list')
+  searchByPhone(@Query('phone') phone: string) {
+    return this.studentsService.searchByPhone(phone);
+  }
+
   @Get(':id/overview')
   @RequirePolicy('students.read')
   getStudentOverview(@Param('id', ParseIntPipe) id: number) {
     return this.studentsService.getStudentOverview(id);
+  }
+
+  @Get(':id/profile')
+  @RequirePolicy('students.read')
+  getStudentProfile(@Param('id', ParseIntPipe) id: number) {
+    return this.studentsService.getStudentProfile(id);
   }
 
   @Get(':id/coaches')

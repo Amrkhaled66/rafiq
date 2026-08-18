@@ -35,4 +35,7 @@ export class ListMissedLessonsQueryDto {
   @IsInt()
   @Min(1)
   coachId?: number;
+
+  @IsOptional()
+  studentPhone?: string;
 }

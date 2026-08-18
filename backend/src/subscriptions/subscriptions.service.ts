@@ -47,6 +47,7 @@ export class SubscriptionsService {
         page,
         limit,
         endingSoon: query.endingSoon,
+        studentPhone: query.studentPhone,
       }),
     ]);
 

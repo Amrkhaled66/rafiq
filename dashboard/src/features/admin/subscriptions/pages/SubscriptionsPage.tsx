@@ -24,10 +24,12 @@ export default function SubscriptionsPage() {
   const pagination = useServerPagination();
   const [endingFilter, setEndingFilter] =
     useState<SubscriptionEndingFilter>("");
+  const [studentPhone, setStudentPhone] = useState("");
   const subscriptionsQuery = useSubscriptionsQuery({
     page: pagination.page,
     limit: pagination.limit,
     endingSoon: endingFilter === "ending_soon" ? true : undefined,
+    studentPhone: studentPhone || undefined,
   });
   const packagesQuery = useSubscriptionPackagesQuery();
   const actions = useSubscriptionsActions();
@@ -49,6 +51,11 @@ export default function SubscriptionsPage() {
 
   const handleEndingFilterChange = (value: SubscriptionEndingFilter) => {
     setEndingFilter(value);
+    pagination.setPage(1);
+  };
+
+  const handleStudentPhoneChange = (value: string) => {
+    setStudentPhone(value);
     pagination.setPage(1);
   };
 
@@ -82,7 +89,9 @@ export default function SubscriptionsPage() {
 
       <SubscriptionsFilters
         endingFilter={endingFilter}
+        studentPhone={studentPhone}
         onEndingFilterChange={handleEndingFilterChange}
+        onStudentPhoneChange={handleStudentPhoneChange}
       />
 
       <SubscriptionsTable

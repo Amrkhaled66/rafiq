@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { and, count, desc, eq, gte, lte, sql } from 'drizzle-orm';
+import { and, count, desc, eq, gte, ilike, lte, sql } from 'drizzle-orm';
 import {
   coachAssignments,
   missedTaskResolutions,
@@ -41,6 +41,8 @@ export class MissedTasksRepository {
     to?: string;
     status?: 'resolved' | 'unresolved';
     coachId?: number;
+    studentPhone?: string;
+    studentId?: number;
   }) {
     const offset = (input.page - 1) * input.limit;
     const coachScope =
@@ -57,6 +59,12 @@ export class MissedTasksRepository {
         : input.status === 'unresolved'
           ? sql`${missedTaskResolutions.id} is null`
           : undefined;
+    const phoneFilter = input.studentPhone?.trim()
+      ? ilike(users.phone, `%${input.studentPhone.trim()}%`)
+      : undefined;
+    const studentIdFilter = input.studentId
+      ? eq(plans.studentId, input.studentId)
+      : undefined;
 
     const items = await this.database
       .select({
@@ -107,6 +115,8 @@ export class MissedTasksRepository {
           fromFilter,
           toFilter,
           resolutionFilter,
+          phoneFilter,
+          studentIdFilter,
         ),
       )
       .orderBy(desc(tasks.dueAt), desc(tasks.id))
@@ -117,6 +127,7 @@ export class MissedTasksRepository {
       .select({ total: count() })
       .from(tasks)
       .innerJoin(plans, eq(tasks.planId, plans.id))
+      .innerJoin(users, eq(plans.studentId, users.id))
       .leftJoin(
         missedTaskResolutions,
         eq(missedTaskResolutions.taskId, tasks.id),
@@ -137,6 +148,8 @@ export class MissedTasksRepository {
           fromFilter,
           toFilter,
           resolutionFilter,
+          phoneFilter,
+          studentIdFilter,
         ),
       );
 

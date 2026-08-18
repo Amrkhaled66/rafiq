@@ -33,11 +33,13 @@ export default function useMissedLessonsFilterParams() {
     from: searchParams.get("from") ?? "",
     to: searchParams.get("to") ?? "",
     coachId: searchParams.get("coachId") ?? "",
+    studentPhone: searchParams.get("studentPhone") ?? "",
     status: status as "" | "resolved" | "unresolved",
     watchStatus: watchStatus as "" | "unwatched" | "watched_late",
     setFrom: (value: string) => setParam("from", value),
     setTo: (value: string) => setParam("to", value),
     setCoachId: (value: string) => setParam("coachId", value),
+    setStudentPhone: (value: string) => setParam("studentPhone", value.trim()),
     setStatus: (value: string) => setParam("status", value),
     setWatchStatus: (value: string) => setParam("watchStatus", value),
   };

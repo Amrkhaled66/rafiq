@@ -25,7 +25,7 @@ export default function MissedTasksPage() {
       pagination.setPage(1);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filters.status, filters.from, filters.to, filters.coachId]);
+  }, [filters.status, filters.from, filters.to, filters.coachId, filters.studentPhone]);
 
   const coachesQuery = useCoachesQuery(
     canReadCoaches ? { page: 1, limit: 100, deletedStatus: "active" } : {},
@@ -45,6 +45,7 @@ export default function MissedTasksPage() {
     to: filters.to || undefined,
     status: filters.status || undefined,
     coachId: filters.coachId ? Number(filters.coachId) : undefined,
+    studentPhone: filters.studentPhone || undefined,
     page: pagination.page,
     limit: pagination.limit,
   });
@@ -71,6 +72,7 @@ export default function MissedTasksPage() {
         to={filters.to}
         status={filters.status}
         coachId={filters.coachId}
+        studentPhone={filters.studentPhone}
         canReadCoaches={Boolean(canReadCoaches)}
         coachOptions={coachOptions}
         coachesLoading={Boolean(canReadCoaches && coachesQuery.isLoading)}
@@ -78,6 +80,7 @@ export default function MissedTasksPage() {
         onToChange={filters.setTo}
         onStatusChange={filters.setStatus}
         onCoachChange={filters.setCoachId}
+        onStudentPhoneChange={filters.setStudentPhone}
       />
 
       {missedTasksQuery.isError && !missedTasksQuery.data ? (

@@ -1,5 +1,6 @@
 import DropdownField from "@/shared/components/DropDownMenu";
 import FormInput from "@/shared/components/FormInput";
+import DebouncedSearchField from "@/features/admin/shared/components/DebouncedSearchField";
 
 type CoachOption = {
   label: string;
@@ -11,6 +12,7 @@ export default function MissedTasksFilters({
   to,
   status,
   coachId,
+  studentPhone,
   canReadCoaches,
   coachOptions,
   coachesLoading,
@@ -18,11 +20,13 @@ export default function MissedTasksFilters({
   onToChange,
   onStatusChange,
   onCoachChange,
+  onStudentPhoneChange,
 }: {
   from: string;
   to: string;
   status: "" | "resolved" | "unresolved";
   coachId: string;
+  studentPhone: string;
   canReadCoaches: boolean;
   coachOptions: CoachOption[];
   coachesLoading: boolean;
@@ -30,14 +34,22 @@ export default function MissedTasksFilters({
   onToChange: (value: string) => void;
   onStatusChange: (value: "" | "resolved" | "unresolved") => void;
   onCoachChange: (value: string) => void;
+  onStudentPhoneChange: (value: string) => void;
 }) {
   return (
     <section className="dashboard-card">
       <div
         className={`grid grid-cols-1 gap-4 ${
-          canReadCoaches ? "md:grid-cols-4" : "md:grid-cols-3"
+          canReadCoaches ? "md:grid-cols-5" : "md:grid-cols-4"
         }`}
       >
+        <DebouncedSearchField
+          label="رقم هاتف الطالب"
+          name="missed-tasks-student-phone"
+          placeholder="ابحث برقم الهاتف"
+          value={studentPhone}
+          onChange={onStudentPhoneChange}
+        />
         <FormInput
           label="من"
           type="date"

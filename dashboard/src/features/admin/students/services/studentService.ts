@@ -52,6 +52,7 @@ export type StudentOverviewLesson = {
   id: number;
   lessonName: string;
   subject: string;
+  status: string;
   scheduledAt: string;
 };
 
@@ -131,5 +132,25 @@ export async function updateStudent(
   };
 
   const { data } = await api.patch<Student>(`/students/${id}`, normalizedPayload);
+  return data;
+}
+
+export async function watchLessonOccurrence(
+  studentId: number,
+  occurrenceId: number,
+): Promise<{ ok: true; status: string; alreadyMarked: boolean }> {
+  const { data } = await api.post<{ ok: true; status: string; alreadyMarked: boolean }>(
+    `/students/${studentId}/lesson-occurrences/${occurrenceId}/watch`,
+  );
+  return data;
+}
+
+export async function unwatchLessonOccurrence(
+  studentId: number,
+  occurrenceId: number,
+): Promise<{ ok: true; status: string }> {
+  const { data } = await api.delete<{ ok: true; status: string }>(
+    `/students/${studentId}/lesson-occurrences/${occurrenceId}/watch`,
+  );
   return data;
 }

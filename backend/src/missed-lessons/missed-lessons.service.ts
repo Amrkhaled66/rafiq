@@ -35,6 +35,7 @@ export class MissedLessonsService {
         to: query.to,
         status: query.status,
         watchStatus: query.watchStatus,
+        studentPhone: query.studentPhone,
       }),
     ]);
 

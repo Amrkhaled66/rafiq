@@ -20,4 +20,7 @@ export class ListSubscriptionsQueryDto {
   @Transform(({ value }) => value === true || value === 'true')
   @IsBoolean()
   endingSoon?: boolean;
+
+  @IsOptional()
+  studentPhone?: string;
 }

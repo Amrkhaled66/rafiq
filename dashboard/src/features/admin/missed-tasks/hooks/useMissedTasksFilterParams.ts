@@ -11,6 +11,7 @@ export default function useMissedTasksFilterParams() {
   const from = (searchParams.get("from") ?? "").trim();
   const to = (searchParams.get("to") ?? "").trim();
   const coachId = (searchParams.get("coachId") ?? "").trim();
+  const studentPhone = (searchParams.get("studentPhone") ?? "").trim();
 
   const updateParam = useCallback(
     (key: string, value: string) => {
@@ -47,14 +48,21 @@ export default function useMissedTasksFilterParams() {
     [updateParam],
   );
 
+  const setStudentPhone = useCallback(
+    (next: string) => updateParam("studentPhone", next.trim()),
+    [updateParam],
+  );
+
   return {
     status,
     from,
     to,
     coachId,
+    studentPhone,
     setStatus,
     setFrom,
     setTo,
     setCoachId,
+    setStudentPhone,
   };
 }

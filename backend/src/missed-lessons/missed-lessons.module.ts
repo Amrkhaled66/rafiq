@@ -10,5 +10,6 @@ import { MissedLessonsService } from './missed-lessons.service';
   imports: [AuthModule, AuthorizationModule, DbModule],
   controllers: [MissedLessonsController],
   providers: [MissedLessonsRepository, MissedLessonsService],
+  exports: [MissedLessonsRepository],
 })
 export class MissedLessonsModule {}

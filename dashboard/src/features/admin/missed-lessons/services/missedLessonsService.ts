@@ -32,6 +32,7 @@ export type ListMissedLessonsParams = {
   status?: "resolved" | "unresolved";
   watchStatus?: "unwatched" | "watched_late";
   coachId?: number;
+  studentPhone?: string;
   page?: number;
   limit?: number;
 };
