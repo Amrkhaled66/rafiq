@@ -24,7 +24,7 @@ const cairo = Cairo({
 export const metadata: Metadata = {
   metadataBase: new URL("https://rafiq-edu.com"),
 
-  title: "رفيق | متابعة وتنظيم الثانوية العامة",
+  title: "رفيق | تنظيم المزاكرة في الثانوية العامة",
 
   description:
     "رفيق يساعد طلاب الثانوية العامة على تنظيم المذاكرة، متابعة المهام، الالتزام بالخطة، وتحقيق تقدم مستمر خلال السنة.",
