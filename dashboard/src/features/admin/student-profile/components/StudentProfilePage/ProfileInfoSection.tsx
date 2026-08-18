@@ -14,7 +14,6 @@ export default function ProfileInfoSection({
   assignedCoaches: AssignedCoach[];
 }) {
   const initials = getStudentInitials(student.fullName);
-  const whatsappPhone = normalizePhoneForWhatsapp(student.phone);
   const coachesLabel =
     assignedCoaches.length > 0
       ? assignedCoaches.map((coach) => coach.fullName).join("، ")

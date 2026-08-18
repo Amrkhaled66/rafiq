@@ -1,4 +1,3 @@
-import { useMemo } from "react";
 import { useParams } from "react-router-dom";
 import ProfileInfoSection from "@/features/admin/student-profile/components/StudentProfilePage/ProfileInfoSection";
 import ProfileStatsSection from "@/features/admin/student-profile/components/StudentProfilePage/ProfileStatsSection";

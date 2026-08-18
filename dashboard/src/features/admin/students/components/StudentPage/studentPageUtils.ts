@@ -1,4 +1,4 @@
-import { formatDateArLong, formatTimeAr ,getDayNameAr} from "@/shared/utils/dates";
+import { formatDateArLong, getDayNameAr } from "@/shared/utils/dates";
 
 export function getStudentInitials(name: string) {
   return name
