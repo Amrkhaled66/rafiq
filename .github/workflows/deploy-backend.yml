@@ -23,11 +23,7 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Build Docker image
-        run: |
-          docker build \
-            -f backend/Dockerfile \
-            -t amrse912553/rafiq-backend:latest \
-            ./backend
+        run: docker build -f backend/Dockerfile -t amrse912553/rafiq-backend:latest ./backend
 
       - name: Push Docker image
         run: docker push amrse912553/rafiq-backend:latest
