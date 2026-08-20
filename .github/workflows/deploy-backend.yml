@@ -1,11 +1,11 @@
-name: Deploy rafiq-frontend
+name: Deploy rafiq-backend
 
 on:
   push:
     branches: ["master"]
     paths:
-      - "frontend/**"
-      - ".github/workflows/deploy-frontend.yml"
+      - "backend/**"
+      - ".github/workflows/deploy-backend.yml"
   workflow_dispatch:
 
 jobs:
@@ -23,17 +23,14 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Build Docker image
-        run: | 
+        run: |
           docker build \
-            -f frontend/DockerFile \
-            --build-arg NEXT_PUBLIC_HUBSPOT_PORTAL_ID="${{ secrets.HUBSPOT_PORTAL_ID }}" \
-            --build-arg NEXT_PUBLIC_HUBSPOT_FORM_GUID="${{ secrets.HUBSPOT_FORM_GUID }}" \
-            --build-arg NEXT_PUBLIC_META_PIXEL_ID="${{ secrets.NEXT_PUBLIC_META_PIXEL_ID }}" \
-            -t amrse912553/rafiq-frontend:latest \
-            ./frontend
+            -f backend/Dockerfile \
+            -t amrse912553/rafiq-backend:latest \
+            ./backend
 
       - name: Push Docker image
-        run: docker push amrse912553/rafiq-frontend:latest
+        run: docker push amrse912553/rafiq-backend:latest
 
   deploy:
     needs: build
@@ -47,19 +44,19 @@ jobs:
             --password-stdin
 
       - name: Pull latest image
-        run: sudo docker pull amrse912553/rafiq-frontend:latest
+        run: sudo docker pull amrse912553/rafiq-backend:latest
 
       - name: Stop and remove old container
-        run: sudo docker rm -f rafiq-frontend-container || true
+        run: sudo docker rm -f rafiq-backend-container || true
 
       - name: Run new container
         run: |
           sudo docker run -d \
-            -p 4001:3001 \
-            --name rafiq-frontend-container \
+            -p 4002:3002 \
+            --name rafiq-backend-container \
             --restart unless-stopped \
-            --env-file /opt/rafiq/frontend.env \
-            amrse912553/rafiq-frontend:latest
+            --env-file /opt/rafiq/backend.env \
+            amrse912553/rafiq-backend:latest
 
       - name: Clean Docker system
         run: sudo docker system prune -af

@@ -30,8 +30,8 @@ export default function ProfileInfoSection({
           </h2>
           <div className="text-subTitle mt-4 flex flex-wrap gap-x-6 gap-y-3 text-sm">
             <span className="inline-flex items-center gap-2" dir="ltr">
-              <Icon icon="solar:phone-linear" className="text-brand-primary size-4" />
               {student.phone}
+              <Icon icon="solar:phone-linear" className="text-brand-primary size-4" />
             </span>
             <span className="inline-flex items-center gap-2">
               <Icon icon="solar:diploma-linear" className="text-brand-primary size-4" />

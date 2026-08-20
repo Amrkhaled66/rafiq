@@ -3,6 +3,9 @@
     "name": "Rafiq",
     "slug": "rafiq",
     "version": "1.0.0",
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
     "icon": "./assets/images/app-icon.png",
     "orientation": "portrait",
     "scheme": "rafiq",
@@ -17,9 +20,6 @@
         "CFBundleLocalizations": [
           "ar"
         ]
-      },
-      "runtimeVersion": {
-        "policy": "appVersion"
       }
     },
     "android": {
@@ -31,11 +31,11 @@
       },
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
+      "predictiveBackGestureEnabled": false,
       "runtimeVersion": "1.0.0"
     },
     "web": {
       "output": "static",
-      "favicon": "./assets/images/favicon.png",
       "bundler": "metro"
     },
     "plugins": [
@@ -46,7 +46,11 @@
           "image": "./assets/images/adaptive-icon.png",
           "imageWidth": 200,
           "resizeMode": "contain",
-          "backgroundColor": "#A60F12"
+          "backgroundColor": "#A60F12",
+          "dark": {
+            "image": "./assets/images/adaptive-icon.png",
+            "backgroundColor": "#A60F12"
+          }
         }
       ],
       "expo-secure-store",
