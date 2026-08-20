@@ -2,7 +2,6 @@ import { type ComponentProps, type ReactNode } from "react";
 import { type StyleProp, type ViewStyle, View } from "react-native";
 
 import { SectionTitle } from "@/features/home/components/SectionTitle";
-import { useDirection } from "@/shared/hooks/use-direction";
 import { ElevatedView } from "@/shared/ui/elevated-view";
 
 type HomePageSectionProps = {
@@ -24,7 +23,6 @@ export function HomePageSection({
   contentClassName = "gap-4",
   style,
 }: HomePageSectionProps) {
-  const dir = useDirection();
 
   return (
     <ElevatedView
@@ -32,9 +30,9 @@ export function HomePageSection({
       style={style}
     >
       <View className={contentClassName}>
-        <View className={`items-center justify-between ${dir.row}`}>
-          {action ?? <View />}
+        <View className="flex-row items-center justify-between">
           <SectionTitle title={title} icon={icon} />
+          {action ?? <View />}
         </View>
 
         {children}

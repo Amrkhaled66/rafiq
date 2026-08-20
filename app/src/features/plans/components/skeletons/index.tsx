@@ -13,7 +13,7 @@ export function CurrentPlanCardSkeleton() {
   return (
     <SkeletonSurface className="px-4 py-4 md:px-6 md:py-6">
       <View className="gap-6 md:gap-8">
-        <View className="flex-row-reverse items-center justify-between gap-2 md:gap-3">
+        <View className="flex-row items-center justify-between gap-2 md:gap-3">
           <ShimmerBlock
             width={isTablet ? 120 : 80}
             height={isTablet ? 22 : 15}
@@ -26,7 +26,7 @@ export function CurrentPlanCardSkeleton() {
           />
         </View>
 
-        <View className="items-end gap-3 md:gap-4">
+        <View className="items-start gap-3 md:gap-4">
           <ShimmerBlock
             width={isTablet ? 320 : 190}
             height={isTablet ? 34 : 24}
@@ -61,15 +61,15 @@ export function PlanCardSkeleton() {
 
   return (
     <SkeletonSurface className="rounded-3xl px-4 py-4 md:px-6 md:py-5">
-      <View className="flex-row-reverse items-start gap-3 md:gap-4.5">
+      <View className="flex-row items-start gap-3 md:gap-4.5">
         <ShimmerBlock
           width={isTablet ? 72 : 56}
           height={isTablet ? 72 : 56}
           borderRadius={20}
         />
 
-        <View className="flex-1 items-end gap-2 md:gap-3">
-          <View className="flex-row-reverse items-center justify-between gap-2 self-stretch md:gap-3">
+        <View className="flex-1 items-start gap-2 md:gap-3">
+          <View className="flex-row items-center justify-between gap-2 self-stretch md:gap-3">
             <ShimmerBlock
               width={isTablet ? 250 : 144}
               height={isTablet ? 30 : 20}
@@ -105,7 +105,7 @@ export function PlansSectionSkeleton() {
 
   return (
     <View className="gap-3 md:gap-5">
-      <View className="flex-row-reverse items-center justify-between">
+      <View className="flex-row items-center justify-between">
         <ShimmerBlock
           width={isTablet ? 190 : 126}
           height={isTablet ? 34 : 24}
@@ -133,7 +133,7 @@ export function PlanDetailHeaderSkeleton() {
 
   return (
     <View className="relative items-center gap-2 md:gap-2.5">
-      <View className="absolute top-2 left-0 md:top-2.5">
+      <View className="absolute top-2 inset-e-0 md:top-2.5">
         <ShimmerBlock
           width={isTablet ? 52 : 44}
           height={isTablet ? 52 : 44}
@@ -187,7 +187,7 @@ export function PlanDaysCarouselSkeleton() {
         borderRadius={999}
       />
 
-      <View className="flex-row-reverse gap-2 md:gap-2.5">
+      <View className="flex-row gap-2 md:gap-2.5">
         {[0, 1, 2, 3].map((item) => (
           <SkeletonSurface
             key={item}

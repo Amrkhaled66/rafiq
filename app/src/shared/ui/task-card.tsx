@@ -1,7 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
 import { Pressable, View } from "react-native";
 
-import { useDirection } from "@/shared/hooks/use-direction";
 import { useAppTheme } from "@/shared/theme/appearance-provider";
 import { AppText } from "@/shared/ui/app-text";
 
@@ -28,7 +27,6 @@ export function TaskCard({
   statusTextColor,
   onPress,
 }: TaskCardProps) {
-  const dir = useDirection();
   const { colors } = useAppTheme();
 
   return (
@@ -43,7 +41,7 @@ export function TaskCard({
         elevation: 1,
       }}
     >
-      <View className={`items-start gap-3 md:gap-3.5 ${dir.rowReverse}`}>
+      <View className="items-start gap-3 md:gap-3.5 flex-row">
         <View
           className="size-14 md:size-15 items-center justify-center rounded-2xl"
           style={{ backgroundColor: iconBackgroundColor }}
@@ -51,16 +49,16 @@ export function TaskCard({
           <Ionicons name={icon} size={26} color={iconColor} />
         </View>
 
-        <View className={`flex-1 gap-2 md:gap-2.5 ${dir.itemsAlign}`}>
+        <View className="flex-1 gap-2 md:gap-2.5 items-start">
           <AppText
-            className={`text-base md:text-[19px] ${dir.textAlign}`}
+            className="text-base md:text-[19px] "
             weight="bold"
             numberOfLines={1}
           >
             {title}
           </AppText>
 
-          <View className={`items-center gap-1 ${dir.rowReverse}`}>
+          <View className="items-center gap-1 flex-row">
             <View className="size-1 rounded-full bg-brand-primary" />
             <AppText
               className="text-sm md:text-[15px]"
@@ -87,7 +85,7 @@ export function TaskCard({
 
         <View className="size-9 md:size-10 items-center justify-center rounded-full bg-input">
           <Ionicons
-            name={dir.isRTL ? "chevron-back" : "chevron-forward"}
+            name="chevron-back"
             size={19}
             color={colors.icon}
           />

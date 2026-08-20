@@ -15,7 +15,7 @@ export function SegmentedFilterTabsSkeleton({
 
   return (
     <SkeletonSurface className="rounded-2xl px-1 py-1 md:px-1.5 md:py-1.5">
-      <View className="flex-row-reverse gap-1 md:gap-1.5">
+      <View className="flex-row gap-1 md:gap-1.5">
         {Array.from({ length: itemsCount }).map((_, index) => (
           <View key={index} className="flex-1">
             <ShimmerBlock

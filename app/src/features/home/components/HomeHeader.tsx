@@ -60,16 +60,15 @@ function HeaderCurve({
 }
 
 export function HomeHeader({ firstName }: HomeHeaderProps) {
-  const { isRTL, language } = useI18n();
+  const { language } = useI18n();
   const { width } = useWindowDimensions();
   const { colors } = useAppTheme();
 
   const isTablet = width >= 768;
   const headerHeight = isTablet ? 300 : 240;
   const curveHeight = isTablet ? 70 : 56;
-  const textAlign = isRTL ? "right" : "left";
 
-   const currentHour = new Date().getHours();
+  const currentHour = new Date().getHours();
   const greeting =
     currentHour >= 5 && currentHour < 12 ? "صباح الخير" : "مساء الخير";
   return (
@@ -92,7 +91,7 @@ export function HomeHeader({ firstName }: HomeHeaderProps) {
       >
         <View className="flex-1 px-6 pt-12">
           {/* Top row */}
-          <View className="flex-row-reverse items-center justify-between">
+          <View className="flex-row items-center justify-between">
             {/* Logo mark */}
             <View className="items-center justify-center">
               <Image
@@ -110,16 +109,16 @@ export function HomeHeader({ firstName }: HomeHeaderProps) {
                 color="#111827"
               />
 
-              <View className="absolute top-2 right-2 h-3 w-3 rounded-full bg-[#A60F12]" />
+              <View className="absolute top-2 inset-s-2 h-3 w-3 rounded-full bg-[#A60F12]" />
             </View> */}
           </View>
 
           {/* Text */}
-          <View className="mt-7 items-end">
+          <View className="mt-7">
             <Text
               style={{
                 fontFamily: AppFonts[language].medium,
-                textAlign,
+                // textAlign,
                 fontSize: isTablet ? 22 : 18,
                 lineHeight: isTablet ? 34 : 28,
                 color: "#FFFFFF",
@@ -131,28 +130,15 @@ export function HomeHeader({ firstName }: HomeHeaderProps) {
             <Text
               style={{
                 fontFamily: AppFonts[language].bold,
-                textAlign,
+                // textAlign,
                 fontSize: isTablet ? 44 : 30,
                 lineHeight: isTablet ? 58 : 46,
                 color: "#FFFFFF",
               }}
               className="mt-2"
             >
-             يلا نخلص اللي ورانا 
+              يلا نخلص اللي ورانا
             </Text>
-
-            {/* <Text
-              style={{
-                fontFamily: AppFonts[language].medium,
-                textAlign,
-                fontSize: isTablet ? 20 : 16,
-                lineHeight: isTablet ? 32 : 26,
-                color: "#FFFFFF",
-              }}
-              className="mt-2 opacity-90"
-            >
-              كل خطوة صغيرة بتقربك من هدفك ✨
-            </Text> */}
           </View>
         </View>
 

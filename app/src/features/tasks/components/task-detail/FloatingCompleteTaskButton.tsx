@@ -146,7 +146,7 @@ export function FloatingCompleteTaskButton({
         left: isTablet ? 28 : 18,
         bottom: isTablet ? 28 : 20,
         zIndex: 60,
-        alignItems: "flex-end",
+        alignItems: "flex-start",
       }}
     >
       <Animated.View
@@ -212,7 +212,7 @@ export function FloatingCompleteTaskButton({
               borderColor: palette.border,
             }}
           >
-            <View className="mb-3 flex-row-reverse items-center gap-2.5 md:gap-3">
+            <View className="mb-3 flex-row items-center gap-2.5 md:gap-3">
               <View
                 className="size-9 items-center justify-center rounded-full md:size-14"
                 style={{ backgroundColor: palette.brandSoft }}
@@ -224,7 +224,7 @@ export function FloatingCompleteTaskButton({
                 />
               </View>
 
-              <View className="flex-1 items-end">
+              <View className="flex-1 items-start">
                 <AppText
                   className="text-right text-[15px] md:text-xl"
                   weight="bold"
@@ -243,7 +243,7 @@ export function FloatingCompleteTaskButton({
               </View>
             </View>
 
-            <View className="flex-row-reverse gap-2 md:gap-2.5">
+            <View className="flex-row gap-2 md:gap-2.5">
               <Pressable
                 disabled={isSubmitting}
                 onPress={() => void confirmAndClose()}

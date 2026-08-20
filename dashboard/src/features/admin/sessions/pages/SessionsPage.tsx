@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import "react-loading-skeleton/dist/skeleton.css";
 
 import SessionsFilters from "@/features/admin/sessions/components/SessionsPage/SessionsFilters";
@@ -15,18 +14,11 @@ export default function SessionsPage() {
   const filters = useSessionsFilterParams();
   const pagination = useUrlPagination({ defaults: { page: 1, limit: 10 } });
 
-  useEffect(() => {
-    if (pagination.page !== 1) {
-      pagination.setPage(1);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filters.status, filters.studentPhone, filters.from, filters.to]);
-
   const sessionsQuery = useTaskSessionsQuery({
-    studentPhone: optionalTrim(filters.studentPhone),
-    status: filters.status || undefined,
-    from: filters.from || undefined,
-    to: filters.to || undefined,
+    studentPhone: optionalTrim(filters.appliedFilters.studentPhone),
+    status: filters.appliedFilters.status || undefined,
+    from: filters.appliedFilters.from || undefined,
+    to: filters.appliedFilters.to || undefined,
     page: pagination.page,
     limit: pagination.limit,
   });
@@ -37,6 +29,7 @@ export default function SessionsPage() {
   return (
     <div className="space-y-6">
       <PageHeader
+        icon="material-symbols:timer-outline"
         title="الجلسات"
         subtitle="متابعة جلسات المهام مع عرض الحالة ومدة الجلسة وإمكانية التصفية."
       />
@@ -48,14 +41,13 @@ export default function SessionsPage() {
       )}
 
       <SessionsFilters
-        studentPhone={filters.studentPhone}
-        status={filters.status}
-        from={filters.from}
-        to={filters.to}
-        onStudentPhoneChange={filters.setStudentPhone}
-        onStatusChange={filters.setStatus}
-        onFromChange={filters.setFrom}
-        onToChange={filters.setTo}
+        filters={filters.draftFilters}
+        isApplying={sessionsQuery.isFetching}
+        hasChanges={filters.hasChanges}
+        hasFilters={filters.hasFilters}
+        onChange={filters.setDraftFilter}
+        onApply={filters.applyFilters}
+        onReset={filters.resetFilters}
       />
 
       {sessionsQuery.isError && !sessionsQuery.data ? (

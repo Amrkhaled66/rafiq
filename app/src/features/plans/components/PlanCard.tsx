@@ -7,7 +7,6 @@ import {
   getPlanStatusAppearance,
   getPlanStatusLabel,
 } from "@/features/plans/utils/plan-ui";
-import { useDirection } from "@/shared/hooks/use-direction";
 import { useAppTheme } from "@/shared/theme/appearance-provider";
 import { AppText } from "@/shared/ui/app-text";
 
@@ -17,7 +16,6 @@ type PlanCardProps = {
 };
 
 export function PlanCard({ plan, onPress }: PlanCardProps) {
-  const dir = useDirection();
   const { colors } = useAppTheme();
   const statusAppearance = getPlanStatusAppearance(plan.status, colors);
 
@@ -33,7 +31,7 @@ export function PlanCard({ plan, onPress }: PlanCardProps) {
         elevation: 1,
       }}
     >
-      <View className={`items-start gap-3 md:gap-3.5 ${dir.rowReverse}`}>
+      <View className="items-start gap-3 md:gap-3.5 flex-row">
         <View
           className="size-14 md:size-15 items-center justify-center rounded-2xl"
           style={{ backgroundColor: statusAppearance.iconBackgroundColor }}
@@ -45,12 +43,12 @@ export function PlanCard({ plan, onPress }: PlanCardProps) {
           />
         </View>
 
-        <View className={`flex-1 gap-2 md:gap-2.5 ${dir.itemsAlign}`}>
+        <View className="flex-1 gap-2 md:gap-2.5 items-start">
           <View
-            className={`items-center justify-between gap-2 md:gap-2.5 ${dir.rowReverse}`}
+            className="items-center justify-between gap-2 md:gap-2.5 flex-row"
           >
             <AppText
-              className={`flex-1 text-base md:text-[19px] ${dir.textAlign}`}
+              className="flex-1 text-base md:text-[19px]"
               weight="bold"
               numberOfLines={1}
             >
@@ -72,7 +70,7 @@ export function PlanCard({ plan, onPress }: PlanCardProps) {
           </View>
 
           <AppText
-            className={`text-sm md:text-[15px] ${dir.textAlign}`}
+            className="text-sm md:text-[15px] "
             tone="muted"
             weight="medium"
           >
@@ -82,7 +80,7 @@ export function PlanCard({ plan, onPress }: PlanCardProps) {
 
         <View className="size-9 md:size-10 items-center justify-center rounded-full bg-input">
           <Ionicons
-            name={dir.isRTL ? "chevron-back" : "chevron-forward"}
+            name="chevron-back"
             size={19}
             color={colors.icon}
           />

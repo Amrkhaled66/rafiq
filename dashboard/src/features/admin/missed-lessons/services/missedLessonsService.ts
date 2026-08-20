@@ -27,6 +27,7 @@ export type MissedLessonRow = {
 };
 
 export type ListMissedLessonsParams = {
+  studentId?: number;
   from?: string;
   to?: string;
   status?: "resolved" | "unresolved";

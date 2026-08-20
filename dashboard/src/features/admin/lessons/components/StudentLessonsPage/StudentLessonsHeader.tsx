@@ -8,6 +8,7 @@ export default function StudentLessonsHeader({
 }) {
   return (
     <PageHeader
+      icon="solar:book-bookmark-linear"
       title="دروس الطالب"
       subtitle="إدارة دروس الطالب المجدولة أسبوعيًا ومتابعة أقرب درس قادم."
       action={

@@ -4,7 +4,6 @@ import { View } from "react-native";
 import { PlanCard } from "@/features/plans/components/PlanCard";
 import { PlansSectionSkeleton } from "@/features/plans/components/skeletons";
 import type { StudyPlan } from "@/features/plans/types";
-import { useDirection } from "@/shared/hooks/use-direction";
 import { useAppTheme } from "@/shared/theme/appearance-provider";
 import { AppText } from "@/shared/ui/app-text";
 
@@ -21,7 +20,6 @@ export function PlansSection({
   onPlanPress,
   isLoading = false,
 }: PlansSectionProps) {
-  const dir = useDirection();
   const { colors } = useAppTheme();
 
   if (isLoading) {
@@ -30,7 +28,7 @@ export function PlansSection({
 
   return (
     <View className="gap-3 md:gap-4">
-      <View className={`items-center justify-between ${dir.rowReverse}`}>
+      <View className="items-center justify-between flex-row">
         <AppText className="text-lg md:text-[22px]" weight="bold">
           خططي الدراسية
         </AppText>

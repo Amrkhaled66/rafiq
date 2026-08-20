@@ -2,7 +2,6 @@ import { View } from "react-native";
 
 import { SubscriptionSectionSkeleton } from "@/features/subscriptions/components/skeletons";
 import type { SubscriptionItem } from "@/features/subscriptions/types";
-import { useDirection } from "@/shared/hooks/use-direction";
 import { AppText } from "@/shared/ui/app-text";
 import { useAppTheme } from "@/shared/theme/appearance-provider";
 
@@ -15,7 +14,6 @@ export function SubscriptionSection({
   subscriptions,
   isLoading = false,
 }: SubscriptionSectionProps) {
-  const dir = useDirection();
   const { colors } = useAppTheme();
 
   if (isLoading) {
@@ -23,7 +21,7 @@ export function SubscriptionSection({
   }
 
   return (
-    <View className={`items-center justify-between ${dir.rowReverse}`}>
+    <View className="items-center justify-between flex-row">
       <AppText className="text-lg md:text-xl" weight="bold">
         اشتراكاتي
       </AppText>

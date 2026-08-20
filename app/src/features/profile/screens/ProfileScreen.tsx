@@ -13,7 +13,6 @@ import {
 } from "@/features/profile/components/skeletons";
 import { SupportSectionCard } from "@/features/profile/components/SupportSectionCard";
 import { PROFILE_FALLBACK } from "@/features/profile/data/mock-profile-data";
-import { useDirection } from "@/shared/hooks/use-direction";
 import { AppText } from "@/shared/ui/app-text";
 import { PageTitle } from "@/shared/ui/page-title";
 import { TabPageLayout } from "@/shared/ui/tab-page-layout";
@@ -38,7 +37,6 @@ function getInitialFromName(fullName: string) {
 export function ProfileScreen() {
   const isLoading = false;
   const { user, logout } = useAuth();
-  const dir = useDirection();
   const [isPersonalInfoVisible, setIsPersonalInfoVisible] = useState(false);
   const [isAppearanceVisible, setIsAppearanceVisible] = useState(false);
   const { colors, preference } = useAppTheme();
@@ -82,7 +80,7 @@ export function ProfileScreen() {
           {isLoading ? (
             <ProfileSectionHeaderSkeleton />
           ) : (
-            <View className={`items-center ${dir.rowReverse}`}>
+            <View className="items-center flex-row">
               <View className="size-10 items-center justify-center rounded-2xl">
                 <Ionicons name="grid-outline" size={18} color={colors.tint} />
               </View>
@@ -119,7 +117,7 @@ export function ProfileScreen() {
           {isLoading ? (
             <ProfileSectionHeaderSkeleton />
           ) : (
-            <View className={`items-center ${dir.rowReverse}`}>
+            <View className="items-center flex-row">
               <View className="size-10 items-center justify-center rounded-2xl">
                 <Ionicons name="settings-outline" size={18} color={colors.tint} />
               </View>

@@ -3,7 +3,6 @@ import { Pressable, View } from "react-native";
 
 import { TaskSectionSkeleton } from "@/features/tasks/components/my-tasks/skeletons";
 import type { MyTaskItem, MyTaskStatus } from "@/features/tasks/types";
-import { useDirection } from "@/shared/hooks/use-direction";
 import { AppText } from "@/shared/ui/app-text";
 import { TaskCard } from "@/shared/ui/task-card";
 import { Colors, type AppPalette } from "@/shared/theme/theme";
@@ -52,7 +51,6 @@ export function TaskSection({
   previewCount = 3,
   isLoading = false,
 }: TaskSectionProps) {
-  const dir = useDirection();
   const { colors } = useAppTheme();
   const visibleTasks = isExpanded ? tasks : tasks.slice(0, previewCount);
 
@@ -102,7 +100,7 @@ export function TaskSection({
           onPress={onToggleExpanded}
         >
           <Ionicons
-            name={dir.isRTL ? "chevron-back" : "chevron-forward"}
+            name="chevron-back"
             size={18}
             color="#EF7B7D"
           />

@@ -3,7 +3,6 @@ import { Text, View, useWindowDimensions } from "react-native";
 import { HomePageSection } from "@/features/home/components/HomePageSection";
 import { ProgressRing } from "@/features/home/components/ProgressRing";
 import { ProgressSkeleton } from "@/features/home/components/skeletons";
-import { useDirection } from "@/shared/hooks/use-direction";
 import { AppHeading, AppText } from "@/shared/ui/app-text";
 
 type ProgressProps = {
@@ -20,7 +19,6 @@ export function Progress({
   isLoading = false,
 }: ProgressProps) {
   const { width } = useWindowDimensions();
-  const dir = useDirection();
   const isTablet = width >= 768;
   const remainingCount = Math.max(totalCount - completedCount, 0);
 
@@ -35,15 +33,15 @@ export function Progress({
       contentClassName="gap-0"
       className="rounded-[28px] bg-card px-4 pt-4 md:px-7 md:py-6"
     >
-      <View className={`items-center justify-between ${dir.rowReverse}`}>
-        <View className="flex-1 gap-3">
+      <View className="flex-row items-center justify-between">
+        <View className="gap-3">
           <View className="gap-1">
             {completedCount === totalCount ? (
-              <AppHeading className="text-right text-xl md:text-[26px]">
+              <AppHeading className="text-xl md:text-[26px]">
                 خلصت كل المهام
               </AppHeading>
             ) : (
-              <AppHeading className="text-right text-xl md:text-[26px]">
+              <AppHeading className="text-xl md:text-[26px]">
                 خلصت{" "}
                 <Text className="text-brand-primary">{completedCount} </Text>
                 من
@@ -54,7 +52,7 @@ export function Progress({
 
             {completedCount === totalCount ? (
               <AppText
-                className="text-right text-sm md:text-lg"
+                className="text-sm md:text-lg"
                 tone="muted"
                 weight="regular"
               >
@@ -62,7 +60,7 @@ export function Progress({
               </AppText>
             ) : (
               <AppText
-                className="text-right text-sm md:text-lg"
+                className="text-sm md:text-lg"
                 tone="muted"
                 weight="regular"
               >

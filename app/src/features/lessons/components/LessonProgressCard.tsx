@@ -2,7 +2,6 @@ import { Ionicons } from "@expo/vector-icons";
 import { View } from "react-native";
 
 import type { MyTasksProgress } from "@/features/tasks/types";
-import { useDirection } from "@/shared/hooks/use-direction";
 import { useAppTheme } from "@/shared/theme/appearance-provider";
 import { AppText } from "@/shared/ui/app-text";
 import { ProgressSummaryCardSkeleton } from "@/shared/ui/skeletons";
@@ -35,7 +34,6 @@ export function LessonProgressCard({
   remainingCount,
   isLoading = false,
 }: LessonProgressCardProps) {
-  const dir = useDirection();
   const { colors } = useAppTheme();
 
   if (isLoading) {
@@ -53,12 +51,12 @@ export function LessonProgressCard({
         elevation: 1,
       }}
     >
-      <View className="bg-brand-primary-soft/50 absolute -top-10 -right-8 h-28 w-28 rounded-full" />
-      <View className="bg-brand-primary-soft/30 absolute bottom-[-45px] -left-10 h-28 w-28 rounded-full" />
+      <View className="bg-brand-primary-soft/50 absolute -top-10 -inset-s-8 h-28 w-28 rounded-full" />
+      <View className="bg-brand-primary-soft/30 absolute bottom-[-45px] -inset-e-10 h-28 w-28 rounded-full" />
 
-      <View className={`items-center justify-between gap-3 md:gap-4 ${dir.rowReverse}`}>
-        <View className={`flex-1 gap-1.5 md:gap-2 ${dir.itemsAlign}`}>
-          <View className={`items-center gap-2 md:gap-2.5 ${dir.rowReverse}`}>
+      <View className="items-center justify-between gap-3 md:gap-4 flex-row">
+        <View className="flex-1 gap-1.5 md:gap-2 items-start">
+          <View className="items-center gap-2 md:gap-2.5 flex-row">
             <View className="bg-brand-primary-soft h-9 w-9 items-center justify-center rounded-2xl md:h-10 md:w-10">
               <Ionicons
                 name="school-outline"
@@ -68,7 +66,7 @@ export function LessonProgressCard({
             </View>
 
             <AppText
-              className={`text-base md:text-[19px] ${dir.textAlign}`}
+              className="text-base md:text-[19px] "
               weight="bold"
             >
               تقدمك النهارده
@@ -76,7 +74,7 @@ export function LessonProgressCard({
           </View>
 
           <AppText
-            className={`text-sm md:text-[15px] ${dir.textAlign}`}
+            className="text-sm md:text-[15px] "
             tone="muted"
             weight="medium"
           >
@@ -109,14 +107,14 @@ export function LessonProgressCard({
         />
       </View>
 
-      <View className={`mt-3 justify-between gap-2 md:mt-4 md:gap-3 ${dir.rowReverse}`}>
+      <View className="mt-3 justify-between gap-2 md:mt-4 md:gap-3 flex-row">
         {STATUS_SUMMARY.map((item) => {
           const count = item.key === "attended" ? attendedCount : remainingCount;
           const itemColor = item.color ?? colors.tint;
 
           return (
             <View key={item.key} className="flex-1 items-center gap-0.5 md:gap-1">
-              <View className="flex-row-reverse items-center gap-1 md:gap-1.5">
+              <View className="flex-row items-center gap-1 md:gap-1.5">
                 <AppText
                   className="text-sm md:text-[15px]"
                   weight="bold"

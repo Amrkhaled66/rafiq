@@ -34,6 +34,7 @@ export default function CoachesPage() {
   return (
     <div className="space-y">
       <PageHeader
+        icon="fluent:people-team-24-regular"
         title="المدربين"
         subtitle="إدارة بيانات المدربين المسجلين"
         action={

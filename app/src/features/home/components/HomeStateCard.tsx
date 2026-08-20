@@ -32,7 +32,7 @@ export function HomeStateCard({
         paddingVertical: isTablet ? 24 : 20,
       }}
     >
-      <View className="items-end gap-4">
+      <View className="items-start gap-4">
         <View
           className="items-center justify-center rounded-full bg-brand-primary-soft"
           style={{
@@ -47,7 +47,7 @@ export function HomeStateCard({
           />
         </View>
 
-        <View className="items-end gap-1 self-stretch">
+        <View className="items-start gap-1 self-stretch">
           <AppHeading className="text-right text-lg leading-7 md:text-2xl md:leading-[34px]">
             {title}
           </AppHeading>

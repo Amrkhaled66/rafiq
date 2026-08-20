@@ -13,11 +13,15 @@ import {
 
 export const missedLessonsQueryKey = ["admin-missed-lessons"] as const;
 
-export function useMissedLessonsQuery(params: ListMissedLessonsParams = {}) {
+export function useMissedLessonsQuery(
+  params: ListMissedLessonsParams = {},
+  enabled = true,
+) {
   return useQuery({
     queryKey: [...missedLessonsQueryKey, params],
     queryFn: () => getMissedLessons(params),
     placeholderData: keepPreviousData,
+    enabled,
   });
 }
 

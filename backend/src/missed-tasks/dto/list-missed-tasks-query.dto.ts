@@ -33,5 +33,11 @@ export class ListMissedTasksQueryDto {
   coachId?: number;
 
   @IsOptional()
+  @Type(() => Number)
+  @IsInt()
+  @Min(1)
+  studentId?: number;
+
+  @IsOptional()
   studentPhone?: string;
 }

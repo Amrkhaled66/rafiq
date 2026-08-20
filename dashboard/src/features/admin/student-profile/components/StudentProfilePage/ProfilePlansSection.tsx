@@ -1,102 +1,73 @@
 import { useMemo } from "react";
+import { useNavigate } from "react-router-dom";
 import type { TableColumn } from "react-data-table-component";
-import type { StudentProfilePlan } from "@/features/admin/student-profile/services/studentProfileService";
-import Table from "@/shared/components/Table";
+import AdminServerTable from "@/features/admin/shared/components/AdminServerTable";
+import ProgressCell from "@/features/admin/shared/components/ProgressCell";
+import type { StudentPlanRow } from "@/features/admin/plans/services/plansService";
+import { urls } from "@/shared/const/urls";
+import { formatDateArShort } from "@/shared/utils/dates";
 
-function PlanStatusBadge({ status }: { status: string }) {
-  const map: Record<string, { label: string; className: string }> = {
-    active: { label: "نشطة", className: "bg-emerald-100 text-emerald-700" },
-    upcoming: { label: "قادمة", className: "bg-blue-100 text-blue-700" },
-    ended: { label: "منتهية", className: "bg-slate-100 text-slate-700" },
-  };
-  const display = map[status] ?? map.ended;
-  return (
-    <span
-      className={`inline-flex rounded-full px-3 py-1 text-xs font-medium ${display.className}`}
-    >
-      {display.label}
-    </span>
-  );
-}
+type Props = {
+  studentId: number;
+  items: StudentPlanRow[];
+  total: number;
+  page: number;
+  limit: number;
+  isLoading: boolean;
+  onPageChange: (page: number) => void;
+  onRowsPerPageChange: (limit: number, page: number) => void;
+};
 
-export default function ProfilePlansSection({
-  plans,
-}: {
-  plans: StudentProfilePlan[];
-}) {
-  const columns = useMemo<TableColumn<StudentProfilePlan>[]>(
+export default function ProfilePlansSection(props: Props) {
+  const navigate = useNavigate();
+  const columns = useMemo<TableColumn<StudentPlanRow>[]>(
     () => [
       {
-        name: "اسم الخطة",
-        selector: (row) => row.name,
+        name: "الخطة",
+        cell: (row) => (
+          <button
+            type="button"
+            className="text-brand-primary font-medium hover:underline"
+            onClick={() =>
+              navigate(
+                `/${urls.dashBoardUrl}/students/${props.studentId}/plans/${row.id}`,
+              )
+            }
+          >
+            {row.name}
+          </button>
+        ),
         grow: 1.5,
       },
+      { name: "البداية", selector: (row) => formatDateArShort(row.startsOn) },
+      { name: "النهاية", selector: (row) => formatDateArShort(row.endsOn) },
       {
-        name: "البداية",
-        selector: (row) => row.startsOn,
-      },
-      {
-        name: "النهاية",
-        selector: (row) => row.endsOn,
-      },
-      {
-        name: "المهام",
+        name: "المهام المكتملة",
         selector: (row) => `${row.completedTasks} / ${row.totalTasks}`,
         center: true,
       },
+      { name: "المهام الفائتة", selector: (row) => row.missedTasks, center: true },
       {
-        name: "الفائتة",
-        selector: (row) => row.missedTasks,
-        center: true,
-      },
-      {
-        name: "النسبة",
-        cell: (row) => (
-          <div className="flex items-center gap-2">
-            <div className="h-2 w-16 overflow-hidden rounded-full bg-slate-100">
-              <div
-                className="from-brand-primary h-full rounded-full bg-linear-to-r to-blue-500"
-                style={{ width: `${row.progressPercent}%` }}
-              />
-            </div>
-            <span className="text-xs font-medium">{row.progressPercent}%</span>
-          </div>
-        ),
-        sortable: true,
-        sortFunction: (a, b) => a.progressPercent - b.progressPercent,
-      },
-      {
-        name: "الحالة",
-        cell: (row) => <PlanStatusBadge status={row.status} />,
+        name: "التقدم",
+        cell: (row) => <ProgressCell value={row.progressPercent} />,
+        grow: 1.5,
       },
     ],
-    [],
+    [navigate, props.studentId],
   );
 
   return (
-    <section className="dashboard-card">
-      <div className="mb-5 text-right">
-        <h2 className="text-foreground text-xl font-bold">خطط الطالب</h2>
-        <p className="text-subTitle mt-1 text-sm">
-          جميع الخطط الدراسية للطالب ({plans.length} خطة).
-        </p>
-      </div>
-
-      <Table
-        columns={columns}
-        data={plans}
-        pagination
-        paginationPerPage={5}
-        paginationRowsPerPageOptions={[5, 10, 20, 50]}
-        responsive
-        highlightOnHover
-        persistTableHead
-        noDataComponent={
-          <div className="text-subTitle py-6 text-sm">
-            لا توجد خطط دراسية.
-          </div>
-        }
-      />
-    </section>
+    <AdminServerTable
+      columns={columns}
+      data={props.items}
+      isLoading={props.isLoading}
+      loadingText="جاري تحميل الخطط..."
+      noDataText="لا توجد خطط دراسية لهذا الطالب."
+      currentPage={props.page}
+      rowsPerPage={props.limit}
+      totalRows={props.total}
+      onPageChange={props.onPageChange}
+      onRowsPerPageChange={props.onRowsPerPageChange}
+    />
   );
 }

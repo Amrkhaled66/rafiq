@@ -1,4 +1,5 @@
 import { formatDateArLong, getDayNameAr } from "@/shared/utils/dates";
+import { normalizePhoneDigits } from "@/shared/utils/phone";
 
 export function getStudentInitials(name: string) {
   return name
@@ -19,7 +20,7 @@ export function formatStudentTime(value: string) {
 }
 
 export function normalizePhoneForWhatsapp(phone: string) {
-  const digits = phone.replace(/\D/g, "");
+  const digits = normalizePhoneDigits(phone);
 
   if (digits.startsWith("20")) {
     return digits;

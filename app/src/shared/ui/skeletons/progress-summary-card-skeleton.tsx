@@ -16,9 +16,9 @@ export function ProgressSummaryCardSkeleton({
   return (
     <SkeletonSurface className="overflow-hidden px-4 py-4 md:px-6 md:py-6">
       <View className="gap-3 md:gap-5">
-        <View className="flex-row-reverse items-center justify-between gap-3 md:gap-5">
-          <View className="flex-1 items-end gap-2 md:gap-3">
-            <View className="flex-row-reverse items-center gap-2 md:gap-3">
+        <View className="flex-row items-center justify-between gap-3 md:gap-5">
+          <View className="flex-1 items-start gap-2 md:gap-3">
+            <View className="flex-row items-center gap-2 md:gap-3">
               <ShimmerBlock
                 width={isTablet ? 48 : 36}
                 height={isTablet ? 48 : 36}
@@ -52,10 +52,10 @@ export function ProgressSummaryCardSkeleton({
           style={{ width: "100%" }}
         />
 
-        <View className="flex-row-reverse justify-between gap-2 md:gap-4">
+        <View className="flex-row justify-between gap-2 md:gap-4">
           {Array.from({ length: summaryItemsCount }).map((_, index) => (
             <View key={index} className="flex-1 items-center gap-1 md:gap-2">
-              <View className="flex-row-reverse items-center gap-1.5 md:gap-2">
+              <View className="flex-row items-center gap-1.5 md:gap-2">
                 <ShimmerBlock
                   width={isTablet ? 20 : 16}
                   height={isTablet ? 20 : 16}

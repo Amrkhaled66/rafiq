@@ -21,12 +21,14 @@ export default function MissedLessonsPage() {
     showCoach ? { page: 1, limit: 100, deletedStatus: "active" } : {},
   );
   const query = useMissedLessonsQuery({
-    from: filters.from || undefined,
-    to: filters.to || undefined,
-    status: filters.status || undefined,
-    watchStatus: filters.watchStatus || undefined,
-    coachId: filters.coachId ? Number(filters.coachId) : undefined,
-    studentPhone: filters.studentPhone || undefined,
+    from: filters.appliedFilters.from || undefined,
+    to: filters.appliedFilters.to || undefined,
+    status: filters.appliedFilters.status || undefined,
+    watchStatus: filters.appliedFilters.watchStatus || undefined,
+    coachId: filters.appliedFilters.coachId
+      ? Number(filters.appliedFilters.coachId)
+      : undefined,
+    studentPhone: filters.appliedFilters.studentPhone || undefined,
     page: pagination.page,
     limit: pagination.limit,
   });
@@ -40,36 +42,25 @@ export default function MissedLessonsPage() {
       })),
     [coaches.data],
   );
-  const changeHandlers = {
-    from: filters.setFrom,
-    to: filters.setTo,
-    status: filters.setStatus,
-    watchStatus: filters.setWatchStatus,
-    coachId: filters.setCoachId,
-    studentPhone: filters.setStudentPhone,
-  };
-
   return (
     <div className="space-y-6">
       <PageHeader
+        icon="solar:videocamera-record-linear"
         title="الحصص الفائتة"
         subtitle="متابعة الحصص التي لم يشاهدها الطلاب في يومها المحدد."
       />
       {query.data ? <MissedLessonsStats stats={query.data.stats} /> : null}
       <MissedLessonsFilters
-        from={filters.from}
-        to={filters.to}
-        status={filters.status}
-        watchStatus={filters.watchStatus}
-        coachId={filters.coachId}
-        studentPhone={filters.studentPhone}
+        filters={filters.draftFilters}
         showCoach={showCoach}
         coachOptions={coachOptions}
         coachesLoading={coaches.isLoading}
-        onChange={(key, value) => {
-          pagination.setPage(1);
-          changeHandlers[key](value);
-        }}
+        isApplying={query.isFetching}
+        hasChanges={filters.hasChanges}
+        hasFilters={filters.hasFilters}
+        onChange={filters.setDraftFilter}
+        onApply={filters.applyFilters}
+        onReset={filters.resetFilters}
       />
       {query.isError && !query.data ? (
         <section className="dashboard-card text-right text-sm text-red-500">

@@ -3,7 +3,6 @@ import { View } from "react-native";
 import type { TaskSessionItem } from "@/features/tasks/types";
 import { TaskSessionsSectionSkeleton } from "@/features/tasks/components/task-detail/skeletons";
 import { TaskSessionRow } from "@/features/tasks/components/task-detail/TaskSessionRow";
-import { useDirection } from "@/shared/hooks/use-direction";
 import { AppText } from "@/shared/ui/app-text";
 
 type TaskSessionsSectionProps = {
@@ -15,7 +14,6 @@ export function TaskSessionsSection({
   sessions,
   isLoading = false,
 }: TaskSessionsSectionProps) {
-  const dir = useDirection();
 
   if (isLoading) {
     return <TaskSessionsSectionSkeleton />;
@@ -23,7 +21,7 @@ export function TaskSessionsSection({
 
   return (
     <View className="gap-3 md:gap-4">
-      <View className={`items-center justify-between ${dir.rowReverse}`}>
+      <View className="items-center justify-between flex-row">
         <AppText className="text-lg md:text-[22px]" weight="bold">
           الجلسات السابقة
         </AppText>

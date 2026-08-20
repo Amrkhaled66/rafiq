@@ -25,6 +25,7 @@ export type MissedTaskRow = {
 };
 
 export type ListMissedTasksParams = {
+  studentId?: number;
   from?: string;
   to?: string;
   status?: "resolved" | "unresolved";

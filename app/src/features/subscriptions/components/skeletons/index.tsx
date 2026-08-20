@@ -15,7 +15,7 @@ export function SubscriptionSectionSkeleton() {
   const isTablet = width >= 768;
 
   return (
-    <View className="flex-row-reverse items-center justify-between">
+    <View className="flex-row items-center justify-between">
       <ShimmerBlock
         width={isTablet ? 136 : 116}
         height={isTablet ? 28 : 24}
@@ -37,15 +37,15 @@ export function SubscriptionCardSkeleton() {
 
   return (
     <SkeletonSurface className="rounded-3xl px-4 py-4">
-      <View className="flex-row-reverse items-start gap-3">
+      <View className="flex-row items-start gap-3">
         <ShimmerBlock
           width={56}
           height={56}
           borderRadius={16}
         />
 
-        <View className="flex-1 items-end gap-2">
-          <View className="flex-row-reverse items-center justify-between gap-2 self-stretch">
+        <View className="flex-1 items-start gap-2">
+          <View className="flex-row items-center justify-between gap-2 self-stretch">
             <ShimmerBlock
               width={isTablet ? 190 : 154}
               height={isTablet ? 24 : 20}
@@ -65,7 +65,7 @@ export function SubscriptionCardSkeleton() {
             borderRadius={999}
           />
 
-          <View className="flex-row-reverse items-center gap-2 self-end">
+          <View className="flex-row items-center gap-2 self-end">
             <ShimmerBlock
               width={16}
               height={16}

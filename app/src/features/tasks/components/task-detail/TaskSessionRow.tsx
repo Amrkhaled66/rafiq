@@ -7,7 +7,6 @@ import {
   formatTaskSessionStartedAt,
   getTaskSessionStatusAppearance,
 } from "@/features/tasks/utils/task-session-ui";
-import { useDirection } from "@/shared/hooks/use-direction";
 import { AppText } from "@/shared/ui/app-text";
 import { useAppTheme } from "@/shared/theme/appearance-provider";
 
@@ -17,7 +16,6 @@ type TaskSessionRowProps = {
 };
 
 export function TaskSessionRow({ session, index }: TaskSessionRowProps) {
-  const dir = useDirection();
   const { colors } = useAppTheme();
   const appearance = getTaskSessionStatusAppearance(session.status, colors);
 
@@ -32,9 +30,9 @@ export function TaskSessionRow({ session, index }: TaskSessionRowProps) {
         elevation: 1,
       }}
     >
-      <View className={`items-center gap-3 md:gap-3.5 ${dir.rowReverse}`}>
-        <View className={`flex-1 gap-1 md:gap-1.5 ${dir.itemsAlign}`}>
-          <View className={`items-center gap-2 md:gap-2.5 ${dir.rowReverse}`}>
+      <View className="items-center gap-3 md:gap-3.5 flex-row">
+        <View className="flex-1 gap-1 md:gap-1.5 items-start">
+          <View className="items-center gap-2 md:gap-2.5 flex-row">
             <View
               className="h-9 w-9 items-center justify-center rounded-full md:h-10 md:w-10"
               style={{ backgroundColor: appearance.iconBackgroundColor }}
@@ -46,16 +44,16 @@ export function TaskSessionRow({ session, index }: TaskSessionRowProps) {
               />
             </View>
 
-            <View className={`flex-1 ${dir.itemsAlign}`}>
+            <View className="flex-1 items-start">
               <AppText
-                className={`text-base md:text-[17px] ${dir.textAlign}`}
+                className="text-base md:text-[17px] "
                 weight="bold"
               >
-                {`الجلسة ${index+1}`}
+                {`الجلسة ${index + 1}`}
               </AppText>
 
               <AppText
-                className={`text-sm md:text-[15px] ${dir.textAlign}`}
+                className="text-sm md:text-[15px] "
                 tone="muted"
                 weight="medium"
               >
@@ -76,7 +74,7 @@ export function TaskSessionRow({ session, index }: TaskSessionRowProps) {
             المدة
           </AppText>
         </View>
-        <View className="items-end gap-2 md:gap-2.5">
+        <View className="items-start gap-2 md:gap-2.5">
           <View
             className="rounded-full px-3 py-1 md:px-3.5 md:py-1.5"
             style={{ backgroundColor: appearance.badgeBackgroundColor }}

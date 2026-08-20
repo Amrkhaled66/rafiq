@@ -34,20 +34,20 @@ export function TaskNote({
         elevation: 1,
       }}
     >
-      <View className="absolute left-5 top-6">
+      <View className="absolute inset-e-5 top-6">
         <AppText className="text-lg text-[#FFC83D]!">✦</AppText>
       </View>
 
-      <View className="absolute left-9 top-4">
+      <View className="absolute inset-e-9 top-4">
         <AppText className="text-xs text-[#FFC83D]!">✧</AppText>
       </View>
 
-      <View className="absolute left-7 top-10">
+      <View className="absolute inset-e-7 top-10">
         <AppText className="text-xs text-[#FFC83D]!">✧</AppText>
       </View>
 
-      <View className="items-end">
-        <View className="mb-2 flex-row-reverse items-center gap-2 md:mb-2.5 md:gap-2.5">
+      <View className="items-start">
+        <View className="mb-2 flex-row items-center gap-2 md:mb-2.5 md:gap-2.5">
           <Ionicons name="chatbox-ellipses-outline" size={20} color="#F97316" />
 
           <AppText

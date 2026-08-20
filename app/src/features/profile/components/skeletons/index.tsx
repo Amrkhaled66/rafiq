@@ -10,7 +10,7 @@ export function ProfileSectionHeaderSkeleton() {
   const isTablet = width >= 768;
 
   return (
-    <View className="flex-row-reverse items-center gap-2">
+    <View className="flex-row items-center gap-2">
       <ShimmerBlock
         width={isTablet ? 40 : 22}
         height={isTablet ? 40 : 22}
@@ -31,14 +31,14 @@ export function ProfileHeroCardSkeleton() {
 
   return (
     <SkeletonSurface className="rounded-[30px] overflow-hidden px-5 py-6">
-      <View className="flex-row-reverse items-center gap-5">
+      <View className="flex-row items-center gap-5">
         <ShimmerBlock
           width={isTablet ? 128 : 100}
           height={isTablet ? 128 : 100}
           borderRadius={999}
         />
 
-        <View className="flex-1 items-end gap-3">
+        <View className="flex-1 items-start gap-3">
           <ShimmerBlock
             width={isTablet ? 220 : 176}
             height={isTablet ? 32 : 20}
@@ -61,7 +61,7 @@ export function ProfileActionCardSkeleton() {
 
   return (
     <SkeletonSurface className="rounded-3xl px-4 py-4">
-      <View className="flex-row-reverse items-center gap-3">
+      <View className="flex-row items-center gap-3">
         <ShimmerBlock
           width={44}
           height={44}
@@ -97,7 +97,7 @@ export function SupportSectionCardSkeleton() {
           key={item}
           className={`px-4 py-4 ${item !== 1 ? "border-b border-card-border" : ""}`}
         >
-          <View className="flex-row-reverse items-center gap-3">
+          <View className="flex-row items-center gap-3">
             <ShimmerBlock
               width={44}
               height={44}

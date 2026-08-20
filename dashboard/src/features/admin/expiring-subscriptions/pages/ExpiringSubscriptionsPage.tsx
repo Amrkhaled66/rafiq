@@ -34,6 +34,7 @@ export default function ExpiringSubscriptionsPage() {
   return (
     <div className="space-y-6">
       <PageHeader
+        icon="solar:calendar-mark-linear"
         title="الاشتراكات اللي هتنتهي"
         subtitle="متابعة اشتراكات الطلاب القريبة من الانتهاء قبل توقف وصولهم إلى التطبيق."
       />

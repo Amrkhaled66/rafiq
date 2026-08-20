@@ -29,6 +29,8 @@ export class MissedTasksService {
       this.missedTasksRepository.getMissedTasksStats({
         role: user.role as 'coach' | 'super_admin',
         userId: user.sub,
+        coachId: query.coachId,
+        studentId: query.studentId,
       }),
       this.missedTasksRepository.listMissedTasks({
         role: user.role as 'coach' | 'super_admin',
@@ -40,6 +42,7 @@ export class MissedTasksService {
         status: query.status,
         coachId: query.coachId,
         studentPhone: query.studentPhone,
+        studentId: query.studentId,
       }),
     ]);
 

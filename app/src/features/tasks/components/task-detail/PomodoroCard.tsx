@@ -101,28 +101,28 @@ export function PomodoroCard({
       <Image
         source={timerPanner}
         resizeMode="contain"
-        className="absolute top-3 left-4 h-18 w-18 md:top-4 md:left-5 md:size-28"
+        className="absolute top-3 inset-e-4 h-18 w-18 md:top-4 md:inset-e-5 md:size-28"
       />
 
-      <View className="absolute top-6 right-5 md:top-7 md:right-6">
+      <View className="absolute top-6 inset-s-5 md:top-7 md:inset-s-6">
         <AppText className="text-lg text-[#FFC83D]! md:text-3xl">✦</AppText>
       </View>
-      <View className="absolute top-4 right-9 md:top-4 md:right-10">
+      <View className="absolute top-4 inset-s-9 md:top-4 md:inset-s-10">
         <AppText className="text-xs text-[#FFC83D]! md:text-xl">✧</AppText>
       </View>
-      <View className="absolute top-10 right-7 md:top-12 md:right-8">
+      <View className="absolute top-10 inset-s-7 md:top-12 md:inset-s-8">
         <AppText className="text-xs text-[#FFC83D]! md:text-xl">✧</AppText>
       </View>
 
       <AppText
-        className="absolute top-63 left-6 rotate-[-25deg] text-[40px] md:top-[286px] md:left-7 md:text-[66px]"
+        className="absolute top-63 inset-e-6 rotate-[-25deg] text-[40px] md:top-71.5 md:inset-e-7 md:text-[66px]"
         style={{ color: CARD_COLORS.purple }}
       >
         ↝
       </AppText>
 
       <AppText
-        className="absolute top-60.5 right-8 rotate-25 text-[40px] md:top-69.5 md:right-9 md:text-[66px]"
+        className="absolute top-60.5 inset-s-8 rotate-25 text-[40px] md:top-69.5 md:inset-s-9 md:text-[66px]"
         style={{ color: CARD_COLORS.green }}
       >
         ↜

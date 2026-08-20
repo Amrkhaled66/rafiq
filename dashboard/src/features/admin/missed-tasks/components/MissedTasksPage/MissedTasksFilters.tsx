@@ -1,93 +1,89 @@
+import FilterPanel from "@/features/admin/shared/components/FilterPanel";
+import type { MissedTasksFiltersState } from "@/features/admin/missed-tasks/hooks/useMissedTasksFilterParams";
 import DropdownField from "@/shared/components/DropDownMenu";
 import FormInput from "@/shared/components/FormInput";
-import DebouncedSearchField from "@/features/admin/shared/components/DebouncedSearchField";
 
-type CoachOption = {
-  label: string;
-  value: string;
-};
+type CoachOption = { label: string; value: string };
 
-export default function MissedTasksFilters({
-  from,
-  to,
-  status,
-  coachId,
-  studentPhone,
-  canReadCoaches,
-  coachOptions,
-  coachesLoading,
-  onFromChange,
-  onToChange,
-  onStatusChange,
-  onCoachChange,
-  onStudentPhoneChange,
-}: {
-  from: string;
-  to: string;
-  status: "" | "resolved" | "unresolved";
-  coachId: string;
-  studentPhone: string;
+type Props = {
+  filters: MissedTasksFiltersState;
   canReadCoaches: boolean;
   coachOptions: CoachOption[];
   coachesLoading: boolean;
-  onFromChange: (value: string) => void;
-  onToChange: (value: string) => void;
-  onStatusChange: (value: "" | "resolved" | "unresolved") => void;
-  onCoachChange: (value: string) => void;
-  onStudentPhoneChange: (value: string) => void;
-}) {
+  isApplying: boolean;
+  hasChanges: boolean;
+  hasFilters: boolean;
+  onChange: <K extends keyof MissedTasksFiltersState>(
+    key: K,
+    value: MissedTasksFiltersState[K],
+  ) => void;
+  onApply: () => void;
+  onReset: () => void;
+};
+
+export default function MissedTasksFilters(props: Props) {
   return (
-    <section className="dashboard-card">
-      <div
-        className={`grid grid-cols-1 gap-4 ${
-          canReadCoaches ? "md:grid-cols-5" : "md:grid-cols-4"
-        }`}
-      >
-        <DebouncedSearchField
-          label="رقم هاتف الطالب"
-          name="missed-tasks-student-phone"
-          placeholder="ابحث برقم الهاتف"
-          value={studentPhone}
-          onChange={onStudentPhoneChange}
-        />
-        <FormInput
-          label="من"
-          type="date"
-          name="missed-tasks-from"
-          value={from}
-          onChange={(event) => onFromChange(event.target.value)}
-        />
-        <FormInput
-          label="إلى"
-          type="date"
-          name="missed-tasks-to"
-          value={to}
-          onChange={(event) => onToChange(event.target.value)}
-        />
+    <FilterPanel
+      fieldsClassName={`grid grid-cols-1 gap-4 ${
+        props.canReadCoaches ? "md:grid-cols-5" : "md:grid-cols-4"
+      }`}
+      isApplying={props.isApplying}
+      hasChanges={props.hasChanges}
+      hasFilters={props.hasFilters}
+      onApply={props.onApply}
+      onReset={props.onReset}
+    >
+      <FormInput
+        label="رقم هاتف الطالب"
+        name="missed-tasks-student-phone"
+        type="tel"
+        inputMode="tel"
+        placeholder="ابحث برقم الهاتف"
+        value={props.filters.studentPhone}
+        onChange={(event) =>
+          props.onChange("studentPhone", event.target.value)
+        }
+      />
+      <FormInput
+        label="من"
+        type="date"
+        name="missed-tasks-from"
+        value={props.filters.from}
+        onChange={(event) => props.onChange("from", event.target.value)}
+      />
+      <FormInput
+        label="إلى"
+        type="date"
+        name="missed-tasks-to"
+        value={props.filters.to}
+        onChange={(event) => props.onChange("to", event.target.value)}
+      />
+      <DropdownField
+        label="حالة الحل"
+        value={props.filters.status}
+        placeholder="كل الحالات"
+        items={[
+          { label: "كل الحالات", value: "" },
+          { label: "محلولة", value: "resolved" },
+          { label: "غير محلولة", value: "unresolved" },
+        ]}
+        onChange={(value) =>
+          props.onChange(
+            "status",
+            value as MissedTasksFiltersState["status"],
+          )
+        }
+      />
+      {props.canReadCoaches ? (
         <DropdownField
-          label="حالة الحل"
-          value={status}
-          placeholder="كل الحالات"
-          items={[
-            { label: "كل الحالات", value: "" },
-            { label: "محلولة", value: "resolved" },
-            { label: "غير محلولة", value: "unresolved" },
-          ]}
-          onChange={(value) =>
-            onStatusChange(value as "" | "resolved" | "unresolved")
-          }
+          label="المدرب"
+          value={props.filters.coachId}
+          placeholder="كل المدربين"
+          items={[{ label: "كل المدربين", value: "" }, ...props.coachOptions]}
+          onChange={(value) => props.onChange("coachId", value)}
+          loading={props.coachesLoading}
         />
-        {canReadCoaches ? (
-          <DropdownField
-            label="المدرب"
-            value={coachId}
-            placeholder="كل المدربين"
-            items={[{ label: "كل المدربين", value: "" }, ...coachOptions]}
-            onChange={onCoachChange}
-            loading={coachesLoading}
-          />
-        ) : null}
-      </div>
-    </section>
+      ) : null}
+    </FilterPanel>
   );
 }

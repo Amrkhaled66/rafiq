@@ -9,7 +9,6 @@ import {
   View,
 } from "react-native";
 
-import { useDirection } from "@/shared/hooks/use-direction";
 import { useAppTheme } from "@/shared/theme/appearance-provider";
 import { AppText } from "@/shared/ui/app-text";
 
@@ -29,11 +28,10 @@ type InfoRowProps = {
 };
 
 function InfoRow({ label, value, icon }: InfoRowProps) {
-  const dir = useDirection();
   const { colors } = useAppTheme();
 
   return (
-    <View className={`items-center gap-3 ${dir.rowReverse}`}>
+    <View className="items-center gap-3 flex-row">
       <View className="h-10 w-10 items-center justify-center rounded-2xl bg-brand-primary-soft">
         <Ionicons name={icon} size={18} color={colors.tint} />
       </View>

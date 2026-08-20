@@ -2,7 +2,6 @@ import { Ionicons } from "@expo/vector-icons";
 import { View } from "react-native";
 
 import { PlanCardSkeleton } from "@/features/plans/components/skeletons";
-import { useDirection } from "@/shared/hooks/use-direction";
 import { useAppTheme } from "@/shared/theme/appearance-provider";
 import { AppText } from "@/shared/ui/app-text";
 
@@ -15,7 +14,6 @@ export function PlanEmptyDayCard({
   isLoading = false,
   message = "مفيش مهام مضافة لليوم ده",
 }: PlanEmptyDayCardProps) {
-  const dir = useDirection();
   const { colors } = useAppTheme();
 
   if (isLoading) {
@@ -33,7 +31,7 @@ export function PlanEmptyDayCard({
         elevation: 1,
       }}
     >
-      <View className={`items-center gap-3 md:gap-3.5 ${dir.rowReverse}`}>
+      <View className="items-center gap-3 md:gap-3.5 flex-row">
         <View className="bg-brand-primary-soft h-11 w-11 items-center justify-center rounded-2xl md:h-12 md:w-12">
           <Ionicons
             name="calendar-clear-outline"

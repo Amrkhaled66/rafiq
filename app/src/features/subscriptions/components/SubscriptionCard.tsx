@@ -11,7 +11,6 @@ import {
   getSubscriptionStatusLabel,
   getSubscriptionTitle,
 } from "@/features/subscriptions/utils/subscription-ui";
-import { useDirection } from "@/shared/hooks/use-direction";
 import { AppText } from "@/shared/ui/app-text";
 import { useAppTheme } from "@/shared/theme/appearance-provider";
 
@@ -28,7 +27,6 @@ export function SubscriptionCard({
   onPress,
   isLoading = false,
 }: SubscriptionCardProps) {
-  const dir = useDirection();
   const { colors } = useAppTheme();
 
   if (isLoading) {
@@ -53,7 +51,7 @@ export function SubscriptionCard({
         elevation: 1,
       }}
     >
-      <View className={`items-start gap-3 ${dir.rowReverse}`}>
+      <View className="items-start gap-3 flex-row">
         <View
           className="size-14 items-center justify-center rounded-2xl"
           style={{ backgroundColor: appearance.iconBackgroundColor }}
@@ -65,12 +63,12 @@ export function SubscriptionCard({
           />
         </View>
 
-        <View className={`flex-1 gap-2 ${dir.itemsAlign}`}>
+        <View className="flex-1 gap-2 items-start">
           <View
-            className={`items-center justify-between gap-2 ${dir.rowReverse}`}
+            className="items-center justify-between gap-2 flex-row"
           >
             <AppText
-              className={`flex-1 text-base md:text-lg ${dir.textAlign}`}
+              className="flex-1 text-base md:text-lg "
               weight="bold"
               style={{ color: appearance.titleColor }}
               numberOfLines={1}
@@ -93,7 +91,7 @@ export function SubscriptionCard({
           </View>
 
           <AppText
-            className={`text-sm md:text-base ${dir.textAlign}`}
+            className="text-sm md:text-base "
             weight="medium"
             style={{ color: appearance.secondaryColor }}
           >
@@ -102,7 +100,7 @@ export function SubscriptionCard({
 
           <View className="flex-row items-center gap-1">
             <AppText
-              className={`text-sm md:text-base ${dir.textAlign}`}
+              className="text-sm md:text-base "
               weight="medium"
               style={{ color: appearance.secondaryColor }}
             >

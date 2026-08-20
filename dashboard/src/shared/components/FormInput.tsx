@@ -5,6 +5,7 @@ type FormInputProps = {
   className?: string;
   error?: string;
   icon?: ReactNode;
+  hint?: string;
 } & React.InputHTMLAttributes<HTMLInputElement>;
 
 const FormInput = forwardRef<HTMLInputElement, FormInputProps>(
@@ -22,38 +23,65 @@ const FormInput = forwardRef<HTMLInputElement, FormInputProps>(
       error,
       min,
       icon,
+      hint,
       ...props
     },
     ref,
   ) => {
-    const [isFocused, setIsFocused] = useState(false);
-
-    const handleFocus = () => {
-      setIsFocused(true);
-    };
-
-    const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
-      setIsFocused(false);
-
-      if (onBlur) {
-        onBlur(e);
-      }
-    };
+    const [focused, setFocused] = useState(false);
 
     return (
-      <label className="flex flex-col gap-1">
-        <span className="text-start text-sm font-medium text-foreground">
+      <label className="flex flex-col gap-2">
+
+        <span className="text-sm font-semibold text-foreground text-right">
           {label}
+          {required && (
+            <span className="text-brand-primary ms-1">*</span>
+          )}
         </span>
-        <div className="relative w-full">
-          {icon ? (
-            <span className="pointer-events-none absolute inset-y-0 start-2 flex items-center text-subTitle">
+
+
+        <div
+          className={`
+            relative
+            flex
+            items-center
+            rounded-2xl
+            border
+            transition-all
+            duration-200
+            ${
+              error
+                ? "border-red-400 bg-red-50"
+                : focused
+                ? "border-brand-primary bg-white shadow-[0_0_0_4px_rgba(249,131,129,0.12)]"
+                : "border-gray-200 bg-gray-50 hover:border-brand-primary/40"
+            }
+          `}
+        >
+
+          {icon && (
+            <div
+              className="
+                absolute
+                inset-s-3
+                flex
+                size-8
+                items-center
+                justify-center
+                rounded-xl
+                bg-brand-primary/10
+                text-brand-primary
+              "
+            >
               {icon}
-            </span>
-          ) : null}
+            </div>
+          )}
+
+
           <input
-            dir="rtl"
             ref={ref}
+            dir="rtl"
             name={name}
             type={type}
             {...props}
@@ -61,22 +89,44 @@ const FormInput = forwardRef<HTMLInputElement, FormInputProps>(
             value={value}
             onChange={onChange}
             min={type === "number" ? min : undefined}
-            onBlur={handleBlur}
-            onFocus={handleFocus}
             required={required}
-            className={`w-full border-0 border-b py-3 text-sm transition-colors focus:outline-none ${
-              error
-                ? "border-red-500 hover:bg-red-500/5"
-                : "border-gray-400/40 hover:bg-brand-primary/5"
-            } ${icon ? "ps-10 pe-2" : "px-2"} ${className}`}
+
+            onFocus={() => setFocused(true)}
+
+            onBlur={(e) => {
+              setFocused(false);
+              onBlur?.(e);
+            }}
+
+            className={`
+              w-full
+              bg-transparent
+              px-4
+              py-3.5
+              text-sm
+              text-foreground
+              placeholder:text-gray-400
+              outline-none
+
+              ${icon ? "ps-14" : ""}
+
+              ${className}
+            `}
           />
-          <span
-            className={`absolute bottom-0 left-0 h-0.5 transition-all duration-300 ${
-              error ? "bg-red-500" : "bg-brand-primary"
-            } ${isFocused ? "w-full" : "w-0"}`}
-          />
+
         </div>
-        {error ? <span className="text-sm text-red-500">{error}</span> : null}
+
+
+        {error ? (
+          <span className="text-xs font-medium text-red-500 text-right">
+            {error}
+          </span>
+        ) : hint ? (
+          <span className="text-xs text-subTitle text-right">
+            {hint}
+          </span>
+        ) : null}
+
       </label>
     );
   },

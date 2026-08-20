@@ -42,6 +42,6 @@ export const TABS: readonly TabConfig[] = [
   },
 ] as const;
 
-export function getDirectionalTabs(isRTL: boolean) {
-  return isRTL ? [...TABS].reverse() : [...TABS];
+export function getDirectionalTabs() {
+  return [...TABS];
 }

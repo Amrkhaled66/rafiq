@@ -2,7 +2,6 @@ import { Ionicons } from "@expo/vector-icons";
 import { Pressable, View } from "react-native";
 
 import { SupportSectionCardSkeleton } from "@/features/profile/components/skeletons";
-import { useDirection } from "@/shared/hooks/use-direction";
 import { useAppTheme } from "@/shared/theme/appearance-provider";
 import { AppText } from "@/shared/ui/app-text";
 
@@ -31,14 +30,13 @@ function SupportRow({
   isLast = false,
   onPress,
 }: SupportRowProps) {
-  const dir = useDirection();
 
   return (
     <Pressable
       className={`px-4 py-4 active:opacity-90 ${!isLast ? "border-card-border border-b" : ""}`}
       onPress={onPress}
     >
-      <View className={`items-center gap-3 ${dir.rowReverse}`}>
+      <View className="items-center gap-3 flex-row">
         <View
           className="h-11 w-11 items-center justify-center rounded-2xl"
           style={{ backgroundColor }}
@@ -57,7 +55,7 @@ function SupportRow({
         </View>
 
         <Ionicons
-          name={dir.isRTL ? "chevron-back" : "chevron-forward"}
+          name="chevron-back"
           size={18}
           className="text-brand-primary"
         />

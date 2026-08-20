@@ -3,7 +3,6 @@ import type { BottomTabBarProps } from "@react-navigation/bottom-tabs";
 import { Pressable, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { useDirection } from "@/shared/hooks/use-direction";
 import { useI18n } from "@/shared/i18n/I18nProvider";
 import type { TabConfig } from "@/shared/navigation/tab-config";
 import { AppFonts } from "@/shared/theme/theme";
@@ -25,7 +24,6 @@ export function AndroidTabBar({
   backgroundColor,
 }: AndroidTabBarProps) {
   const insets = useSafeAreaInsets();
-  const dir = useDirection();
   const { t, language } = useI18n();
   const currentFont = AppFonts[language];
 
@@ -45,7 +43,7 @@ export function AndroidTabBar({
           width: "100%",
         }}
       > */}
-      <View className={`items-center justify-between ${dir.row}`}>
+      <View className="items-center justify-between flex-row">
         {state.routes.map((route, index) => {
           const tab = tabs.find((item) => item.name === route.name);
           if (!tab) return null;

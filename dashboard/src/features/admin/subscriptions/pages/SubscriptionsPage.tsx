@@ -62,6 +62,7 @@ export default function SubscriptionsPage() {
   return (
     <div className="space-y-6">
       <PageHeader
+        icon="material-symbols:subscriptions-outline"
         title="الاشتراكات"
         subtitle="إدارة اشتراكات الطلاب وإسناد الباقات المناسبة لكل طالب."
         action={

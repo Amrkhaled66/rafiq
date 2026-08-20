@@ -2,7 +2,6 @@ import { LinearGradient } from "expo-linear-gradient";
 import { View } from "react-native";
 
 import { ProfileHeroCardSkeleton } from "@/features/profile/components/skeletons";
-import { useDirection } from "@/shared/hooks/use-direction";
 import { AppText } from "@/shared/ui/app-text";
 import { Ionicons } from "@expo/vector-icons";
 
@@ -19,7 +18,6 @@ export function ProfileHeroCard({
   initial,
   isLoading = false,
 }: ProfileHeroCardProps) {
-  const dir = useDirection();
 
   if (isLoading) {
     return <ProfileHeroCardSkeleton />;
@@ -40,15 +38,15 @@ export function ProfileHeroCard({
         borderRadius: 30,
       }}
     >
-      <View className="absolute top-8 -left-8 h-28 w-28 rounded-full bg-white/10" />
-      <View className="absolute top-6 right-8 h-16 w-16 rounded-full bg-white/10" />
-      <View className="absolute -bottom-12 left-16 h-36 w-36 rounded-full bg-white/10" />
-      <View className="absolute right-24 bottom-8 h-20 w-20 rounded-full border border-white/15" />
-      <View className="absolute -right-10 bottom-8 h-40 w-40 rotate-12 rounded-[36px] border border-white/10" />
-      <View className="absolute top-5 left-6 h-28 w-28 -rotate-12 rounded-4xl border border-white/10" />
+      <View className="absolute top-8 -inset-e-8 h-28 w-28 rounded-full bg-white/10" />
+      <View className="absolute top-6 inset-s-8 h-16 w-16 rounded-full bg-white/10" />
+      <View className="absolute -bottom-12 inset-e-16 h-36 w-36 rounded-full bg-white/10" />
+      <View className="absolute inset-s-24 bottom-8 h-20 w-20 rounded-full border border-white/15" />
+      <View className="absolute -inset-s-10 bottom-8 h-40 w-40 rotate-12 rounded-[36px] border border-white/10" />
+      <View className="absolute top-5 inset-e-6 h-28 w-28 -rotate-12 rounded-4xl border border-white/10" />
 
       <View className="px-5 py-6">
-        <View className={`items-center gap-5 ${dir.rowReverse}`}>
+        <View className="items-center gap-5 flex-row">
           <View className="h-29.5 w-29.5 items-center justify-center rounded-full bg-white/95">
             <AppText
               className="text-brand-primary! text-[48px] leading-[56px]"
@@ -59,9 +57,9 @@ export function ProfileHeroCard({
             </AppText>
           </View>
 
-          <View className={`flex-1 gap-3 ${dir.itemsAlign}`}>
+          <View className="flex-1 gap-3 items-start">
             <AppText
-              className={`text-2xl leading-[32px] ${dir.textAlign}`}
+              className="text-2xl leading-[32px] "
               tone="inverse"
               weight="bold"
               numberOfLines={1}
@@ -70,7 +68,7 @@ export function ProfileHeroCard({
             </AppText>
 
             <View className="rounded-full bg-white/16 px-4 py-2">
-              <View className={`items-center gap-2 ${dir.rowReverse}`}>
+              <View className="items-center gap-2 flex-row">
                 <Ionicons name="school-outline" size={17} color="#FFFFFF" />
 
                 <AppText className="text-sm" tone="inverse" weight="semibold">

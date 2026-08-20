@@ -1,6 +1,6 @@
 import { router, useLocalSearchParams } from "expo-router";
 import { useEffect, useMemo, useState } from "react";
-import { ScrollView, View } from "react-native";
+import { RefreshControl, ScrollView, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { HomeStateCard } from "@/features/home/components/HomeStateCard";
@@ -35,7 +35,8 @@ export function PlanDetailScreen() {
     parsedPlanId && Number.isInteger(parsedPlanId) && parsedPlanId > 0
       ? parsedPlanId
       : null;
-  const { data, isLoading, isError, refetch } = useStudentPlanDetail(planId);
+  const { data, isLoading, isError, isRefetching, refetch } =
+    useStudentPlanDetail(planId);
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [pendingOccurrenceId, setPendingOccurrenceId] = useState<number | null>(
     null,
@@ -110,6 +111,16 @@ export function PlanDetailScreen() {
       <FocusedStatusBar style={statusBarStyle} />
       <ScrollView
         showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl
+            refreshing={isRefetching && !isLoading}
+            onRefresh={() => void refetch()}
+            tintColor={colors.tint}
+            colors={[colors.tint]}
+            progressBackgroundColor={colors.card}
+            progressViewOffset={30}
+          />
+        }
         contentContainerStyle={{
           paddingTop: 45,
           paddingBottom: insets.bottom + 36,

@@ -1,7 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
 import { View } from "react-native";
 
-import { useDirection } from "@/shared/hooks/use-direction";
 import { AppText } from "@/shared/ui/app-text";
 
 type PlanStatCardProps = {
@@ -25,7 +24,6 @@ export function PlanStatCard({
   iconBackgroundColor,
   iconColor,
 }: PlanStatCardProps) {
-  const dir = useDirection();
 
   return (
     <View
@@ -37,7 +35,7 @@ export function PlanStatCard({
       }}
     >
       <View
-        className={`mx-auto w-fit items-center gap-3 md:gap-3.5 ${dir.itemsAlign}`}
+        className="mx-auto w-fit items-center gap-3 md:gap-3.5 items-start"
       >
         <View
           className="mx-auto size-11 items-center justify-center rounded-2xl md:size-12"
@@ -46,7 +44,7 @@ export function PlanStatCard({
           <Ionicons name={icon} size={21} color={iconColor} />
         </View>
 
-        <View className={`gap-1 md:gap-1.5 ${dir.itemsAlign}`}>
+        <View className="gap-1 md:gap-1.5 items-start">
           <AppText
             className="text-sm md:text-[15px]"
             tone="muted"

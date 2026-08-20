@@ -7,6 +7,7 @@ import {
   ilike,
   isNotNull,
   isNull,
+  sql,
   type SQL,
 } from 'drizzle-orm';
 import { coachAssignments, studentProfiles, users } from '../db';
@@ -54,7 +55,7 @@ export class StudentsRepository {
       where: eq(users.id, userId),
     });
 
-    return record?.role as AppRole | undefined;
+    return record?.role;
   }
 
   async findByUserId(userId: number): Promise<StudentAggregate | undefined> {
@@ -66,9 +67,14 @@ export class StudentsRepository {
   }
 
   async findByPhone(phone: string): Promise<StudentAggregate | undefined> {
-    const normalized = phone.replace(/\D/g, '');
     const [student] = await this.baseStudentSelect()
-      .where(ilike(users.phone, `%${normalized}%`))
+      .where(
+        and(
+          eq(users.role, 'student'),
+          isNull(users.deletedAt),
+          sql`regexp_replace(${users.phone}, '[^0-9]', '', 'g') = ${phone}`,
+        ),
+      )
       .limit(1);
 
     return student;

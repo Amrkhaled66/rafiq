@@ -1,7 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
 import { ActivityIndicator, Pressable, View } from "react-native";
 
-import { useDirection } from "@/shared/hooks/use-direction";
 import { useAppTheme } from "@/shared/theme/appearance-provider";
 import { AppText } from "@/shared/ui/app-text";
 
@@ -39,7 +38,6 @@ export function PlansPagination({
   isFetching = false,
   onPageChange,
 }: PlansPaginationProps) {
-  const dir = useDirection();
   const { colors } = useAppTheme();
 
   if (totalPages <= 1) {
@@ -64,7 +62,7 @@ export function PlansPagination({
         {isFetching ? <ActivityIndicator size="small" color={colors.tint} /> : null}
       </View>
 
-      <View className={`items-center justify-center gap-1.5 ${dir.rowReverse}`}>
+      <View className="items-center justify-center gap-1.5 flex-row">
         <Pressable
           className="border-card-border bg-card size-10 items-center justify-center rounded-xl border"
           style={({ pressed }) => ({
@@ -78,7 +76,7 @@ export function PlansPagination({
           accessibilityState={{ disabled: previousDisabled }}
         >
           <Ionicons
-            name={dir.isRTL ? "chevron-forward" : "chevron-back"}
+            name="chevron-forward"
             size={18}
             color={previousDisabled ? colors.disabled : colors.icon}
           />
@@ -139,7 +137,7 @@ export function PlansPagination({
           accessibilityState={{ disabled: nextDisabled }}
         >
           <Ionicons
-            name={dir.isRTL ? "chevron-back" : "chevron-forward"}
+            name="chevron-back"
             size={18}
             color={nextDisabled ? colors.disabled : colors.icon}
           />

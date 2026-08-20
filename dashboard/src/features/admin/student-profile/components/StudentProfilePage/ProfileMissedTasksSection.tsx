@@ -1,74 +1,79 @@
 import { useMemo } from "react";
+import { useNavigate } from "react-router-dom";
 import type { TableColumn } from "react-data-table-component";
+import AdminServerTable from "@/features/admin/shared/components/AdminServerTable";
 import type { MissedTaskRow } from "@/features/admin/missed-tasks/services/missedTasksService";
-import Table from "@/shared/components/Table";
+import { SCHOOL_SUBJECT_LABELS } from "@/shared/const/subjects";
+import { urls } from "@/shared/const/urls";
+import { formatDateArShort } from "@/shared/utils/dates";
 
-export default function ProfileMissedTasksSection({
-  tasks,
-}: {
-  tasks: MissedTaskRow[];
-}) {
+type Props = {
+  items: MissedTaskRow[];
+  total: number;
+  page: number;
+  limit: number;
+  isLoading: boolean;
+  onPageChange: (page: number) => void;
+  onRowsPerPageChange: (limit: number, page: number) => void;
+};
+
+export default function ProfileMissedTasksSection(props: Props) {
+  const navigate = useNavigate();
   const columns = useMemo<TableColumn<MissedTaskRow>[]>(
     () => [
-      {
-        name: "اسم المهمة",
-        selector: (row) => row.taskName,
-        grow: 1.5,
-      },
+      { name: "المهمة", selector: (row) => row.taskName, grow: 1.5 },
       {
         name: "المادة",
-        selector: (row) => row.subject,
+        selector: (row) => SCHOOL_SUBJECT_LABELS[row.subject] ?? row.subject,
       },
       {
         name: "الخطة",
-        selector: (row) => row.planName,
+        cell: (row) => (
+          <button
+            type="button"
+            className="text-brand-primary font-medium hover:underline"
+            onClick={() =>
+              navigate(
+                `/${urls.dashBoardUrl}/students/${row.studentId}/plans/${row.planId}`,
+              )
+            }
+          >
+            {row.planName}
+          </button>
+        ),
+        grow: 1.3,
       },
+      { name: "تاريخ الاستحقاق", selector: (row) => formatDateArShort(row.dueAt) },
       {
-        name: "الميعاد",
-        selector: (row) => row.dueAt,
-      },
-      {
-        name: "الحالة",
+        name: "المتابعة",
         cell: (row) => (
           <span
-            className={`inline-flex rounded-full px-3 py-1 text-xs font-medium ${
+            className={`inline-flex rounded-full px-3 py-1 text-xs font-medium whitespace-nowrap ${
               row.isResolved
                 ? "bg-emerald-100 text-emerald-700"
-                : "bg-rose-100 text-rose-700"
+                : "bg-amber-100 text-amber-800"
             }`}
           >
-            {row.isResolved ? "تم الحل" : "لم يتم الحل"}
+            {row.isResolved ? "تمت المتابعة" : "بحاجة للمتابعة"}
           </span>
         ),
       },
     ],
-    [],
+    [navigate],
   );
 
   return (
-    <section className="dashboard-card">
-      <div className="mb-5 text-right">
-        <h2 className="text-foreground text-xl font-bold">المهام الفائتة</h2>
-        <p className="text-subTitle mt-1 text-sm">
-          جميع المهام الفائتة للطالب ({tasks.length} مهمة).
-        </p>
-      </div>
-
-      <Table
-        columns={columns}
-        data={tasks}
-        pagination
-        paginationPerPage={5}
-        paginationRowsPerPageOptions={[5, 10, 20, 50]}
-        responsive
-        highlightOnHover
-        persistTableHead
-        noDataComponent={
-          <div className="text-subTitle py-6 text-sm">
-            لا توجد مهام فائتة.
-          </div>
-        }
-      />
-    </section>
+    <AdminServerTable
+      columns={columns}
+      data={props.items}
+      isLoading={props.isLoading}
+      loadingText="جاري تحميل المهام الفائتة..."
+      noDataText="لا توجد مهام فائتة لهذا الطالب."
+      currentPage={props.page}
+      rowsPerPage={props.limit}
+      totalRows={props.total}
+      onPageChange={props.onPageChange}
+      onRowsPerPageChange={props.onRowsPerPageChange}
+    />
   );
 }

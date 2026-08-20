@@ -34,11 +34,17 @@ function mapLesson(lesson: HomeLessonResponse): LessonChecklistItem {
 }
 
 export function mapStudentHomeToViewModel(home: StudentHomeResponse) {
+  const totalTasks = home.todayTasks.length;
+  const completedTasks = home.todayTasks.filter(
+    (task) => task.status === "done",
+  ).length;
+
   return {
     progress: {
-      progress: home.progress.progressPercent,
-      completedCount: home.progress.completedCount,
-      totalCount: home.progress.totalCount,
+      progress:
+        totalTasks === 0 ? 0 : Math.round((completedTasks / totalTasks) * 100),
+      completedCount: completedTasks,
+      totalCount: totalTasks,
     },
     tasks: home.todayTasks.map(mapTask),
     lessons: home.todayLessons.map(mapLesson),

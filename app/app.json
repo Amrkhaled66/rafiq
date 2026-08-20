@@ -14,10 +14,7 @@
       "buildNumber": "1",
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false,
-        "ExpoLocalization_supportsRTL": false,
-        "ExpoLocalization_forcesRTL": false,
         "CFBundleLocalizations": [
-          "ar",
           "ar"
         ]
       },
@@ -57,6 +54,7 @@
       [
         "expo-localization",
         {
+          "forcesRTL": true,
           "supportedLocales": {
             "android": [
               "ar"
@@ -80,8 +78,6 @@
       "reactCompiler": true
     },
     "extra": {
-      "supportsRTL": false,
-      "forcesRTL": false,
       "router": {},
       "eas": {
         "projectId": "3a56f135-b69f-4092-b575-efb902e827cf"

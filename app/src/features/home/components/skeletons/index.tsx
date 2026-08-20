@@ -9,7 +9,7 @@ import {
 function SectionHeaderSkeleton({ isTablet }: { isTablet: boolean }) {
   return (
     <View className="flex-row items-center justify-between">
-      <View className="flex-row-reverse items-center gap-1">
+      <View className="flex-row items-center gap-1">
         <ShimmerBlock
           width={isTablet ? 70 : 58}
           height={isTablet ? 18 : 15}
@@ -47,9 +47,9 @@ export function ProgressSkeleton() {
       <View className="gap-4 md:gap-5">
         <SectionHeaderSkeleton isTablet={isTablet} />
 
-        <View className="flex-row-reverse items-center justify-between">
+        <View className="flex-row items-center justify-between">
           <View className="flex-1 gap-3">
-            <View className="items-end gap-2">
+            <View className="items-start gap-2">
               <ShimmerBlock
                 width={isTablet ? 240 : 176}
                 height={isTablet ? 30 : 24}
@@ -107,7 +107,7 @@ export function TodayTasksSkeleton() {
                 <ShimmerBlock width={20} height={20} borderRadius={999} />
               </View>
 
-              <View className="flex-1 items-end">
+              <View className="flex-1 items-start">
                 <ShimmerBlock
                   width={isTablet ? 140 : 96}
                   height={isTablet ? 22 : 16}

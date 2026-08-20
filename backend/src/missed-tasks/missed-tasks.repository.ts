@@ -164,19 +164,21 @@ export class MissedTasksRepository {
   async getMissedTasksStats(input: {
     role: 'coach' | 'super_admin';
     userId: number;
+    coachId?: number;
+    studentId?: number;
   }) {
-    const roleScope =
+    const coachScope =
       input.role === 'coach'
         ? eq(coachAssignments.coachId, input.userId)
-        : undefined;
+        : input.coachId
+          ? eq(plans.coachId, input.coachId)
+          : undefined;
 
     const [stats] = await this.database
       .select({
         totalMissed: count(tasks.id),
-        totalResolved:
-          sql<number>`count(${tasks.id}) filter (where ${missedTaskResolutions.id} is not null)`,
-        totalUnresolved:
-          sql<number>`count(${tasks.id}) filter (where ${missedTaskResolutions.id} is null)`,
+        totalResolved: sql<number>`count(${tasks.id}) filter (where ${missedTaskResolutions.id} is not null)`,
+        totalUnresolved: sql<number>`count(${tasks.id}) filter (where ${missedTaskResolutions.id} is null)`,
       })
       .from(tasks)
       .innerJoin(plans, eq(tasks.planId, plans.id))
@@ -188,13 +190,16 @@ export class MissedTasksRepository {
         coachAssignments,
         and(
           eq(coachAssignments.studentId, plans.studentId),
-          roleScope,
+          input.role === 'coach'
+            ? eq(coachAssignments.coachId, input.userId)
+            : undefined,
         ),
       )
       .where(
         and(
           eq(tasks.status, 'missed'),
-          roleScope ? eq(coachAssignments.coachId, input.userId) : undefined,
+          coachScope,
+          input.studentId ? eq(plans.studentId, input.studentId) : undefined,
         ),
       );
 

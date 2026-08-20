@@ -53,7 +53,7 @@ const AuthInput = forwardRef<TextInput, AuthInputProps>(function AuthInput(
           <Text
             style={{
               fontFamily: AppFonts[language].medium,
-              textAlign: language === "ar" ? "right" : "left",
+              // textAlign: language === "ar" ? "right" : "left",
             }}
             className="px-3 pb-1 text-sm text-muted-text sm:text-base"
           >
@@ -61,6 +61,7 @@ const AuthInput = forwardRef<TextInput, AuthInputProps>(function AuthInput(
           </Text>
         ) : null}
         <View className="flex-row items-center">
+          <Ionicons name={iconName} size={20} className="text-brand-primary" />
           <TextInput
             ref={ref}
             {...props}
@@ -82,9 +83,8 @@ const AuthInput = forwardRef<TextInput, AuthInputProps>(function AuthInput(
             className={`px-3 py-3 text-base sm:py-4 sm:text-lg ${className ?? ""}`}
           />
 
-          <Ionicons name={iconName} size={20} className="text-brand-primary" />
           {
-            <View className=" absolute left-0 ">
+            <View className="absolute inset-e-0 ">
               {trailingElement}
             </View>
           }

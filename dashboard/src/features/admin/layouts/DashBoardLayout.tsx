@@ -89,7 +89,7 @@ export default function DashBoardLayout() {
         logoSrc={logo}
       />
 
-      <main className="bg-background flex justify-center items-center  space-y relative min-w-0 flex-1 p-4 md:p-6 lg:p-8">
+      <main className="bg-background   space-y relative min-w-0 flex-1 p-4 md:p-6 lg:p-8">
         <div className="mb-4 flex lg:hidden">
           <button type="button" onClick={() => setIsSidebarOpen(true)}>
             <Icon icon="material-symbols:menu-rounded" className="size-9" />

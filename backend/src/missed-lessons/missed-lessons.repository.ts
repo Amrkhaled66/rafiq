@@ -25,6 +25,7 @@ type MissedLessonsScope = {
   role: 'coach' | 'super_admin';
   userId: number;
   coachId?: number;
+  studentId?: number;
 };
 
 @Injectable()
@@ -216,6 +217,10 @@ export class MissedLessonsRepository {
       );
     }
 
+    if (input.studentId) {
+      conditions.push(eq(lessonOccurrences.studentId, input.studentId));
+    }
+
     if (!includeFilters) {
       return conditions;
     }
@@ -241,13 +246,7 @@ export class MissedLessonsRepository {
     }
 
     if (input.studentPhone?.trim()) {
-      conditions.push(
-        ilike(users.phone, `%${input.studentPhone.trim()}%`),
-      );
-    }
-
-    if (input.studentId) {
-      conditions.push(eq(lessonOccurrences.studentId, input.studentId));
+      conditions.push(ilike(users.phone, `%${input.studentPhone.trim()}%`));
     }
 
     return conditions;

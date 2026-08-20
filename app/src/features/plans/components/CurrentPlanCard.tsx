@@ -8,7 +8,6 @@ import {
   getPlanStatusAppearance,
   getPlanStatusLabel,
 } from "@/features/plans/utils/plan-ui";
-import { useDirection } from "@/shared/hooks/use-direction";
 import { AppText } from "@/shared/ui/app-text";
 import { useAppTheme } from "@/shared/theme/appearance-provider";
 
@@ -23,7 +22,6 @@ export function CurrentPlanCard({
   onPress,
   isLoading = false,
 }: CurrentPlanCardProps) {
-  const dir = useDirection();
   const { colors } = useAppTheme();
   const statusAppearance = getPlanStatusAppearance(plan.status, colors);
 
@@ -53,10 +51,10 @@ export function CurrentPlanCard({
           elevation: 1,
         }}
       >
-        <View className={`items-end ${dir.rowReverse}`}>
-          <View className={`flex-1 gap-6 md:gap-7 ${dir.itemsAlign}`}>
+        <View className="items-end flex-row">
+          <View className="flex-1 gap-6 md:gap-7 items-start">
             <View
-              className={`items-center justify-between gap-2 md:gap-2.5 ${dir.rowReverse}`}
+              className="items-center justify-between gap-2 md:gap-2.5 flex-row"
             >
               <AppText className="text-sm md:text-[15px]" tone="inverse" weight="bold">
                 الخطة الحالية
@@ -77,7 +75,7 @@ export function CurrentPlanCard({
             </View>
 
             <AppText
-              className={`text-lg md:text-[22px] ${dir.textAlign}`}
+              className="text-lg md:text-[22px] "
               weight="bold"
               numberOfLines={1}
               tone="inverse"
@@ -86,7 +84,7 @@ export function CurrentPlanCard({
             </AppText>
 
             <AppText
-              className={`text-sm md:text-[15px] ${dir.textAlign}`}
+              className="text-sm md:text-[15px] "
               weight="medium"
               tone="inverse"
             >
@@ -95,7 +93,7 @@ export function CurrentPlanCard({
           </View>
 
           <View
-            className={`items-center justify-center rounded-3xl bg-white px-3 py-2 md:px-4 md:py-2.5 ${dir.rowReverse}`}
+            className="items-center justify-center rounded-3xl bg-white px-3 py-2 md:px-4 md:py-2.5 flex-row"
           >
             <AppText
               className="text-brand-primary! my-auto text-sm md:text-[15px]"

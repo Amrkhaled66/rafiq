@@ -19,7 +19,7 @@ export function TabPageHeader() {
         style={{ height: insets.top }}
         className="bg-brand-primary w-full"
       ></View>
-      {/* <View className="items-end px-3">
+      {/* <View className="items-start px-3">
         <SvgXml xml={LOGO_XML} width={isTablet ? 88 : 60} />
       </View> */}
     </View>

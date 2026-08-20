@@ -4,7 +4,6 @@ import { Pressable, View, useWindowDimensions } from "react-native";
 import { HomeStateCard } from "@/features/home/components/HomeStateCard";
 import { SectionTitle } from "@/features/home/components/SectionTitle";
 import { TodayLessonsSkeleton } from "@/features/home/components/skeletons";
-import { useDirection } from "@/shared/hooks/use-direction";
 import { useAppTheme } from "@/shared/theme/appearance-provider";
 import { AppText } from "@/shared/ui/app-text";
 import {
@@ -26,7 +25,6 @@ export function TodayLessons({
   isLoading = false,
 }: TodayLessonsProps) {
   const { width } = useWindowDimensions();
-  const dir = useDirection();
   const isTablet = width >= 768;
   const previewLessons = lessons.slice(0, ENDLESSONSINDEX);
   const { colors } = useAppTheme();
@@ -41,25 +39,26 @@ export function TodayLessons({
 
   return (
     <View className="gap-4">
-      <View className={`items-center justify-between ${dir.row}`}>
+      <View className="flex-row items-center justify-between">
+        <SectionTitle title="دروس اليوم" icon="calendar-outline" />
+
         <Pressable onPress={onViewAll}>
-          <View className={`items-center gap-1 ${dir.rowReverse}`}>
+          <View className="flex-row items-center gap-1">
             <AppText
-              className={`${dir.textAlign} text-sm md:text-base`}
+              className="text-sm md:text-base"
               tone="tint"
               weight="semibold"
             >
               عرض الكل
             </AppText>
             <Ionicons
-              name={dir.isRTL ? "arrow-back-outline" : "arrow-forward-outline"}
+              name="arrow-back-outline"
               size={isTablet ? 18 : 16}
               color={colors.tint}
             />
           </View>
         </Pressable>
 
-        <SectionTitle title="دروس اليوم" icon="calendar-outline" />
       </View>
 
       <View

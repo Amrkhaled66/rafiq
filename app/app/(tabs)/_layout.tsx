@@ -17,9 +17,9 @@ import { AndroidTabBar } from "@/shared/ui/android-tab-bar";
 
 export default function TabsLayout() {
   const { effectiveColorScheme } = useAppTheme();
-  const { t, isRTL, language } = useI18n();
+  const { t, language } = useI18n();
   const currentFont = AppFonts[language];
-  const tabs = getDirectionalTabs(isRTL);
+  const tabs = getDirectionalTabs();
   const tabTheme = getTabTheme(effectiveColorScheme, currentFont);
 
   if (Platform.OS === "ios") {

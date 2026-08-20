@@ -18,6 +18,7 @@ export default function DashboardHomePage() {
   return (
     <section className="space-y-6">
       <PageHeader
+        icon="material-symbols:grid-view-rounded"
         title="الصفحة الرئيسية"
         subtitle="يا الف اهلا وسهلا."
         action={
@@ -26,7 +27,7 @@ export default function DashboardHomePage() {
           </div>
         }
       />
-
+      {/* 
       <OperationalStats
         canReadSubscriptions={canReadSubscriptions}
         missedStats={q.missedUnresolved.data?.stats}
@@ -48,8 +49,9 @@ export default function DashboardHomePage() {
         <div className="space-y-6">
           <QuickActions isSuperAdmin={canReadSubscriptions} />
           <RecentActivity resolvedMissedTasks={q.missedResolvedRecent.data} />
-        </div>
+        </div> 
       </div>
+        */}
     </section>
   );
 }

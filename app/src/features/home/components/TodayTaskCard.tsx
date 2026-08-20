@@ -1,7 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
 import { Pressable, View, useWindowDimensions } from "react-native";
 
-import { useDirection } from "@/shared/hooks/use-direction";
 import { AppText } from "@/shared/ui/app-text";
 import { useAppTheme } from "@/shared/theme/appearance-provider";
 
@@ -22,7 +21,6 @@ type TodayTaskCardProps = {
 
 export function TodayTaskCard({ task, onPress }: TodayTaskCardProps) {
   const { width } = useWindowDimensions();
-  const dir = useDirection();
   const isTablet = width >= 768;
   const { colors } = useAppTheme();
 
@@ -46,26 +44,7 @@ export function TodayTaskCard({ task, onPress }: TodayTaskCardProps) {
         elevation: 1,
       }}
     >
-      <View className={`items-center justify-between gap-3 ${dir.row}`}>
-        <View className="hidden md:flex!">
-          <Ionicons
-            name={dir.isRTL ? "chevron-back" : "chevron-forward"}
-            size={22}
-            color="#EF7B7D"
-          />
-        </View>
-
-        <View className="flex-1">
-          <AppText
-            className={`text-sm md:text-lg ${dir.textAlign}`}
-            weight="semibold"
-            numberOfLines={1}
-            ellipsizeMode="tail"
-          >
-            {task.title}
-          </AppText>
-        </View>
-
+      <View className="items-center justify-between gap-3 flex-row">
         <View
           className="size-10 items-center justify-center rounded-xl md:size-15"
           style={{ backgroundColor: task.iconBackgroundColor }}
@@ -74,6 +53,25 @@ export function TodayTaskCard({ task, onPress }: TodayTaskCardProps) {
             name={task.icon}
             size={isTablet ? 30 : 22}
             color={task.iconColor}
+          />
+        </View>
+
+        <View className="flex-1">
+          <AppText
+            className="text-sm md:text-lg "
+            weight="semibold"
+            numberOfLines={1}
+            ellipsizeMode="tail"
+          >
+            {task.title}
+          </AppText>
+        </View>
+
+        <View className="hidden md:flex!">
+          <Ionicons
+            name="chevron-back"
+            size={22}
+            color="#EF7B7D"
           />
         </View>
       </View>

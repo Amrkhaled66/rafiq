@@ -34,6 +34,7 @@ export default function StudentsPage() {
   return (
     <div className="space-y">
       <PageHeader
+        icon="mdi:account-group-outline"
         title="الطلاب"
         subtitle="ادارة بيانات الطلاب المسجلين"
         action={

@@ -1,6 +1,5 @@
 import { Pressable, View } from "react-native";
 
-import { useDirection } from "@/shared/hooks/use-direction";
 import { AppText } from "@/shared/ui/app-text";
 
 export type SegmentedFilterOption<T extends string> = {
@@ -27,11 +26,10 @@ export function SegmentedFilterTabs<T extends string>({
   selectedTextClassName = "text-white!",
   unselectedTextClassName = "text-muted-text",
 }: SegmentedFilterTabsProps<T>) {
-  const dir = useDirection();
 
   return (
     <View
-      className={`border-card-border bg-card rounded-2xl border ${dir.rowReverse}`}
+      className="border-card-border bg-card rounded-2xl border flex-row"
       style={{
         shadowColor: "#000",
         shadowOffset: { width: 0, height: 4 },

@@ -9,7 +9,6 @@ import {
   TodayTaskCard,
   type TaskItem,
 } from "@/features/home/components/TodayTaskCard";
-import { useDirection } from "@/shared/hooks/use-direction";
 import { useAppTheme } from "@/shared/theme/appearance-provider";
 import { AppText } from "@/shared/ui/app-text";
 
@@ -21,7 +20,6 @@ type TodayTasksProps = {
 const ENDPREVIEWINDEX = 4;
 
 export function TodayTasks({ tasks, isLoading = false }: TodayTasksProps) {
-  const dir = useDirection();
   const { colors } = useAppTheme();
   const previewTasks = tasks.slice(0, ENDPREVIEWINDEX);
 
@@ -39,28 +37,28 @@ export function TodayTasks({ tasks, isLoading = false }: TodayTasksProps) {
 
   return (
     <View className="gap-4">
-      <View className={`items-center justify-between ${dir.row}`}>
+      <View className="items-center justify-between flex-row">
+        <SectionTitle title="مهامك النهاردة" icon="list-outline" />
         <Pressable onPress={() => router.push("/(tabs)/my-tasks")}>
-          <View className={`items-center gap-1 ${dir.rowReverse}`}>
+          <View className="items-center gap-1 flex-row">
             <AppText
-              className={`${dir.textAlign} text-sm md:text-base`}
+              className=" text-sm md:text-base"
               tone="tint"
               weight="semibold"
             >
               عرض الكل
             </AppText>
             <Ionicons
-              name={dir.isRTL ? "arrow-back-outline" : "arrow-forward-outline"}
+              name="arrow-back-outline"
               size={16}
               color={colors.tint}
             />
           </View>
         </Pressable>
 
-        <SectionTitle title="مهامك النهاردة" icon="list-outline" />
       </View>
 
-      <View className="flex-row flex-wrap items-center justify-end gap-y-2 md:gap-y-3">
+      <View className="flex-row flex-wrap items-center justify-start gap-y-2 md:gap-y-3">
         {previewTasks.map((task, index) => (
           <TodayTaskCard
             isLast={index === ENDPREVIEWINDEX - 1}

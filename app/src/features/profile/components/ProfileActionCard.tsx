@@ -2,7 +2,6 @@ import { Ionicons } from "@expo/vector-icons";
 import { Pressable, View } from "react-native";
 
 import { ProfileActionCardSkeleton } from "@/features/profile/components/skeletons";
-import { useDirection } from "@/shared/hooks/use-direction";
 import { AppText } from "@/shared/ui/app-text";
 import { useAppTheme } from "@/shared/theme/appearance-provider";
 
@@ -21,7 +20,6 @@ export function ProfileActionCard({
   isLoading = false,
   value,
 }: ProfileActionCardProps) {
-  const dir = useDirection();
   const { colors } = useAppTheme();
 
   if (isLoading) {
@@ -40,7 +38,7 @@ export function ProfileActionCard({
         elevation: 1,
       }}
     >
-      <View className={`items-center gap-3 ${dir.rowReverse}`}>
+      <View className="items-center gap-3 flex-row">
         <View className="bg-brand-primary-soft h-11 w-11 items-center justify-center rounded-2xl">
           <Ionicons name={icon} size={20} color={colors.tint} />
         </View>
@@ -59,7 +57,7 @@ export function ProfileActionCard({
 
         <View>
           <Ionicons
-            name={dir.isRTL ? "chevron-back" : "chevron-forward"}
+            name="chevron-back"
             size={18}
             className="text-brand-primary"
           />

@@ -8,7 +8,6 @@ import {
   getDayMonthName,
   getDayNumber,
 } from "@/features/plans/utils/plan-ui";
-import { useDirection } from "@/shared/hooks/use-direction";
 import { AppText } from "@/shared/ui/app-text";
 import { useAppTheme } from "@/shared/theme/appearance-provider";
 
@@ -27,7 +26,6 @@ export function PlanDaysCarousel({
   parentHorizontalPadding = 16,
   isLoading = false,
 }: PlanDaysCarouselProps) {
-  const dir = useDirection();
   const { colors } = useAppTheme();
   const orderedDays = useMemo(
     () => [...days].sort((left, right) => left.date.localeCompare(right.date)),
@@ -53,12 +51,12 @@ export function PlanDaysCarousel({
           horizontal
           showsHorizontalScrollIndicator={false}
           style={{
-            flexDirection: dir.isRTL ? "row-reverse" : "row",
+            flexDirection: "row",
           }}
           contentContainerStyle={{
             gap: 6,
             paddingHorizontal: parentHorizontalPadding,
-            flexDirection: dir.isRTL ? "row-reverse" : "row",
+            flexDirection: "row",
           }}
         >
           {orderedDays.map((day, index) => {
@@ -81,9 +79,9 @@ export function PlanDaysCarousel({
                   elevation: 1,
                 }}
               >
-                <View className={`gap-2 md:gap-2.5 ${dir.itemsAlign}`}>
+                <View className="gap-2 md:gap-2.5 items-start">
                   <AppText
-                    className={`mx-auto shrink flex-wrap text-sm md:text-[15px] ${dir.textAlign}`}
+                    className="mx-auto shrink flex-wrap text-sm md:text-[15px] "
                     tone={isSelected ? "inverse" : "default"}
                     weight="bold"
                   >
@@ -91,7 +89,7 @@ export function PlanDaysCarousel({
                   </AppText>
                   <View className="w-full">
                     <AppText
-                      className={`mx-auto text-2xl md:text-[28px] ${dir.textAlign}`}
+                      className="mx-auto text-2xl md:text-[28px] "
                       tone={isSelected ? "inverse" : "default"}
                       weight="bold"
                       numberOfLines={1}
@@ -99,7 +97,7 @@ export function PlanDaysCarousel({
                       {getDayNumber(day.date)}
                     </AppText>
                     <AppText
-                      className={`mx-auto text-sm md:text-[15px] ${dir.textAlign}`}
+                      className="mx-auto text-sm md:text-[15px] "
                       tone={isSelected ? "inverse" : "muted"}
                       weight="semibold"
                     >

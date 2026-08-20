@@ -271,6 +271,7 @@ export default function NewPlanPage() {
   return (
     <div className="space-y-6">
       <PageHeader
+        icon="solar:clipboard-add-linear"
         title={isEditMode ? "تعديل الخطة" : "خطة جديدة"}
         subtitle={
           isEditMode

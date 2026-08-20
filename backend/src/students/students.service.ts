@@ -65,7 +65,8 @@ export class StudentsService {
 
   async getStudentOverview(id: number): Promise<StudentOverview> {
     const student = await this.findStudentByIdOrThrow(id);
-    const assignedCoaches = await this.studentsRepository.listAssignedCoaches(id);
+    const assignedCoaches =
+      await this.studentsRepository.listAssignedCoaches(id);
     const today = this.formatDateAsIso(
       new Date(
         new Date().toLocaleString('en-US', {
@@ -73,7 +74,10 @@ export class StudentsService {
         }),
       ),
     );
-    const todayTasks = await this.tasksRepository.listTodayTasksByStudent(id, today);
+    const todayTasks = await this.tasksRepository.listTodayTasksByStudent(
+      id,
+      today,
+    );
     const todayOccurrences =
       await this.lessonOccurrencesService.listStudentOccurrencesInRange({
         studentId: id,
@@ -119,64 +123,38 @@ export class StudentsService {
 
   async getStudentProfile(id: number) {
     const student = await this.findStudentByIdOrThrow(id);
-    const assignedCoaches = await this.studentsRepository.listAssignedCoaches(id);
+    const assignedCoaches =
+      await this.studentsRepository.listAssignedCoaches(id);
     const today = this.formatDateAsIso(this.getCairoNow());
 
-    const [todayTasks, todayOccurrences, missedTasks, missedLessons, plans, lessons] =
-      await Promise.all([
-        this.tasksRepository.listTodayTasksByStudent(id, today),
-        this.lessonOccurrencesService.listStudentOccurrencesInRange({
-          studentId: id,
-          from: today,
-          to: today,
-        }),
-        this.missedTasksRepository.listMissedTasks({
-          role: 'super_admin',
-          userId: id,
-          page: 1,
-          limit: 100,
-          studentId: id,
-        }),
-        this.missedLessonsRepository.listMissedLessons({
-          role: 'super_admin',
-          userId: id,
-          page: 1,
-          limit: 100,
-          studentId: id,
-        }),
-        this.plansRepository.listStudentPlans(id, { page: 1, limit: 100 }, today),
-        this.lessonsRepository.listLessonsByStudent(id),
-      ]);
+    const [missedTasks, missedLessons, plans, lessons] = await Promise.all([
+      this.missedTasksRepository.listMissedTasks({
+        role: 'super_admin',
+        userId: id,
+        page: 1,
+        limit: 1,
+        studentId: id,
+      }),
+      this.missedLessonsRepository.listMissedLessons({
+        role: 'super_admin',
+        userId: id,
+        page: 1,
+        limit: 1,
+        studentId: id,
+      }),
+      this.plansRepository.listStudentPlans(id, { page: 1, limit: 1 }, today),
+      this.lessonsRepository.listLessonsByStudent(id),
+    ]);
 
     return {
       student,
       assignedCoaches,
       stats: {
-        totalTasks: todayTasks.length,
-        completedTasks: 0,
-        remainingTasks: 0,
-        missedTasks: 0,
-        completionRate: 0,
+        totalMissedTasks: missedTasks.total,
+        totalMissedLessons: missedLessons.total,
+        totalPlans: plans.total,
+        totalLessons: lessons.length,
       },
-      todayTasks: todayTasks.map((t) => ({
-        id: t.id,
-        title: t.title,
-        subject: t.subject,
-        status: t.status,
-        dueAt: t.dueAt,
-        planId: t.planId,
-      })),
-      todayLessons: todayOccurrences.map((o) => ({
-        id: o.id,
-        lessonName: o.lessonName,
-        subject: o.subject,
-        status: o.status,
-        scheduledAt: o.scheduledForDate,
-      })),
-      missedTasks: missedTasks.items,
-      missedLessons: missedLessons.items,
-      plans: plans.items,
-      lessons,
     };
   }
 
@@ -241,8 +219,9 @@ export class StudentsService {
   ): Promise<StudentAggregate> {
     await this.findStudentByIdOrThrow(id);
 
-    const userUpdate: Partial<Pick<UpdateStudentDto, 'fullName' | 'phone' | 'password'>> =
-      {};
+    const userUpdate: Partial<
+      Pick<UpdateStudentDto, 'fullName' | 'phone' | 'password'>
+    > = {};
 
     if (dto.fullName !== undefined) {
       userUpdate.fullName = dto.fullName;

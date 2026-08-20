@@ -21,21 +21,21 @@ export function TaskSectionSkeleton() {
           key={item}
           className="rounded-3xl px-4 py-3.5 md:px-6 md:py-5"
         >
-          <View className="flex-row-reverse items-start gap-3 md:gap-4.5">
+          <View className="flex-row items-start gap-3 md:gap-4.5">
             <ShimmerBlock
               width={isTablet ? 72 : 56}
               height={isTablet ? 72 : 56}
               borderRadius={20}
             />
 
-            <View className="flex-1 items-end gap-2 md:gap-3">
+            <View className="flex-1 items-start gap-2 md:gap-3">
               <ShimmerBlock
                 width={isTablet ? 250 : 148}
                 height={isTablet ? 30 : 20}
                 borderRadius={999}
               />
 
-              <View className="flex-row-reverse items-center gap-2 md:gap-2.5">
+              <View className="flex-row items-center gap-2 md:gap-2.5">
                 <ShimmerBlock
                   width={isTablet ? 88 : 56}
                   height={isTablet ? 16 : 10}

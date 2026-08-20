@@ -24,6 +24,7 @@ export class MissedLessonsService {
       role: user.role as 'coach' | 'super_admin',
       userId: user.sub,
       coachId: query.coachId,
+      studentId: query.studentId,
     };
     const [stats, list] = await Promise.all([
       this.missedLessonsRepository.getStats(scope),

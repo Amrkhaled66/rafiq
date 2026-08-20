@@ -30,6 +30,7 @@ export default function SubscriptionPackagesPage() {
   return (
     <div className="space-y-6">
       <PageHeader
+        icon="solar:box-linear"
         title="باقات الاشتراك"
         subtitle="إدارة الباقات المتاحة قبل إنشاء اشتراكات الطلاب."
         action={

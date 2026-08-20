@@ -11,11 +11,11 @@ import {
 
 export const studentLessonsQueryKey = ["admin-student-lessons"] as const;
 
-export function useStudentLessonsQuery(studentId: number) {
+export function useStudentLessonsQuery(studentId: number, enabled = true) {
   return useQuery({
     queryKey: [...studentLessonsQueryKey, studentId],
     queryFn: () => listStudentLessons(studentId),
-    enabled: Number.isFinite(studentId) && studentId > 0,
+    enabled: enabled && Number.isFinite(studentId) && studentId > 0,
   });
 }
 
@@ -62,4 +62,3 @@ export function useDeleteStudentLessonMutation(studentId: number) {
     },
   });
 }
-

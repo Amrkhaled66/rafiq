@@ -18,6 +18,7 @@ import type { AuthenticatedUser } from '../authorization/types/authenticated-use
 import { CreateStudentDto } from './dto/create-student.dto';
 import { CreateStudentCoachAssignmentDto } from './dto/create-student-coach-assignment.dto';
 import { ListStudentsQueryDto } from './dto/list-students-query.dto';
+import { SearchStudentQueryDto } from './dto/search-student-query.dto';
 import { UpdateStudentDto } from './dto/update-student.dto';
 import { StudentsService } from './students.service';
 
@@ -37,8 +38,8 @@ export class StudentsController {
 
   @Get('search')
   @RequirePolicy('students.list')
-  searchByPhone(@Query('phone') phone: string) {
-    return this.studentsService.searchByPhone(phone);
+  searchByPhone(@Query() query: SearchStudentQueryDto) {
+    return this.studentsService.searchByPhone(query.phone);
   }
 
   @Get(':id/overview')

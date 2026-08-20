@@ -53,11 +53,8 @@ export function AppText({
   style,
   ...props
 }: BaseTextProps) {
-  const { isRTL, language } = useI18n();
+  const { language } = useI18n();
   const { colors } = useAppTheme();
-  const textAlign =
-    align === "auto" ? (isRTL ? "right" : "left") : align;
-
   return (
     <Text
       className={className}
@@ -65,8 +62,7 @@ export function AppText({
         {
           color: resolveColor(tone, colors),
           fontFamily: resolveFont(weight, language),
-          textAlign,
-          writingDirection: isRTL ? "rtl" : "ltr",
+          textAlign: align,
         },
         style,
       ]}

@@ -23,7 +23,10 @@ import { PropsWithChildren, useEffect, useMemo } from "react";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { I18nProvider } from "@/shared/i18n/I18nProvider";
 import { queryClient } from "@/lib/react-query";
-import { AuthProvider } from "@/features/auth/context/AuthProvider";
+import {
+  AuthProvider,
+  useAuth,
+} from "@/features/auth/context/AuthProvider";
 import {
   AppThemeProvider,
   useAppTheme,
@@ -46,9 +49,15 @@ export function AppProviders({ children }: PropsWithChildren) {
 
   return (
     <AppThemeProvider>
-      <AppProviderContent fontsLoaded={fontsLoaded}>
-        {children}
-      </AppProviderContent>
+      <I18nProvider>
+        <QueryClientProvider client={queryClient}>
+          <AuthProvider>
+            <AppProviderContent fontsLoaded={fontsLoaded}>
+              {children}
+            </AppProviderContent>
+          </AuthProvider>
+        </QueryClientProvider>
+      </I18nProvider>
     </AppThemeProvider>
   );
 }
@@ -58,7 +67,8 @@ function AppProviderContent({
   fontsLoaded,
 }: PropsWithChildren<{ fontsLoaded: boolean }>) {
   const { colors, effectiveColorScheme, isThemeReady } = useAppTheme();
-  const isReady = fontsLoaded && isThemeReady;
+  const { isReady: isAuthReady } = useAuth();
+  const isReady = fontsLoaded && isThemeReady && isAuthReady;
   const navigationTheme = useMemo(() => {
     const baseTheme =
       effectiveColorScheme === "dark" ? DarkTheme : DefaultTheme;
@@ -87,13 +97,5 @@ function AppProviderContent({
     return null;
   }
 
-  return (
-    <I18nProvider>
-      <QueryClientProvider client={queryClient}>
-        <AuthProvider>
-          <ThemeProvider value={navigationTheme}>{children}</ThemeProvider>
-        </AuthProvider>
-      </QueryClientProvider>
-    </I18nProvider>
-  );
+  return <ThemeProvider value={navigationTheme}>{children}</ThemeProvider>;
 }

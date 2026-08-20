@@ -13,7 +13,6 @@ import {
   type ThemePreference,
   useAppTheme,
 } from "@/shared/theme/appearance-provider";
-import { useDirection } from "@/shared/hooks/use-direction";
 import { AppText } from "@/shared/ui/app-text";
 
 type AppearanceSheetProps = {
@@ -48,7 +47,6 @@ export function AppearanceSheet({ visible, onClose }: AppearanceSheetProps) {
   const sheetTranslateY = useRef(new Animated.Value(320)).current;
   const [shouldRender, setShouldRender] = useState(visible);
   const { colors, preference, setPreference } = useAppTheme();
-  const dir = useDirection();
 
   useEffect(() => {
     if (visible) {
@@ -139,7 +137,7 @@ export function AppearanceSheet({ visible, onClose }: AppearanceSheetProps) {
             </AppText>
           </View>
 
-          <View className={`gap-2.5 ${dir.rowReverse}`}>
+          <View className="gap-2.5 flex-row">
             {OPTIONS.map((option) => {
               const isSelected = option.value === preference;
 

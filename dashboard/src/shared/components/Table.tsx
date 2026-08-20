@@ -42,7 +42,7 @@ const customStyles: TableStyles = {
 
   headRow: {
     style: {
-      background: "linear-gradient(to right, #F9FAFB, #F3F4F6)",
+      background: "#f6dcdd45",
       borderRadius: "12px",
       minHeight: "56px",
       borderBottom: "1px solid #E5E7EB",

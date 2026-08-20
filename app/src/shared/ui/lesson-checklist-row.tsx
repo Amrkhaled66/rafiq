@@ -1,7 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
 import { Pressable, View } from "react-native";
 
-import { useDirection } from "@/shared/hooks/use-direction";
 import { useAppTheme } from "@/shared/theme/appearance-provider";
 import { AppText } from "@/shared/ui/app-text";
 
@@ -27,19 +26,29 @@ export function LessonChecklistRow({
   onPress,
   disabled = false,
 }: LessonChecklistRowProps) {
-  const dir = useDirection();
   const { colors } = useAppTheme();
 
   return (
     <Pressable
-      className={`rounded-[24px] bg-card px-4 py-4 active:opacity-90 md:px-5 md:py-4.5 ${
-        !isLast ? "border-b border-b-card-border" : ""
-      }`}
+      className={`rounded-[24px] bg-card px-4 py-4 active:opacity-90 md:px-5 md:py-4.5 ${!isLast ? "border-b border-b-card-border" : ""
+        }`}
       disabled={!onPress || disabled}
       onPress={() => onPress?.(lesson.id)}
       style={{ opacity: disabled ? 0.6 : 1 }}
     >
-      <View className={`items-center gap-3 md:gap-3.5 ${dir.row}`}>
+      <View className="items-center gap-3 md:gap-3.5 flex-row">
+        <View
+          className="h-11 w-11 items-center justify-center rounded-2xl md:h-12 md:w-12"
+          style={{ backgroundColor: lesson.iconBackgroundColor }}
+        >
+          <Ionicons name={lesson.icon} size={21} color={lesson.iconColor} />
+        </View>
+
+        <View className="flex-1">
+          <AppText className="text-base md:text-[18px]" weight="semibold">
+            {lesson.subject}
+          </AppText>
+        </View>
         <View
           className="h-7 w-7 items-center justify-center rounded-lg border md:h-8 md:w-8"
           style={{
@@ -52,18 +61,6 @@ export function LessonChecklistRow({
           ) : null}
         </View>
 
-        <View className="flex-1">
-          <AppText className="text-base md:text-[18px]" weight="semibold">
-            {lesson.subject}
-          </AppText>
-        </View>
-
-        <View
-          className="h-11 w-11 items-center justify-center rounded-2xl md:h-12 md:w-12"
-          style={{ backgroundColor: lesson.iconBackgroundColor }}
-        >
-          <Ionicons name={lesson.icon} size={21} color={lesson.iconColor} />
-        </View>
       </View>
     </Pressable>
   );

@@ -8,11 +8,15 @@ import {
 
 export const missedTasksQueryKey = ["admin-missed-tasks"] as const;
 
-export function useMissedTasksQuery(params: ListMissedTasksParams = {}) {
+export function useMissedTasksQuery(
+  params: ListMissedTasksParams = {},
+  enabled = true,
+) {
   return useQuery({
     queryKey: [...missedTasksQueryKey, params],
     queryFn: () => getMissedTasks(params),
     placeholderData: keepPreviousData,
+    enabled,
   });
 }
 

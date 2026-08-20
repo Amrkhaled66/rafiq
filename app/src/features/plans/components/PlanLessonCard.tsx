@@ -2,7 +2,6 @@ import { Ionicons } from "@expo/vector-icons";
 import { ActivityIndicator, Pressable, View } from "react-native";
 import type { PlanDetailLesson } from "@/features/plans/types";
 import { getTodayCairoDateString } from "@/features/plans/utils/plan-ui";
-import { useDirection } from "@/shared/hooks/use-direction";
 import { useAppTheme } from "@/shared/theme/appearance-provider";
 import { AppText } from "@/shared/ui/app-text";
 import { getSubjectUi } from "@/shared/utils/subject-ui";
@@ -18,7 +17,6 @@ export function PlanLessonCard({
   isLoading: boolean;
   onPress: () => void;
 }) {
-  const dir = useDirection();
   const { colors, effectiveColorScheme } = useAppTheme();
   const subject = getSubjectUi(lesson.subject);
   const today = getTodayCairoDateString();
@@ -27,34 +25,34 @@ export function PlanLessonCard({
   const appearance =
     lesson.status === "watched_late"
       ? {
-          label: "شوهدت متأخرًا",
-          background: effectiveColorScheme === "dark" ? "#17344A" : "#E0F2FE",
-          color: effectiveColorScheme === "dark" ? "#7DD3FC" : "#0369A1",
-        }
+        label: "شوهدت متأخرًا",
+        background: effectiveColorScheme === "dark" ? "#17344A" : "#E0F2FE",
+        color: effectiveColorScheme === "dark" ? "#7DD3FC" : "#0369A1",
+      }
       : lesson.status === "missed"
         ? {
-            label: "فاتت - شاهد الآن",
-            background: effectiveColorScheme === "dark" ? "#4A1D20" : "#FEE2E2",
-            color: effectiveColorScheme === "dark" ? "#FCA5A5" : "#DC2626",
-          }
+          label: "فاتت - شاهد الآن",
+          background: effectiveColorScheme === "dark" ? "#4A1D20" : "#FEE2E2",
+          color: effectiveColorScheme === "dark" ? "#FCA5A5" : "#DC2626",
+        }
         : lesson.status === "watched_on_time"
           ? {
-              label: "تمت المشاهدة",
-              background:
-                effectiveColorScheme === "dark" ? "#143A27" : "#DCFCE7",
-              color: effectiveColorScheme === "dark" ? "#86EFAC" : "#166534",
-            }
+            label: "تمت المشاهدة",
+            background:
+              effectiveColorScheme === "dark" ? "#143A27" : "#DCFCE7",
+            color: effectiveColorScheme === "dark" ? "#86EFAC" : "#166534",
+          }
           : isFuture
             ? {
-                label: "قادمة",
-                background: colors.input,
-                color: colors.mutedText,
-              }
+              label: "قادمة",
+              background: colors.input,
+              color: colors.mutedText,
+            }
             : {
-                label: "شاهد الحصة",
-                background: colors.soft,
-                color: colors.tint,
-              };
+              label: "شاهد الحصة",
+              background: colors.soft,
+              color: colors.tint,
+            };
 
   return (
     <Pressable
@@ -63,16 +61,16 @@ export function PlanLessonCard({
       className="border-card-border bg-card rounded-3xl border px-4 py-3.5 active:opacity-90"
       style={{ opacity: isLoading ? 0.65 : 1 }}
     >
-      <View className={`items-center gap-3 ${dir.rowReverse}`}>
+      <View className="items-center gap-3 flex-row">
         <View
           className="size-14 items-center justify-center rounded-2xl"
           style={{ backgroundColor: subject.iconBackgroundColor }}
         >
           <Ionicons name={subject.icon} size={25} color={subject.iconColor} />
         </View>
-        <View className={`flex-1 gap-1.5 ${dir.itemsAlign}`}>
+        <View className="flex-1 gap-1.5 items-start">
           <AppText
-            className={`text-base ${dir.textAlign}`}
+            className="text-base "
             weight="bold"
             numberOfLines={1}
           >

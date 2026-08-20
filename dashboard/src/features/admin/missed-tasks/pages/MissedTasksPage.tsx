@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from "react";
+import { useMemo } from "react";
 
 import { useCoachesQuery } from "@/features/admin/coaches/queries/coachQueries";
 import MissedTasksFilters from "@/features/admin/missed-tasks/components/MissedTasksPage/MissedTasksFilters";
@@ -20,13 +20,6 @@ export default function MissedTasksPage() {
   const filters = useMissedTasksFilterParams();
   const pagination = useUrlPagination({ defaults: { page: 1, limit: 10 } });
 
-  useEffect(() => {
-    if (pagination.page !== 1) {
-      pagination.setPage(1);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filters.status, filters.from, filters.to, filters.coachId, filters.studentPhone]);
-
   const coachesQuery = useCoachesQuery(
     canReadCoaches ? { page: 1, limit: 100, deletedStatus: "active" } : {},
   );
@@ -41,11 +34,13 @@ export default function MissedTasksPage() {
   );
 
   const missedTasksQuery = useMissedTasksQuery({
-    from: filters.from || undefined,
-    to: filters.to || undefined,
-    status: filters.status || undefined,
-    coachId: filters.coachId ? Number(filters.coachId) : undefined,
-    studentPhone: filters.studentPhone || undefined,
+    from: filters.appliedFilters.from || undefined,
+    to: filters.appliedFilters.to || undefined,
+    status: filters.appliedFilters.status || undefined,
+    coachId: filters.appliedFilters.coachId
+      ? Number(filters.appliedFilters.coachId)
+      : undefined,
+    studentPhone: filters.appliedFilters.studentPhone || undefined,
     page: pagination.page,
     limit: pagination.limit,
   });
@@ -57,6 +52,7 @@ export default function MissedTasksPage() {
   return (
     <div className="space-y-6">
       <PageHeader
+        icon="material-symbols:event-busy-outline"
         title="المهام الفائتة"
         subtitle="متابعة المهام الفائتة وتسجيل حلها من قبل المدرب."
       />
@@ -68,19 +64,16 @@ export default function MissedTasksPage() {
       )}
 
       <MissedTasksFilters
-        from={filters.from}
-        to={filters.to}
-        status={filters.status}
-        coachId={filters.coachId}
-        studentPhone={filters.studentPhone}
+        filters={filters.draftFilters}
         canReadCoaches={Boolean(canReadCoaches)}
         coachOptions={coachOptions}
         coachesLoading={Boolean(canReadCoaches && coachesQuery.isLoading)}
-        onFromChange={filters.setFrom}
-        onToChange={filters.setTo}
-        onStatusChange={filters.setStatus}
-        onCoachChange={filters.setCoachId}
-        onStudentPhoneChange={filters.setStudentPhone}
+        isApplying={missedTasksQuery.isFetching}
+        hasChanges={filters.hasChanges}
+        hasFilters={filters.hasFilters}
+        onChange={filters.setDraftFilter}
+        onApply={filters.applyFilters}
+        onReset={filters.resetFilters}
       />
 
       {missedTasksQuery.isError && !missedTasksQuery.data ? (

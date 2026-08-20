@@ -8,7 +8,7 @@ export function TaskDetailHeaderSkeleton() {
 
   return (
     <View className="relative mb-9 items-center gap-2 md:gap-2.5">
-      <View className="absolute top-2 left-0 md:top-2.5">
+      <View className="absolute top-2 inset-e-0 md:top-2.5">
         <ShimmerBlock width={44} height={44} borderRadius={16} />
       </View>
 
@@ -27,8 +27,8 @@ export function TaskNoteSkeleton() {
 
   return (
     <SkeletonSurface className="rounded-3xl px-5 py-4 md:px-6 md:py-5">
-      <View className="items-end gap-3">
-        <View className="flex-row-reverse items-center gap-2.5">
+      <View className="items-start gap-3">
+        <View className="flex-row items-center gap-2.5">
           <ShimmerBlock width={20} height={20} borderRadius={999} />
           <ShimmerBlock
             width={isTablet ? 130 : 110}
@@ -37,7 +37,7 @@ export function TaskNoteSkeleton() {
           />
         </View>
 
-        <View className="items-end gap-2">
+        <View className="items-start gap-2">
           <ShimmerBlock
             width={isTablet ? 260 : 208}
             height={isTablet ? 18 : 16}
@@ -85,18 +85,18 @@ export function PomodoroCardSkeleton() {
 
 export function TaskSessionsStatsCardSkeleton() {
   return (
-    <View className="mb-5 flex-row-reverse gap-3 md:mb-6 md:gap-4">
+    <View className="mb-5 flex-row gap-3 md:mb-6 md:gap-4">
       {[0, 1].map((item) => (
         <SkeletonSurface
           key={item}
           className="flex-1 rounded-3xl px-4 py-3 md:px-5 md:py-4"
         >
-          <View className="flex-row-reverse items-center gap-3 md:gap-4">
+          <View className="flex-row items-center gap-3 md:gap-4">
             <ShimmerBlock width={52} height={52} borderRadius={999} />
 
-            <View className="flex-1 items-end gap-2">
+            <View className="flex-1 items-start gap-2">
               <ShimmerBlock width={80} height={16} borderRadius={999} />
-              <View className="flex-row-reverse items-center gap-2">
+              <View className="flex-row items-center gap-2">
                 <ShimmerBlock width={20} height={20} borderRadius={999} />
                 <ShimmerBlock width={44} height={20} borderRadius={999} />
               </View>
@@ -114,15 +114,15 @@ export function TaskSessionRowSkeleton() {
 
   return (
     <SkeletonSurface className="rounded-3xl px-4 py-4 md:px-5 md:py-4.5">
-      <View className="flex-row-reverse items-center gap-3 md:gap-3.5">
-        <View className="flex-1 items-end gap-2">
-          <View className="flex-row-reverse items-center gap-2 self-stretch md:gap-2.5">
+      <View className="flex-row items-center gap-3 md:gap-3.5">
+        <View className="flex-1 items-start gap-2">
+          <View className="flex-row items-center gap-2 self-stretch md:gap-2.5">
             <ShimmerBlock
               width={isTablet ? 40 : 36}
               height={isTablet ? 40 : 36}
               borderRadius={999}
             />
-            <View className="flex-1 items-end gap-1.5">
+            <View className="flex-1 items-start gap-1.5">
               <ShimmerBlock
                 width={isTablet ? 110 : 90}
                 height={isTablet ? 20 : 18}

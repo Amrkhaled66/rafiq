@@ -22,7 +22,7 @@ export function LessonChecklistCardSkeleton({
             index !== rowsCount - 1 ? "border-b border-b-card-border" : ""
           }`}
         >
-          <View className="flex-row-reverse items-center gap-3 md:gap-4.5">
+          <View className="flex-row items-center gap-3 md:gap-4.5">
             <ShimmerBlock
               width={isTablet ? 38 : 28}
               height={isTablet ? 38 : 28}

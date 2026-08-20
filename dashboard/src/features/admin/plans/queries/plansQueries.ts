@@ -16,11 +16,12 @@ export const studentPlanDetailQueryKey = ["admin-student-plan-detail"] as const;
 export function useStudentPlansQuery(
   studentId: number,
   params: ListStudentPlansParams = {},
+  enabled = true,
 ) {
   return useQuery({
     queryKey: [...studentPlansQueryKey, studentId, params],
     queryFn: () => getStudentPlans(studentId, params),
-    enabled: Number.isFinite(studentId) && studentId > 0,
+    enabled: enabled && Number.isFinite(studentId) && studentId > 0,
   });
 }
 

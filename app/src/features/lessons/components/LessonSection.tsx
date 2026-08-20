@@ -2,7 +2,6 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import { Pressable, View } from "react-native";
 
 import type { MyLessonItem } from "@/features/tasks/types";
-import { useDirection } from "@/shared/hooks/use-direction";
 import { AppText } from "@/shared/ui/app-text";
 import { LessonChecklistRow } from "@/shared/ui/lesson-checklist-row";
 import { LessonChecklistCardSkeleton } from "@/shared/ui/skeletons";
@@ -28,7 +27,6 @@ export function LessonSection({
   previewCount = 3,
   isLoading = false,
 }: LessonSectionProps) {
-  const dir = useDirection();
   const visibleLessons = isExpanded ? lessons : lessons.slice(0, previewCount);
 
   if (isLoading) {
@@ -37,20 +35,19 @@ export function LessonSection({
 
   return (
     <View className="gap-2.5 md:gap-3">
-      <View className={`items-center justify-between ${dir.row}`}>
+      <View className="items-center justify-between flex-row">
+        <AppText className="text-lg md:text-[22px]" weight="bold">
+          حصص اليوم
+        </AppText>
         <View className="bg-brand-primary-soft rounded-full px-3 py-1 md:px-3.5 md:py-1.5">
           <AppText className="text-xs md:text-[13px]" tone="tint" weight="semibold">
             {lessons.length} حصص
           </AppText>
         </View>
-
-        <AppText className="text-lg md:text-[22px]" weight="bold">
-          حصص اليوم
-        </AppText>
       </View>
 
       <View
-        className="border-card-border bg-card rounded-[24px] border px-1 py-1 md:px-1.5 md:py-1.5"
+        className="border-card-border bg-card rounded-3xl border px-1 py-1 md:px-1.5 md:py-1.5"
         style={{
           shadowColor: "#000",
           shadowOffset: { width: 0, height: 5 },
@@ -76,7 +73,7 @@ export function LessonSection({
           onPress={onToggleExpanded}
         >
           <Ionicons
-            name={dir.isRTL ? "chevron-back" : "chevron-forward"}
+            name="chevron-back"
             size={18}
             color="#EF7B7D"
           />

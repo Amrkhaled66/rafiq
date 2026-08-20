@@ -17,6 +17,7 @@ export default function StudentPlanDetailsHeader({
 }) {
   return (
     <PageHeader
+      icon="solar:clipboard-list-linear"
       title={title}
       subtitle={`الفترة: ${formatDateArShort(startsOn)} - ${formatDateArShort(
         endsOn,

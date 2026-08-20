@@ -1,7 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
 import { View } from "react-native";
 
-import { useDirection } from "@/shared/hooks/use-direction";
 import { useAppTheme } from "@/shared/theme/appearance-provider";
 import { AppHeading } from "@/shared/ui/app-text";
 
@@ -11,15 +10,14 @@ type SectionTitleProps = {
 };
 
 export function SectionTitle({ title, icon }: SectionTitleProps) {
-  const dir = useDirection();
   const { colors } = useAppTheme();
 
   return (
-    <View className={`items-center justify-end gap-2 ${dir.row}`}>
-      <AppHeading>{title}</AppHeading>
+    <View className="flex-row items-center gap-2">
       <View className="h-10 w-10 items-center justify-center rounded-full ">
         <Ionicons name={icon} size={20} color={colors.tint} />
       </View>
+      <AppHeading>{title}</AppHeading>
     </View>
   );
 }

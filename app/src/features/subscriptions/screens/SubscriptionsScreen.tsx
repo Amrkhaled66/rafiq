@@ -60,7 +60,7 @@ export function SubscriptionsScreen() {
         <FocusedStatusBar style={statusBarStyle} />
         <View className="gap-4">
           <View className="relative items-center gap-2">
-            <View className="absolute top-0 left-0">
+            <View className="absolute top-0 inset-e-0">
               <BackButton />
             </View>
             <PageTitle title="الاشتراكات" />
@@ -141,7 +141,7 @@ export function SubscriptionsScreen() {
         ListHeaderComponent={
           <View className="mb-4 gap-4">
             <View className="relative items-center gap-2">
-              <View className="absolute top-0 left-0">
+              <View className="absolute top-0 inset-e-0">
                 <BackButton />
               </View>
               <PageTitle title="الاشتراكات" />

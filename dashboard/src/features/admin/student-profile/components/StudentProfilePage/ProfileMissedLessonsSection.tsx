@@ -1,43 +1,59 @@
 import { useMemo } from "react";
 import type { TableColumn } from "react-data-table-component";
+import AdminServerTable from "@/features/admin/shared/components/AdminServerTable";
 import type { MissedLessonRow } from "@/features/admin/missed-lessons/services/missedLessonsService";
-import Table from "@/shared/components/Table";
+import { SCHOOL_SUBJECT_LABELS } from "@/shared/const/subjects";
+import { formatDateArShort } from "@/shared/utils/dates";
 
-export default function ProfileMissedLessonsSection({
-  lessons,
-}: {
-  lessons: MissedLessonRow[];
-}) {
+type Props = {
+  items: MissedLessonRow[];
+  total: number;
+  page: number;
+  limit: number;
+  isLoading: boolean;
+  onPageChange: (page: number) => void;
+  onRowsPerPageChange: (limit: number, page: number) => void;
+};
+
+export default function ProfileMissedLessonsSection(props: Props) {
   const columns = useMemo<TableColumn<MissedLessonRow>[]>(
     () => [
-      {
-        name: "اسم الدرس",
-        selector: (row) => row.lessonName,
-        grow: 1.5,
-      },
+      { name: "الحصة", selector: (row) => row.lessonName, grow: 1.5 },
       {
         name: "المادة",
-        selector: (row) => row.subject,
+        selector: (row) => SCHOOL_SUBJECT_LABELS[row.subject] ?? row.subject,
       },
       {
         name: "التاريخ",
-        selector: (row) => row.scheduledForDate,
+        selector: (row) => formatDateArShort(row.scheduledForDate),
       },
       {
-        name: "الحالة",
+        name: "المشاهدة",
         cell: (row) => (
           <span
-            className={`inline-flex rounded-full px-3 py-1 text-xs font-medium ${
-              row.isResolved
-                ? "bg-emerald-100 text-emerald-700"
+            className={`inline-flex rounded-full px-3 py-1 text-xs font-medium whitespace-nowrap ${
+              row.occurrenceStatus === "watched_late"
+                ? "bg-sky-100 text-sky-700"
                 : "bg-rose-100 text-rose-700"
             }`}
           >
-            {row.isResolved
-              ? "تم الحل"
-              : row.occurrenceStatus === "watched_late"
-                ? "شوهدت متأخرًا"
-                : "فائتة"}
+            {row.occurrenceStatus === "watched_late"
+              ? "شوهدت متأخرًا"
+              : "لم تُشاهد"}
+          </span>
+        ),
+      },
+      {
+        name: "المتابعة",
+        cell: (row) => (
+          <span
+            className={`inline-flex rounded-full px-3 py-1 text-xs font-medium whitespace-nowrap ${
+              row.isResolved
+                ? "bg-emerald-100 text-emerald-700"
+                : "bg-amber-100 text-amber-800"
+            }`}
+          >
+            {row.isResolved ? "تمت المتابعة" : "بحاجة للمتابعة"}
           </span>
         ),
       },
@@ -46,29 +62,17 @@ export default function ProfileMissedLessonsSection({
   );
 
   return (
-    <section className="dashboard-card">
-      <div className="mb-5 text-right">
-        <h2 className="text-foreground text-xl font-bold">الحصص الفائتة</h2>
-        <p className="text-subTitle mt-1 text-sm">
-          جميع الحصص الفائتة للطالب ({lessons.length} حصة).
-        </p>
-      </div>
-
-      <Table
-        columns={columns}
-        data={lessons}
-        pagination
-        paginationPerPage={5}
-        paginationRowsPerPageOptions={[5, 10, 20, 50]}
-        responsive
-        highlightOnHover
-        persistTableHead
-        noDataComponent={
-          <div className="text-subTitle py-6 text-sm">
-            لا توجد حصص فائتة.
-          </div>
-        }
-      />
-    </section>
+    <AdminServerTable
+      columns={columns}
+      data={props.items}
+      isLoading={props.isLoading}
+      loadingText="جاري تحميل الحصص الفائتة..."
+      noDataText="لا توجد حصص فائتة لهذا الطالب."
+      currentPage={props.page}
+      rowsPerPage={props.limit}
+      totalRows={props.total}
+      onPageChange={props.onPageChange}
+      onRowsPerPageChange={props.onRowsPerPageChange}
+    />
   );
 }

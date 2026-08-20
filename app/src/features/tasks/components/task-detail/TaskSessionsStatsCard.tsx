@@ -60,7 +60,7 @@ function MiniStatCard({
           <Ionicons name={icon} size={25} color={iconColor} />
         </View>
 
-        <View className="flex-1 items-end">
+        <View className="flex-1 items-start">
           <AppText
             className="text-right text-[13px] md:text-[14px]"
             weight="medium"
@@ -69,7 +69,7 @@ function MiniStatCard({
             {label}
           </AppText>
 
-          <View className="flex-row-reverse items-baseline gap-1">
+          <View className="flex-row items-baseline gap-1">
             <AppText
               className="text-right text-[28px] md:text-[30px]"
               weight="bold"
@@ -118,7 +118,7 @@ export function TaskSessionsStatsCard({
   }
 
   return (
-    <View className="mb-5 flex-row-reverse gap-3 md:mb-6 md:gap-4">
+    <View className="mb-5 flex-row gap-3 md:mb-6 md:gap-4">
       <MiniStatCard
         icon="time-outline"
         value={totalFocusMinutes}

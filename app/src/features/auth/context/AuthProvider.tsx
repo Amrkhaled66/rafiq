@@ -15,6 +15,7 @@ import { setAccessToken, setUnauthorizedHandler } from "@/lib/api";
 type AuthState = {
   user: AuthUser | null;
   token: string | null;
+  isReady: boolean;
   login: (user: AuthUser, token: string) => Promise<void>;
   logout: () => Promise<void>;
 };
@@ -24,23 +25,51 @@ const AuthContext = createContext<AuthState | null>(null);
 export function AuthProvider({ children }: PropsWithChildren) {
   const [user, setUser] = useState<AuthUser | null>(null);
   const [token, setToken] = useState<string | null>(null);
+  const [isReady, setIsReady] = useState(false);
   const isHandlingUnauthorizedRef = useRef(false);
 
   useEffect(() => {
-    (async () => {
-      const savedToken = await authStorage.getToken();
-      const savedUserJson = await authStorage.getUser();
-      if (savedToken) {
+    let isMounted = true;
+
+    async function restoreAuth() {
+      try {
+        const [savedToken, savedUserJson] = await Promise.all([
+          authStorage.getToken(),
+          authStorage.getUser(),
+        ]);
+
+        if (!isMounted) {
+          return;
+        }
+
         setToken(savedToken);
-      }
-      if (savedUserJson) {
-        try {
-          setUser(JSON.parse(savedUserJson));
-        } catch {
+        setAccessToken(savedToken);
+
+        if (savedUserJson) {
+          try {
+            setUser(JSON.parse(savedUserJson));
+          } catch {
+            setUser(null);
+          }
+        }
+      } catch {
+        if (isMounted) {
+          setToken(null);
           setUser(null);
+          setAccessToken(null);
+        }
+      } finally {
+        if (isMounted) {
+          setIsReady(true);
         }
       }
-    })();
+    }
+
+    void restoreAuth();
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   useEffect(() => {
@@ -83,8 +112,8 @@ export function AuthProvider({ children }: PropsWithChildren) {
   }, [logout]);
 
   const contextValue = useMemo(
-    () => ({ user, token, login, logout }),
-    [user, token, login, logout],
+    () => ({ user, token, isReady, login, logout }),
+    [user, token, isReady, login, logout],
   );
 
   return (

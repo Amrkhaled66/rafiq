@@ -2,7 +2,6 @@ import { Ionicons } from "@expo/vector-icons";
 import { View } from "react-native";
 
 import type { MyTasksProgress } from "@/features/tasks/types";
-import { useDirection } from "@/shared/hooks/use-direction";
 import { useAppTheme } from "@/shared/theme/appearance-provider";
 import { AppText } from "@/shared/ui/app-text";
 
@@ -17,7 +16,6 @@ export function TasksProgressCard({
   itemLabel = "مهام",
   title = "تقدمك النهارده",
 }: TasksProgressCardProps) {
-  const dir = useDirection();
   const { colors } = useAppTheme();
   const segmentCount = Math.max(progress.totalCount, 1);
   const segments = Array.from({ length: segmentCount }, (_, index) => index);
@@ -34,7 +32,7 @@ export function TasksProgressCard({
       }}
     >
       <View className="gap-5">
-        <View className={`items-center justify-between ${dir.row}`}>
+        <View className="items-center justify-between flex-row">
           <View className="bg-brand-primary-soft h-11 w-11 items-center justify-center rounded-2xl">
             <Ionicons
               name="stats-chart-outline"
@@ -48,7 +46,7 @@ export function TasksProgressCard({
           </AppText>
         </View>
 
-        <View className={`items-center gap-1.5 ${dir.rowReverse}`}>
+        <View className="items-center gap-1.5 flex-row">
           {segments.map((segment) => {
             const isActive = segment < progress.completedCount;
 
@@ -66,7 +64,7 @@ export function TasksProgressCard({
           })}
         </View>
 
-        <View className={`items-center justify-between ${dir.row}`}>
+        <View className="items-center justify-between flex-row">
           <AppText
             className="text-sm md:text-base"
             tone="muted"
