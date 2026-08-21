@@ -15,6 +15,12 @@ import { TodayLessons } from "@/features/home/components/TodayLessons";
 import { TodayTasks } from "@/features/home/components/TodayTasks";
 import { useStudentHome } from "@/features/home/queries/homeQueries";
 import { mapStudentHomeToViewModel } from "@/features/home/utils/homeMappers";
+import { LessonWatchConfirmationModal } from "@/features/lessons/components/LessonWatchConfirmationModal";
+import { useLessonWatchConfirmation } from "@/features/lessons/hooks/useLessonWatchConfirmation";
+import {
+  useMarkLessonWatched,
+  useUnmarkLessonWatched,
+} from "@/features/lessons/queries/lessonQueries";
 import { FocusedStatusBar } from "@/shared/ui/focused-status-bar";
 
 function getFirstName(fullName?: string | null) {
@@ -28,7 +34,25 @@ export function HomeScreen() {
   const isTablet = width >= 768;
   const { user } = useAuth();
   const { data, isLoading, isError, isRefetching, refetch } = useStudentHome();
+  const markLessonMutation = useMarkLessonWatched();
+  const unmarkLessonMutation = useUnmarkLessonWatched();
   const home = data ? mapStudentHomeToViewModel(data) : null;
+  const lessonConfirmation = useLessonWatchConfirmation({
+    onWatch: (lessonId) => markLessonMutation.mutateAsync(lessonId),
+    onUnwatch: (lessonId) => unmarkLessonMutation.mutateAsync(lessonId),
+  });
+
+  const handleToggleLesson = (lessonId: number) => {
+    const lesson = home?.lessons.find((item) => item.id === lessonId);
+    if (!lesson) return;
+
+    lessonConfirmation.requestConfirmation({
+      id: lesson.id,
+      lessonName: lesson.title,
+      intent: lesson.state === "watched" ? "unwatch" : "watch",
+    });
+  };
+
   return (
     <View className="bg-background flex-1">
       <FocusedStatusBar style="light" />
@@ -77,6 +101,13 @@ export function HomeScreen() {
                   <TodayLessons
                     lessons={home?.lessons ?? []}
                     isLoading={isLoading}
+                    onToggleLesson={handleToggleLesson}
+                    disabledLessonId={lessonConfirmation.target?.id}
+                    loadingLessonId={
+                      lessonConfirmation.isSubmitting
+                        ? lessonConfirmation.target?.id
+                        : null
+                    }
                     onViewAll={() => router.push("/(tabs)/my-lessons")}
                   />
                 </View>
@@ -85,6 +116,13 @@ export function HomeScreen() {
           )}
         </View>
       </ScrollView>
+      <LessonWatchConfirmationModal
+        target={lessonConfirmation.target}
+        isSubmitting={lessonConfirmation.isSubmitting}
+        errorMessage={lessonConfirmation.errorMessage}
+        onConfirm={() => void lessonConfirmation.confirm()}
+        onClose={lessonConfirmation.dismiss}
+      />
     </View>
   );
 }

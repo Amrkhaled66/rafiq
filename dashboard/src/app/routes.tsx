@@ -4,6 +4,7 @@ import { createBrowserRouter, Navigate, Outlet } from "react-router-dom";
 import { AppProviders } from "@/app/providers";
 import { authRoutes } from "@/features/admin/auth/routes";
 import { coachesRoutes } from "@/features/admin/coaches/routes";
+import { dailyTaskProgressRoutes } from "@/features/admin/daily-task-progress/routes";
 import { expiringSubscriptionsRoutes } from "@/features/admin/expiring-subscriptions/routes";
 import DashboardHomePage from "@/features/admin/home/pages/DashboardHomePage";
 import DashBoardLayout from "@/features/admin/layouts/DashBoardLayout";
@@ -67,6 +68,7 @@ export const router = createBrowserRouter([
                     element: <DashboardHomePage />,
                   },
                   coachesRoutes,
+                  dailyTaskProgressRoutes,
                   expiringSubscriptionsRoutes,
                   missedTasksRoutes,
                   missedLessonsRoutes,

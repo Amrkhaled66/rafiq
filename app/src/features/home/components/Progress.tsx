@@ -26,17 +26,23 @@ export function Progress({
     return <ProgressSkeleton />;
   }
 
+  const hasNoTasks = totalCount === 0;
+  const ifTaskIsCompleted = completedCount === totalCount && !hasNoTasks;
   return (
     <HomePageSection
       title="تقدمك النهاردة"
       icon="sparkles-outline"
       contentClassName="gap-0"
-      className="rounded-[28px] bg-card px-4 pt-4 md:px-7 md:py-6"
+      className="bg-card rounded-[28px] px-4 pt-4 md:px-7 md:py-6"
     >
       <View className="flex-row items-center justify-between">
         <View className="gap-3">
           <View className="gap-1">
-            {completedCount === totalCount ? (
+            {hasNoTasks ? (
+              <AppHeading className="text-xl md:text-[26px]">
+                مفيش مهام النهارده
+              </AppHeading>
+            ) : ifTaskIsCompleted ? (
               <AppHeading className="text-xl md:text-[26px]">
                 خلصت كل المهام
               </AppHeading>
@@ -50,7 +56,15 @@ export function Progress({
               </AppHeading>
             )}
 
-            {completedCount === totalCount ? (
+            {hasNoTasks ? (
+              <AppText
+                className="text-sm md:text-lg"
+                tone="muted"
+                weight="regular"
+              >
+                لما تتضاف مهام جديدة هتظهر هنا
+              </AppText>
+            ) : ifTaskIsCompleted ? (
               <AppText
                 className="text-sm md:text-lg"
                 tone="muted"

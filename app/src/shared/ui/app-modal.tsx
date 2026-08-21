@@ -1,4 +1,10 @@
-import { Modal, Pressable, StyleSheet, View } from "react-native";
+import {
+  ActivityIndicator,
+  Modal,
+  Pressable,
+  StyleSheet,
+  View,
+} from "react-native";
 
 import { AppText } from "@/shared/ui/app-text";
 import { useAppTheme } from "@/shared/theme/appearance-provider";
@@ -8,6 +14,11 @@ type AppModalProps = {
   title: string;
   message: string;
   actionLabel?: string;
+  secondaryActionLabel?: string;
+  isActionLoading?: boolean;
+  errorMessage?: string | null;
+  onAction?: () => void;
+  onSecondaryAction?: () => void;
   onClose: () => void;
 };
 
@@ -16,16 +27,24 @@ export function AppModal({
   title,
   message,
   actionLabel = "حسنًا",
+  secondaryActionLabel,
+  isActionLoading = false,
+  errorMessage,
+  onAction,
+  onSecondaryAction,
   onClose,
 }: AppModalProps) {
   const { colors } = useAppTheme();
+  const handleClose = () => {
+    if (!isActionLoading) onClose();
+  };
 
   return (
     <Modal
       visible={visible}
       transparent
       animationType="fade"
-      onRequestClose={onClose}
+      onRequestClose={handleClose}
     >
       <View className="flex-1 items-center justify-center px-6">
         <View
@@ -37,7 +56,8 @@ export function AppModal({
         />
         <Pressable
           style={StyleSheet.absoluteFillObject}
-          onPress={onClose}
+          disabled={isActionLoading}
+          onPress={handleClose}
           accessibilityRole="button"
           accessibilityLabel="إغلاق النافذة"
         />
@@ -54,14 +74,44 @@ export function AppModal({
           >
             {message}
           </AppText>
-          <Pressable
-            onPress={onClose}
-            className="bg-brand-primary mt-6 rounded-2xl py-3 active:opacity-90"
-          >
-            <AppText tone="inverse" weight="bold" align="center">
-              {actionLabel}
+          {errorMessage ? (
+            <AppText
+              className="mt-3 text-sm"
+              weight="medium"
+              align="center"
+              style={{ color: "#DC2626" }}
+            >
+              {errorMessage}
             </AppText>
-          </Pressable>
+          ) : null}
+
+          <View className="mt-6 flex-row gap-3">
+            {secondaryActionLabel ? (
+              <Pressable
+                disabled={isActionLoading}
+                onPress={onSecondaryAction ?? handleClose}
+                className="border-card-border flex-1 rounded-2xl border py-3 active:opacity-80 disabled:opacity-60"
+              >
+                <AppText className="text-nowrap" weight="bold" align="center">
+                  {secondaryActionLabel}
+                </AppText>
+              </Pressable>
+            ) : null}
+
+            <Pressable
+              disabled={isActionLoading}
+              onPress={onAction ?? handleClose}
+              className="bg-brand-primary min-h-12 flex-1 items-center justify-center rounded-2xl px-3 py-3 active:opacity-90 disabled:opacity-70"
+            >
+              {isActionLoading ? (
+                <ActivityIndicator color="#FFFFFF" />
+              ) : (
+                <AppText className="text-nowrap"  tone="inverse" weight="bold" align="center">
+                  {actionLabel}
+                </AppText>
+              )}
+            </Pressable>
+          </View>
         </View>
       </View>
     </Modal>

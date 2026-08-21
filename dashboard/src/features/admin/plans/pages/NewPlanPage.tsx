@@ -5,6 +5,8 @@ import { makeId } from "@/features/admin/plans/components/NewPlanPage/id";
 import NewPlanPeriodCard from "@/features/admin/plans/components/NewPlanPage/NewPlanPeriodCard";
 import PlanCalendarGrid from "@/features/admin/plans/components/NewPlanPage/PlanCalendarGrid";
 import PlanDayEditorModal from "@/features/admin/plans/components/NewPlanPage/PlanDayEditorModal";
+import PlanJsonEditorModal from "@/features/admin/plans/components/NewPlanPage/PlanJsonEditorModal";
+import { stringifyEditablePlanJson } from "@/features/admin/plans/components/NewPlanPage/planJson";
 import type { PlanDay } from "@/features/admin/plans/components/NewPlanPage/types";
 import useNewPlanBuilder from "@/features/admin/plans/hooks/useNewPlanBuilder";
 import {
@@ -100,6 +102,18 @@ export default function NewPlanPage() {
   const assignedCoaches = assignedCoachesQuery.data ?? [];
 
   const [selectedDayDate, setSelectedDayDate] = useState<string | null>(null);
+  const [isJsonEditorOpen, setIsJsonEditorOpen] = useState(false);
+
+  const editablePlanJson = useMemo(
+    () =>
+      stringifyEditablePlanJson({
+        name,
+        startsOn: fromDate,
+        endsOn: toDate,
+        days,
+      }),
+    [days, fromDate, name, toDate],
+  );
 
   const selectedDay = useMemo(() => {
     if (!selectedDayDate) return null;
@@ -279,7 +293,7 @@ export default function NewPlanPage() {
             : `إنشاء خطة جديدة للطالب رقم ${studentId}.`
         }
         action={
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             <Button variant="outline" onClick={() => navigate(-1)}>
               رجوع
             </Button>
@@ -319,20 +333,12 @@ export default function NewPlanPage() {
           onCoachIdChange={actions.setCoachId}
         />
 
-        {days.length > 0 ? (
-          <PlanCalendarGrid
-            days={days}
-            selectedDayDate={selectedDayDate}
-            onSelectDay={setSelectedDayDate}
-          />
-        ) : (
-          <section className="dashboard-card col-span-2 h-fit text-right">
-            <h2 className="text-foreground text-lg font-bold">أيام الخطة</h2>
-            <p className="text-subTitle mt-1 text-sm">
-              اختر فترة الخطة من اليمين لبدء إنشاء أيام الخطة.
-            </p>
-          </section>
-        )}
+        <PlanCalendarGrid
+          days={days}
+          selectedDayDate={selectedDayDate}
+          onSelectDay={setSelectedDayDate}
+          onEditJson={() => setIsJsonEditorOpen(true)}
+        />
       </section>
 
       {selectedDayDate && selectedDay ? (
@@ -349,6 +355,25 @@ export default function NewPlanPage() {
           onDeleteTask={(taskId) =>
             actions.deleteTask(selectedDay.date, taskId)
           }
+        />
+      ) : null}
+
+      {isJsonEditorOpen ? (
+        <PlanJsonEditorModal
+          isOpen
+          initialValue={editablePlanJson}
+          onClose={() => setIsJsonEditorOpen(false)}
+          onApply={(plan, nextDays) => {
+            actions.loadPlan({
+              name: plan.name,
+              fromDate: plan.startsOn,
+              toDate: plan.endsOn,
+              coachId,
+              days: nextDays,
+            });
+            setSelectedDayDate(null);
+            setSubmitErrors([]);
+          }}
         />
       ) : null}
     </div>

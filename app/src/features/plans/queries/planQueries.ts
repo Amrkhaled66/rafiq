@@ -1,6 +1,7 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 
 import { useAuth } from "@/features/auth/context/AuthProvider";
+import { invalidateLessonWatchQueries } from "@/features/lessons/queries/invalidateLessonWatchQueries";
 import type { ListStudentPlansParams } from "@/features/plans/types";
 import {
   getStudentPlanDetail,
@@ -8,7 +9,6 @@ import {
   markPlanLessonWatched,
   unmarkPlanLessonWatched,
 } from "@/features/plans/services/planService";
-import { queryClient } from "@/lib/react-query";
 
 function getStudentPlanDetailQueryKey(
   studentId?: number,
@@ -67,26 +67,16 @@ export function useStudentPlanDetail(planId: number | null) {
 
 export function usePlanLessonWatchActions(planId: number | null) {
   const { user } = useAuth();
-  const invalidate = async () => {
-    await Promise.all([
-      queryClient.invalidateQueries({
-        queryKey: getStudentPlanDetailQueryKey(user?.id, planId),
-      }),
-      queryClient.invalidateQueries({
-        queryKey: ["student-today-lessons", user?.id],
-      }),
-    ]);
-  };
 
   const markMutation = useMutation({
     mutationFn: (occurrenceId: number) =>
       markPlanLessonWatched(user!.id, occurrenceId),
-    onSuccess: invalidate,
+    onSuccess: () => invalidateLessonWatchQueries(user?.id),
   });
   const unmarkMutation = useMutation({
     mutationFn: (occurrenceId: number) =>
       unmarkPlanLessonWatched(user!.id, occurrenceId),
-    onSuccess: invalidate,
+    onSuccess: () => invalidateLessonWatchQueries(user?.id),
   });
 
   return { markMutation, unmarkMutation };

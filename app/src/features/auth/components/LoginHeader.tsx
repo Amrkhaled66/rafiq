@@ -38,7 +38,7 @@ export default function LoginHeader() {
               L 0 70
               Z
             `}
-            fill={isDark ? "#121212" : "#fff"}
+            fill={isDark ? "#1a1a1a" : "#fff"}
           />
         </Svg>
       </View>

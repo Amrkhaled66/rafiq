@@ -1,0 +1,1 @@
+CREATE INDEX "tasks_due_at_idx" ON "tasks" USING btree ("due_at");

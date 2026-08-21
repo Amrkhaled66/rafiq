@@ -41,6 +41,11 @@ const SIDEBAR_ITEMS: SidebarItem[] = [
     path: "missed-tasks",
   },
   {
+    icon: "solar:checklist-minimalistic-linear",
+    label: "متابعة إنجاز الطلاب",
+    path: "daily-task-progress",
+  },
+  {
     icon: "solar:videocamera-record-linear",
     label: "الحصص الفائتة",
     path: "missed-lessons",

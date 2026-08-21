@@ -62,7 +62,7 @@ function MiniStatCard({
 
         <View className="flex-1 items-start">
           <AppText
-            className="text-right text-[13px] md:text-[14px]"
+            className="text-right text-nowrap! text-[13px] md:text-[14px]"
             weight="medium"
             style={{ color: mutedTextColor }}
           >

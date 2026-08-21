@@ -12,5 +12,8 @@ export function useTaskSessionsQuery(params: ListTaskSessionsParams = {}) {
     queryKey: [...taskSessionsQueryKey, params],
     queryFn: () => getTaskSessions(params),
     placeholderData: keepPreviousData,
+    staleTime: 0,
+    refetchOnMount: "always",
+    refetchOnWindowFocus: "always",
   });
 }

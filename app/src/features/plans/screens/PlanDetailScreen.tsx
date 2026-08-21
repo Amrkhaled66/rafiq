@@ -4,6 +4,8 @@ import { RefreshControl, ScrollView, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { HomeStateCard } from "@/features/home/components/HomeStateCard";
+import { LessonWatchConfirmationModal } from "@/features/lessons/components/LessonWatchConfirmationModal";
+import { useLessonWatchConfirmation } from "@/features/lessons/hooks/useLessonWatchConfirmation";
 import { PlanDaysCarousel } from "@/features/plans/components/PlanDaysCarousel";
 import { PlanDetailHeader } from "@/features/plans/components/PlanDetailHeader";
 import { PlanDetailStats } from "@/features/plans/components/PlanDetailStats";
@@ -38,10 +40,13 @@ export function PlanDetailScreen() {
   const { data, isLoading, isError, isRefetching, refetch } =
     useStudentPlanDetail(planId);
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
-  const [pendingOccurrenceId, setPendingOccurrenceId] = useState<number | null>(
-    null,
-  );
   const lessonActions = usePlanLessonWatchActions(planId);
+  const lessonConfirmation = useLessonWatchConfirmation({
+    onWatch: (occurrenceId) =>
+      lessonActions.markMutation.mutateAsync(occurrenceId),
+    onUnwatch: (occurrenceId) =>
+      lessonActions.unmarkMutation.mutateAsync(occurrenceId),
+  });
   const { colors, effectiveColorScheme } = useAppTheme();
   const statusBarStyle = effectiveColorScheme === "dark" ? "light" : "dark";
 
@@ -73,18 +78,16 @@ export function PlanDetailScreen() {
     [timelineDays, selectedDate],
   );
 
-  const handleLessonPress = async (occurrenceId: number, status: string) => {
-    if (pendingOccurrenceId) return;
-    setPendingOccurrenceId(occurrenceId);
-    try {
-      if (status === "watched_on_time") {
-        await lessonActions.unmarkMutation.mutateAsync(occurrenceId);
-      } else {
-        await lessonActions.markMutation.mutateAsync(occurrenceId);
-      }
-    } finally {
-      setPendingOccurrenceId(null);
-    }
+  const handleLessonPress = (
+    occurrenceId: number,
+    lessonName: string,
+    status: string,
+  ) => {
+    lessonConfirmation.requestConfirmation({
+      id: occurrenceId,
+      lessonName,
+      intent: status === "watched_on_time" ? "unwatch" : "watch",
+    });
   };
 
   if (!planId || isError) {
@@ -207,10 +210,14 @@ export function PlanDetailScreen() {
                         key={lesson.occurrenceId}
                         lesson={lesson}
                         date={selectedDay.date}
-                        isLoading={pendingOccurrenceId === lesson.occurrenceId}
+                        isLoading={
+                          lessonConfirmation.isSubmitting &&
+                          lessonConfirmation.target?.id === lesson.occurrenceId
+                        }
                         onPress={() =>
-                          void handleLessonPress(
+                          handleLessonPress(
                             lesson.occurrenceId,
+                            lesson.name,
                             lesson.status,
                           )
                         }
@@ -227,6 +234,13 @@ export function PlanDetailScreen() {
           </View>
         </View>
       </ScrollView>
+      <LessonWatchConfirmationModal
+        target={lessonConfirmation.target}
+        isSubmitting={lessonConfirmation.isSubmitting}
+        errorMessage={lessonConfirmation.errorMessage}
+        onConfirm={() => void lessonConfirmation.confirm()}
+        onClose={lessonConfirmation.dismiss}
+      />
     </View>
   );
 }

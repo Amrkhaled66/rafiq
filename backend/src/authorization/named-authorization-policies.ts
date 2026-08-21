@@ -195,6 +195,10 @@ export const namedAuthorizationPolicies: NamedAuthorizationPolicy[] = [
     requirements: [requireAnyRole(['coach', 'super_admin'])],
   },
   {
+    name: 'daily_task_progress.list',
+    requirements: [requireAnyRole(['coach', 'super_admin'])],
+  },
+  {
     name: 'missed_lessons.list',
     requirements: [requireAnyRole(['coach', 'super_admin'])],
   },

@@ -13,10 +13,11 @@ export function mapStudentTodayLessonsToViewModel(
       const subjectUi = getSubjectUi(lesson.subject);
 
       return {
-        id: String(lesson.id),
+        id: lesson.id,
+        title: lesson.name,
         subject: subjectUi.label,
         icon: subjectUi.icon,
-        checked: lesson.checked,
+        state: lesson.checked ? ("watched" as const) : ("scheduled" as const),
         iconBackgroundColor: subjectUi.iconBackgroundColor,
         iconColor: subjectUi.iconColor,
       };

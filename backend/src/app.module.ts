@@ -5,6 +5,7 @@ import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { AuthorizationModule } from './authorization/authorization.module';
 import { CoachesModule } from './coaches/coaches.module';
+import { DailyTaskProgressModule } from './daily-task-progress/daily-task-progress.module';
 import { HomeModule } from './home/home.module';
 import { LessonsModule } from './lessons/lessons.module';
 import { LessonOccurrencesModule } from './lesson-occurrences/lesson-occurrences.module';
@@ -25,6 +26,7 @@ import { UsersModule } from './users/users.module';
     UsersModule,
     StudentsModule,
     CoachesModule,
+    DailyTaskProgressModule,
     TasksModule,
     HomeModule,
     LessonsModule,

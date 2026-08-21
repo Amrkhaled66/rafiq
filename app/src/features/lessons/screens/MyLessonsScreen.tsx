@@ -1,9 +1,10 @@
-import { useState } from "react";
 import { RefreshControl, View } from "react-native";
 
 import { HomeStateCard } from "@/features/home/components/HomeStateCard";
 import { LessonProgressCard } from "@/features/lessons/components/LessonProgressCard";
 import { LessonSection } from "@/features/lessons/components/LessonSection";
+import { LessonWatchConfirmationModal } from "@/features/lessons/components/LessonWatchConfirmationModal";
+import { useLessonWatchConfirmation } from "@/features/lessons/hooks/useLessonWatchConfirmation";
 import {
   useMarkLessonWatched,
   useStudentTodayLessons,
@@ -16,35 +17,28 @@ import { TabPageLayout } from "@/shared/ui/tab-page-layout";
 import { AppText } from "@/shared/ui/app-text";
 
 export function MyLessonsScreen() {
-  const [pendingLessonId, setPendingLessonId] = useState<string | null>(null);
   const { data, isLoading, isError, isRefetching, refetch } =
     useStudentTodayLessons();
   const markLessonMutation = useMarkLessonWatched();
   const unmarkLessonMutation = useUnmarkLessonWatched();
   const dayData = data ? mapStudentTodayLessonsToViewModel(data) : null;
+  const lessonConfirmation = useLessonWatchConfirmation({
+    onWatch: (lessonId) => markLessonMutation.mutateAsync(lessonId),
+    onUnwatch: (lessonId) => unmarkLessonMutation.mutateAsync(lessonId),
+  });
 
-  const handleToggleLesson = async (lessonId: string) => {
-    if (!dayData || pendingLessonId) {
-      return;
-    }
+  const handleToggleLesson = (lessonId: number) => {
+    if (!dayData) return;
 
     const lesson = dayData.lessons.find((item) => item.id === lessonId);
 
-    if (!lesson) {
-      return;
-    }
+    if (!lesson) return;
 
-    setPendingLessonId(lessonId);
-
-    try {
-      if (lesson.checked) {
-        await unmarkLessonMutation.mutateAsync(Number(lessonId));
-      } else {
-        await markLessonMutation.mutateAsync(Number(lessonId));
-      }
-    } finally {
-      setPendingLessonId(null);
-    }
+    lessonConfirmation.requestConfirmation({
+      id: lesson.id,
+      lessonName: lesson.title,
+      intent: lesson.state === "watched" ? "unwatch" : "watch",
+    });
   };
 
   if (isError) {
@@ -97,7 +91,12 @@ export function MyLessonsScreen() {
             isLoading={isLoading}
             lessons={dayData?.lessons ?? []}
             onToggleLesson={handleToggleLesson}
-            disabledLessonId={pendingLessonId}
+            disabledLessonId={lessonConfirmation.target?.id}
+            loadingLessonId={
+              lessonConfirmation.isSubmitting
+                ? lessonConfirmation.target?.id
+                : null
+            }
           />
         ) : (
           <View className="border-card-border bg-card rounded-3xl border px-4 py-5 md:px-5 md:py-6">
@@ -111,6 +110,13 @@ export function MyLessonsScreen() {
           </View>
         )}
       </View>
+      <LessonWatchConfirmationModal
+        target={lessonConfirmation.target}
+        isSubmitting={lessonConfirmation.isSubmitting}
+        errorMessage={lessonConfirmation.errorMessage}
+        onConfirm={() => void lessonConfirmation.confirm()}
+        onClose={lessonConfirmation.dismiss}
+      />
     </TabPageLayout>
   );
 }

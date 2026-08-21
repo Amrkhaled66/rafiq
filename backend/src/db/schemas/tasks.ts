@@ -35,6 +35,7 @@ export const tasks = pgTable(
   },
   (table) => [
     index('tasks_plan_due_at_idx').on(table.planId, table.dueAt),
+    index('tasks_due_at_idx').on(table.dueAt),
     index('tasks_plan_status_idx').on(table.planId, table.status),
     index('tasks_status_due_at_idx').on(table.status, table.dueAt),
   ],

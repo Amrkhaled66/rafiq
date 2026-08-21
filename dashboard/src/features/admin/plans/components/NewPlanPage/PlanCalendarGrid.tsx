@@ -1,6 +1,7 @@
 import { Icon } from "@iconify/react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import type { PlanDay } from "@/features/admin/plans/components/NewPlanPage/types";
+import Button from "@/shared/components/Button";
 import { formatDateArLong, getDayNameAr } from "@/shared/utils/dates";
 
 const GRID_TASKS_PAGE_SIZE = 3;
@@ -9,34 +10,38 @@ export default function PlanCalendarGrid({
   days,
   selectedDayDate,
   onSelectDay,
+  onEditJson,
 }: {
   days: PlanDay[];
   selectedDayDate: string | null;
   onSelectDay: (dayDate: string) => void;
+  onEditJson: () => void;
 }) {
   const [visibleTasksByDay, setVisibleTasksByDay] = useState<Record<string, number>>({});
 
-  useEffect(() => {
-    setVisibleTasksByDay((prev) => {
-      const next: Record<string, number> = {};
-      for (const day of days) {
-        next[day.date] = prev[day.date] ?? GRID_TASKS_PAGE_SIZE;
-      }
-      return next;
-    });
-  }, [days]);
-
   return (
     <section className="dashboard-card lg:col-span-2 space-y-4 text-right">
-      <div>
-        <h2 className="text-foreground text-lg font-bold">أيام الخطة</h2>
-        <p className="text-subTitle mt-1 text-sm">
-          اضغط على يوم لعرض المهام وتعديلها.
-        </p>
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <div>
+          <h2 className="text-foreground text-lg font-bold">أيام الخطة</h2>
+          <p className="text-subTitle mt-1 text-sm">
+            اضغط على يوم لعرض المهام وتعديلها.
+          </p>
+        </div>
+
+        <Button
+          variant="ghost"
+          className="inline-flex items-center gap-1.5"
+          onClick={onEditJson}
+        >
+          <Icon icon="solar:code-file-linear" className="size-4" />
+          تعديل JSON
+        </Button>
       </div>
 
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
-        {days.map((day) => {
+      {days.length > 0 ? (
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+          {days.map((day) => {
           const isSelected = day.date === selectedDayDate;
           const hasTasks = day.tasks.length > 0;
           const visibleCount = visibleTasksByDay[day.date] ?? GRID_TASKS_PAGE_SIZE;
@@ -114,8 +119,13 @@ export default function PlanCalendarGrid({
               ) : null}
             </button>
           );
-        })}
-      </div>
+          })}
+        </div>
+      ) : (
+        <p className="text-subTitle rounded-lg border border-dashed border-slate-200 px-4 py-6 text-sm">
+          اختر فترة الخطة لبدء إنشاء الأيام، أو استخدم محرر JSON لإنشاء الخطة مباشرة.
+        </p>
+      )}
     </section>
   );
 }

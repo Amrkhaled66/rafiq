@@ -1,15 +1,18 @@
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { Pressable, View } from "react-native";
 
-import type { MyLessonItem } from "@/features/tasks/types";
 import { AppText } from "@/shared/ui/app-text";
-import { LessonChecklistRow } from "@/shared/ui/lesson-checklist-row";
+import {
+  LessonWatchRow,
+  type LessonWatchItem,
+} from "@/shared/ui/lesson-watch-row";
 import { LessonChecklistCardSkeleton } from "@/shared/ui/skeletons";
 
 type LessonSectionProps = {
-  lessons: MyLessonItem[];
-  onToggleLesson: (lessonId: string) => void;
-  disabledLessonId?: string | null;
+  lessons: LessonWatchItem[];
+  onToggleLesson: (lessonId: number) => void;
+  disabledLessonId?: number | null;
+  loadingLessonId?: number | null;
   isExpanded?: boolean;
   onToggleExpanded?: () => void;
   showToggle?: boolean;
@@ -21,6 +24,7 @@ export function LessonSection({
   lessons,
   onToggleLesson,
   disabledLessonId,
+  loadingLessonId,
   isExpanded = true,
   onToggleExpanded,
   showToggle = false,
@@ -57,12 +61,13 @@ export function LessonSection({
         }}
       >
         {visibleLessons.map((lesson, index) => (
-          <LessonChecklistRow
+          <LessonWatchRow
             key={lesson.id}
             lesson={lesson}
             isLast={index === visibleLessons.length - 1}
             onPress={onToggleLesson}
             disabled={disabledLessonId === lesson.id}
+            isLoading={loadingLessonId === lesson.id}
           />
         ))}
       </View>

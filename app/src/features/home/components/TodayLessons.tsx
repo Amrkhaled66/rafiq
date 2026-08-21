@@ -7,12 +7,15 @@ import { TodayLessonsSkeleton } from "@/features/home/components/skeletons";
 import { useAppTheme } from "@/shared/theme/appearance-provider";
 import { AppText } from "@/shared/ui/app-text";
 import {
-  LessonChecklistRow,
-  type LessonChecklistItem as LessonItem,
-} from "@/shared/ui/lesson-checklist-row";
+  LessonWatchRow,
+  type LessonWatchItem,
+} from "@/shared/ui/lesson-watch-row";
 
 type TodayLessonsProps = {
-  lessons: LessonItem[];
+  lessons: LessonWatchItem[];
+  onToggleLesson?: (lessonId: number) => void;
+  disabledLessonId?: number | null;
+  loadingLessonId?: number | null;
   onViewAll?: () => void;
   isLoading?: boolean;
 };
@@ -21,6 +24,9 @@ const ENDLESSONSINDEX = 4;
 
 export function TodayLessons({
   lessons,
+  onToggleLesson,
+  disabledLessonId,
+  loadingLessonId,
   onViewAll,
   isLoading = false,
 }: TodayLessonsProps) {
@@ -77,10 +83,13 @@ export function TodayLessons({
         className="rounded-2xl! bg-card"
       >
         {previewLessons.map((lesson, index) => (
-          <LessonChecklistRow
+          <LessonWatchRow
             key={lesson.id}
             lesson={lesson}
             isLast={index === previewLessons.length - 1}
+            onPress={onToggleLesson}
+            disabled={disabledLessonId === lesson.id}
+            isLoading={loadingLessonId === lesson.id}
           />
         ))}
       </View>

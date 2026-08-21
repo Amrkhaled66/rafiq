@@ -6,7 +6,7 @@ import {
   markLessonWatched,
   unmarkLessonWatched,
 } from "@/features/lessons/services/lessonService";
-import { queryClient } from "@/lib/react-query";
+import { invalidateLessonWatchQueries } from "@/features/lessons/queries/invalidateLessonWatchQueries";
 
 function getTodayLessonsQueryKey(studentId?: number) {
   return ["student-today-lessons", studentId];
@@ -27,11 +27,7 @@ export function useMarkLessonWatched() {
 
   return useMutation({
     mutationFn: (lessonId: number) => markLessonWatched(user!.id, lessonId),
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({
-        queryKey: getTodayLessonsQueryKey(user?.id),
-      });
-    },
+    onSuccess: () => invalidateLessonWatchQueries(user?.id),
   });
 }
 
@@ -40,10 +36,6 @@ export function useUnmarkLessonWatched() {
 
   return useMutation({
     mutationFn: (lessonId: number) => unmarkLessonWatched(user!.id, lessonId),
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({
-        queryKey: getTodayLessonsQueryKey(user?.id),
-      });
-    },
+    onSuccess: () => invalidateLessonWatchQueries(user?.id),
   });
 }

@@ -1,5 +1,8 @@
 import type { ReactNode } from "react";
-import type { TableColumn } from "react-data-table-component";
+import type {
+  SortOrder,
+  TableColumn,
+} from "react-data-table-component";
 
 import Table from "@/shared/components/Table";
 
@@ -16,6 +19,10 @@ export default function AdminServerTable<T>({
   totalRows,
   onPageChange,
   onRowsPerPageChange,
+  sortServer = false,
+  defaultSortFieldId,
+  defaultSortAsc = true,
+  onSort,
 }: {
   columns: TableColumn<T>[];
   data: T[];
@@ -27,6 +34,10 @@ export default function AdminServerTable<T>({
   totalRows: number;
   onPageChange: (page: number) => void;
   onRowsPerPageChange: (rowsPerPage: number, page: number) => void;
+  sortServer?: boolean;
+  defaultSortFieldId?: string | number;
+  defaultSortAsc?: boolean;
+  onSort?: (column: TableColumn<T>, direction: SortOrder) => void;
 }) {
   return (
     <Table
@@ -43,6 +54,10 @@ export default function AdminServerTable<T>({
       paginationTotalRows={totalRows}
       onChangePage={onPageChange}
       onChangeRowsPerPage={onRowsPerPageChange}
+      sortServer={sortServer}
+      defaultSortFieldId={defaultSortFieldId}
+      defaultSortAsc={defaultSortAsc}
+      onSort={onSort}
       responsive
       highlightOnHover
       persistTableHead

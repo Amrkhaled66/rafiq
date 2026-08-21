@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { AuthModule } from '../auth/auth.module';
 import { AuthorizationModule } from '../authorization/authorization.module';
 import { DbModule } from '../db/db.module';
@@ -13,7 +13,7 @@ import { LessonsService } from './lessons.service';
     AuthModule,
     AuthorizationModule,
     DbModule,
-    StudentsModule,
+    forwardRef(() => StudentsModule),
     LessonOccurrencesModule,
   ],
   controllers: [LessonsController],

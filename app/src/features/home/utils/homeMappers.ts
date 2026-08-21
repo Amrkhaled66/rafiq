@@ -4,7 +4,7 @@ import type {
   HomeTaskResponse,
   StudentHomeResponse,
 } from "@/features/home/types";
-import type { LessonChecklistItem } from "@/shared/ui/lesson-checklist-row";
+import type { LessonWatchItem } from "@/shared/ui/lesson-watch-row";
 import { getSubjectUi } from "@/shared/utils/subject-ui";
 
 function mapTask(task: HomeTaskResponse): TaskItem {
@@ -20,16 +20,17 @@ function mapTask(task: HomeTaskResponse): TaskItem {
   };
 }
 
-function mapLesson(lesson: HomeLessonResponse): LessonChecklistItem {
+function mapLesson(lesson: HomeLessonResponse): LessonWatchItem {
   const subjectUi = getSubjectUi(lesson.subject);
 
   return {
-    id: String(lesson.id),
+    id: lesson.id,
+    title: lesson.name,
     subject: subjectUi.label,
     icon: subjectUi.icon,
     iconBackgroundColor: subjectUi.iconBackgroundColor,
     iconColor: subjectUi.iconColor,
-    checked: lesson.checked,
+    state: lesson.checked ? "watched" : "scheduled",
   };
 }
 
