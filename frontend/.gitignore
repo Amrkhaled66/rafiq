@@ -15,6 +15,7 @@
 
 # next.js
 /.next/
+/.qa-artifacts/
 /out/
 
 # production

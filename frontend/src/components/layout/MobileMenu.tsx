@@ -1,13 +1,13 @@
 "use client";
 
 import Link from "next/link";
-import Button from "@/src/components/shared/Button";
 import { useMobileMenuAnimation } from "@/src/hooks/useMobileMenuAnimation";
 import LeadModalTrigger from "../shared/LeadModalTrigger";
 
 type NavLink = {
   label: string;
   href: string;
+  isActive?: boolean;
 };
 
 type MobileMenuProps = {
@@ -35,7 +35,8 @@ export default function MobileMenu({
             ref={(el) => setLinkRef(el, index)}
             href={link.href}
             onClick={onClose}
-            className="rounded-2xl px-4 py-3 text-sm font-bold text-gray-600 transition-colors duration-200 hover:bg-red-50 hover:text-brand-primary"
+            aria-current={link.isActive ? "page" : undefined}
+            className={`rounded-2xl px-4 py-3 text-sm font-bold transition-colors duration-200 hover:bg-red-50 hover:text-brand-primary focus-visible:outline-2 focus-visible:outline-brand-primary ${link.isActive ? "bg-red-50 text-brand-primary" : "text-gray-600"}`}
           >
             {link.label}
           </Link>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { usePathname } from "next/navigation";
 import { Icon } from "@iconify/react";
 import Image from "next/image";
 import Logo1 from "@/public/logo1.svg";
@@ -25,9 +26,13 @@ const socialItems = [
 ];
 
 export default function Footer() {
+  const pathname = usePathname();
   const [openSection, setOpenSection] = useState<"sections" | "contact" | null>(
     "sections",
   );
+
+  // The app download page is intentionally a single-screen experience.
+  if (pathname === "/mobile-app") return null;
 
   const toggleSection = (section: "sections" | "contact") => {
     setOpenSection((current) => (current === section ? null : section));

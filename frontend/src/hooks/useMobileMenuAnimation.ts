@@ -73,6 +73,11 @@ export function useMobileMenuAnimation({ isOpen }: UseMobileMenuAnimationProps) 
         },
       });
     }
+
+    // Prevent an earlier close animation from hiding a newly reopened menu.
+    return () => {
+      gsap.killTweensOf([menu, ...links, cta].filter(Boolean));
+    };
   }, [isOpen]);
 
   return {
