@@ -109,7 +109,7 @@ export function TaskDetailScreen() {
             taskId={taskId}
             taskStatus={taskDetail?.status ?? "not_started"}
             activeSession={taskDetail?.activeSession ?? null}
-            focusDurationSeconds={(taskDetail?.focusDurationMinutes ?? 0) * 60}
+            focusDurationSeconds={(taskDetail?.focusDurationMinutes ?? 25) * 60}
             serverClockOffsetMs={taskDetail?.serverClockOffsetMs ?? 0}
             isLoading={taskQuery.isLoading}
             refetchTaskDetail={refetchTaskDetail}
