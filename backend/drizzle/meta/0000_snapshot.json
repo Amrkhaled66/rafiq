@@ -1,5 +1,5 @@
 {
-  "id": "5a6c2a85-443c-42b2-9e04-bd8d4fe9ab4b",
+  "id": "e22bf0a8-787e-47af-a5d7-bf11facd1851",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -34,7 +34,29 @@
           "default": "now()"
         }
       },
-      "indexes": {},
+      "indexes": {
+        "coach_assignments_coach_student_uidx": {
+          "name": "coach_assignments_coach_student_uidx",
+          "columns": [
+            {
+              "expression": "coach_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "student_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
       "foreignKeys": {
         "coach_assignments_coach_id_users_id_fk": {
           "name": "coach_assignments_coach_id_users_id_fk",
@@ -69,8 +91,8 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "public.lessons": {
-      "name": "lessons",
+    "public.lesson_occurrences": {
+      "name": "lesson_occurrences",
       "schema": "",
       "columns": {
         "id": {
@@ -79,9 +101,27 @@
           "primaryKey": true,
           "notNull": true
         },
+        "lesson_id": {
+          "name": "lesson_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "subscription_id": {
+          "name": "subscription_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
         "student_id": {
           "name": "student_id",
           "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "lesson_name": {
+          "name": "lesson_name",
+          "type": "varchar(255)",
           "primaryKey": false,
           "notNull": true
         },
@@ -92,11 +132,32 @@
           "primaryKey": false,
           "notNull": true
         },
-        "scheduled_at": {
-          "name": "scheduled_at",
-          "type": "timestamp with time zone",
+        "scheduled_for_date": {
+          "name": "scheduled_for_date",
+          "type": "date",
           "primaryKey": false,
           "notNull": true
+        },
+        "scheduled_weekday": {
+          "name": "scheduled_weekday",
+          "type": "lesson_weekday",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "status": {
+          "name": "status",
+          "type": "lesson_occurrence_status",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'scheduled'"
+        },
+        "watched_on": {
+          "name": "watched_on",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": false
         },
         "created_at": {
           "name": "created_at",
@@ -113,7 +174,220 @@
           "default": "now()"
         }
       },
-      "indexes": {},
+      "indexes": {
+        "lesson_occurrences_lesson_date_uidx": {
+          "name": "lesson_occurrences_lesson_date_uidx",
+          "columns": [
+            {
+              "expression": "lesson_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "scheduled_for_date",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "lesson_occurrences_student_date_idx": {
+          "name": "lesson_occurrences_student_date_idx",
+          "columns": [
+            {
+              "expression": "student_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "scheduled_for_date",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "lesson_occurrences_subscription_date_idx": {
+          "name": "lesson_occurrences_subscription_date_idx",
+          "columns": [
+            {
+              "expression": "subscription_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "scheduled_for_date",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "lesson_occurrences_status_date_idx": {
+          "name": "lesson_occurrences_status_date_idx",
+          "columns": [
+            {
+              "expression": "status",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "scheduled_for_date",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "lesson_occurrences_lesson_id_lessons_id_fk": {
+          "name": "lesson_occurrences_lesson_id_lessons_id_fk",
+          "tableFrom": "lesson_occurrences",
+          "tableTo": "lessons",
+          "columnsFrom": [
+            "lesson_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "lesson_occurrences_subscription_id_subscriptions_id_fk": {
+          "name": "lesson_occurrences_subscription_id_subscriptions_id_fk",
+          "tableFrom": "lesson_occurrences",
+          "tableTo": "subscriptions",
+          "columnsFrom": [
+            "subscription_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "lesson_occurrences_student_id_users_id_fk": {
+          "name": "lesson_occurrences_student_id_users_id_fk",
+          "tableFrom": "lesson_occurrences",
+          "tableTo": "users",
+          "columnsFrom": [
+            "student_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.lessons": {
+      "name": "lessons",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "student_id": {
+          "name": "student_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "subject": {
+          "name": "subject",
+          "type": "school_subject",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "weekday": {
+          "name": "weekday",
+          "type": "lesson_weekday",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "tracking_starts_on": {
+          "name": "tracking_starts_on",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "(now() at time zone 'Africa/Cairo')::date"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "lessons_student_weekday_idx": {
+          "name": "lessons_student_weekday_idx",
+          "columns": [
+            {
+              "expression": "student_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "weekday",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
       "foreignKeys": {
         "lessons_student_id_users_id_fk": {
           "name": "lessons_student_id_users_id_fk",
@@ -121,6 +395,238 @@
           "tableTo": "users",
           "columnsFrom": [
             "student_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.missed_lesson_resolutions": {
+      "name": "missed_lesson_resolutions",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "occurrence_id": {
+          "name": "occurrence_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "resolved_by": {
+          "name": "resolved_by",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "note": {
+          "name": "note",
+          "type": "varchar(1000)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "resolved_at": {
+          "name": "resolved_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "missed_lesson_resolutions_occurrence_uidx": {
+          "name": "missed_lesson_resolutions_occurrence_uidx",
+          "columns": [
+            {
+              "expression": "occurrence_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "missed_lesson_resolutions_resolved_by_idx": {
+          "name": "missed_lesson_resolutions_resolved_by_idx",
+          "columns": [
+            {
+              "expression": "resolved_by",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "missed_lesson_resolutions_occurrence_id_lesson_occurrences_id_fk": {
+          "name": "missed_lesson_resolutions_occurrence_id_lesson_occurrences_id_fk",
+          "tableFrom": "missed_lesson_resolutions",
+          "tableTo": "lesson_occurrences",
+          "columnsFrom": [
+            "occurrence_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "missed_lesson_resolutions_resolved_by_users_id_fk": {
+          "name": "missed_lesson_resolutions_resolved_by_users_id_fk",
+          "tableFrom": "missed_lesson_resolutions",
+          "tableTo": "users",
+          "columnsFrom": [
+            "resolved_by"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.missed_task_resolutions": {
+      "name": "missed_task_resolutions",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "task_id": {
+          "name": "task_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "resolved_by": {
+          "name": "resolved_by",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "note": {
+          "name": "note",
+          "type": "varchar(1000)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "resolved_at": {
+          "name": "resolved_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "missed_task_resolutions_task_uidx": {
+          "name": "missed_task_resolutions_task_uidx",
+          "columns": [
+            {
+              "expression": "task_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "missed_task_resolutions_resolved_by_idx": {
+          "name": "missed_task_resolutions_resolved_by_idx",
+          "columns": [
+            {
+              "expression": "resolved_by",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "missed_task_resolutions_task_id_tasks_id_fk": {
+          "name": "missed_task_resolutions_task_id_tasks_id_fk",
+          "tableFrom": "missed_task_resolutions",
+          "tableTo": "tasks",
+          "columnsFrom": [
+            "task_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "missed_task_resolutions_resolved_by_users_id_fk": {
+          "name": "missed_task_resolutions_resolved_by_users_id_fk",
+          "tableFrom": "missed_task_resolutions",
+          "tableTo": "users",
+          "columnsFrom": [
+            "resolved_by"
           ],
           "columnsTo": [
             "id"
@@ -143,6 +649,12 @@
           "name": "id",
           "type": "serial",
           "primaryKey": true,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar(255)",
+          "primaryKey": false,
           "notNull": true
         },
         "student_id": {
@@ -177,7 +689,7 @@
         },
         "created_at": {
           "name": "created_at",
-          "type": "timestamp with time zone",
+          "type": "timestamp",
           "primaryKey": false,
           "notNull": true,
           "default": "now()"
@@ -190,7 +702,44 @@
           "default": "now()"
         }
       },
-      "indexes": {},
+      "indexes": {
+        "plans_student_id_idx": {
+          "name": "plans_student_id_idx",
+          "columns": [
+            {
+              "expression": "student_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "plans_coach_created_at_idx": {
+          "name": "plans_coach_created_at_idx",
+          "columns": [
+            {
+              "expression": "coach_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "created_at",
+              "isExpression": false,
+              "asc": false,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
       "foreignKeys": {
         "plans_student_id_users_id_fk": {
           "name": "plans_student_id_users_id_fk",
@@ -367,13 +916,13 @@
         },
         "starts_at": {
           "name": "starts_at",
-          "type": "timestamp with time zone",
+          "type": "date",
           "primaryKey": false,
           "notNull": true
         },
         "ends_at": {
           "name": "ends_at",
-          "type": "timestamp with time zone",
+          "type": "date",
           "primaryKey": false,
           "notNull": true
         },
@@ -392,6 +941,12 @@
         "cancellation_reason": {
           "name": "cancellation_reason",
           "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "cancelled_by": {
+          "name": "cancelled_by",
+          "type": "integer",
           "primaryKey": false,
           "notNull": false
         },
@@ -416,7 +971,52 @@
           "default": "now()"
         }
       },
-      "indexes": {},
+      "indexes": {
+        "subscriptions_active_student_dates_idx": {
+          "name": "subscriptions_active_student_dates_idx",
+          "columns": [
+            {
+              "expression": "student_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "starts_at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "ends_at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "where": "\"subscriptions\".\"cancelled_at\" is null",
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "subscriptions_active_ends_at_idx": {
+          "name": "subscriptions_active_ends_at_idx",
+          "columns": [
+            {
+              "expression": "ends_at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "where": "\"subscriptions\".\"cancelled_at\" is null",
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
       "foreignKeys": {
         "subscriptions_student_id_users_id_fk": {
           "name": "subscriptions_student_id_users_id_fk",
@@ -437,6 +1037,19 @@
           "tableTo": "subscription_packages",
           "columnsFrom": [
             "package_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "subscriptions_cancelled_by_users_id_fk": {
+          "name": "subscriptions_cancelled_by_users_id_fk",
+          "tableFrom": "subscriptions",
+          "tableTo": "users",
+          "columnsFrom": [
+            "cancelled_by"
           ],
           "columnsTo": [
             "id"
@@ -480,6 +1093,12 @@
           "primaryKey": false,
           "notNull": true
         },
+        "student_id": {
+          "name": "student_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
         "started_at": {
           "name": "started_at",
           "type": "timestamp with time zone",
@@ -488,6 +1107,25 @@
         },
         "ended_at": {
           "name": "ended_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "expected_end_at": {
+          "name": "expected_end_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "accumulated_seconds": {
+          "name": "accumulated_seconds",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "last_started_at": {
+          "name": "last_started_at",
           "type": "timestamp with time zone",
           "primaryKey": false,
           "notNull": false
@@ -515,7 +1153,50 @@
           "default": "now()"
         }
       },
-      "indexes": {},
+      "indexes": {
+        "task_sessions_student_task_idx": {
+          "name": "task_sessions_student_task_idx",
+          "columns": [
+            {
+              "expression": "student_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "task_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "task_sessions_status_expected_end_at_idx": {
+          "name": "task_sessions_status_expected_end_at_idx",
+          "columns": [
+            {
+              "expression": "status",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "expected_end_at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
       "foreignKeys": {
         "task_sessions_task_id_tasks_id_fk": {
           "name": "task_sessions_task_id_tasks_id_fk",
@@ -527,7 +1208,20 @@
           "columnsTo": [
             "id"
           ],
-          "onDelete": "no action",
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "task_sessions_student_id_users_id_fk": {
+          "name": "task_sessions_student_id_users_id_fk",
+          "tableFrom": "task_sessions",
+          "tableTo": "users",
+          "columnsFrom": [
+            "student_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
           "onUpdate": "no action"
         }
       },
@@ -559,6 +1253,12 @@
           "primaryKey": false,
           "notNull": true
         },
+        "note": {
+          "name": "note",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
         "subject": {
           "name": "subject",
           "type": "school_subject",
@@ -568,9 +1268,9 @@
         },
         "due_at": {
           "name": "due_at",
-          "type": "timestamp with time zone",
+          "type": "date",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
         },
         "status": {
           "name": "status",
@@ -601,7 +1301,86 @@
           "default": "now()"
         }
       },
-      "indexes": {},
+      "indexes": {
+        "tasks_plan_due_at_idx": {
+          "name": "tasks_plan_due_at_idx",
+          "columns": [
+            {
+              "expression": "plan_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "due_at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "tasks_due_at_idx": {
+          "name": "tasks_due_at_idx",
+          "columns": [
+            {
+              "expression": "due_at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "tasks_plan_status_idx": {
+          "name": "tasks_plan_status_idx",
+          "columns": [
+            {
+              "expression": "plan_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "status",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "tasks_status_due_at_idx": {
+          "name": "tasks_status_due_at_idx",
+          "columns": [
+            {
+              "expression": "status",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "due_at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
       "foreignKeys": {
         "tasks_plan_id_plans_id_fk": {
           "name": "tasks_plan_id_plans_id_fk",
@@ -613,7 +1392,7 @@
           "columnsTo": [
             "id"
           ],
-          "onDelete": "no action",
+          "onDelete": "cascade",
           "onUpdate": "no action"
         }
       },
@@ -739,30 +1518,45 @@
         "third_sec"
       ]
     },
+    "public.lesson_occurrence_status": {
+      "name": "lesson_occurrence_status",
+      "schema": "public",
+      "values": [
+        "scheduled",
+        "watched_on_time",
+        "missed",
+        "watched_late"
+      ]
+    },
+    "public.lesson_weekday": {
+      "name": "lesson_weekday",
+      "schema": "public",
+      "values": [
+        "saturday",
+        "sunday",
+        "monday",
+        "tuesday",
+        "wednesday",
+        "thursday",
+        "friday"
+      ]
+    },
     "public.school_subject": {
       "name": "school_subject",
       "schema": "public",
       "values": [
         "arabic",
         "english",
+        "second_foreign_language",
         "math",
         "physics",
         "chemistry",
         "biology",
-        "geology",
         "history",
         "geography",
-        "philosophy",
-        "psychology",
-        "french",
-        "german",
-        "italian",
-        "spanish",
-        "computer_science",
+        "statistics",
         "religion",
-        "national_education",
-        "economics",
-        "statistics"
+        "national_education"
       ]
     },
     "public.session_status": {
@@ -770,8 +1564,9 @@
       "schema": "public",
       "values": [
         "running",
+        "paused",
         "completed",
-        "stopped"
+        "cancelled"
       ]
     },
     "public.task_status": {

@@ -1,1 +1,0 @@
-ALTER TABLE "missed_task_resolutions" ADD COLUMN "note" varchar(1000) NOT NULL;

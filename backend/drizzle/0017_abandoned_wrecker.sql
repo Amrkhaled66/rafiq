@@ -1,1 +1,0 @@
-CREATE INDEX "task_sessions_student_task_idx" ON "task_sessions" USING btree ("student_id","task_id");

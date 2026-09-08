@@ -1,1 +1,0 @@
-CREATE INDEX "subscriptions_active_ends_at_idx" ON "subscriptions" USING btree ("ends_at") WHERE "subscriptions"."cancelled_at" is null;

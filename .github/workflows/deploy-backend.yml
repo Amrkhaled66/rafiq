@@ -42,6 +42,13 @@ jobs:
       - name: Pull latest image
         run: sudo docker pull amrse912553/rafiq-backend:latest
 
+      - name: Apply database migrations
+        run: |
+          sudo docker run --rm \
+            --env-file /opt/rafiq/backend.env \
+            amrse912553/rafiq-backend:latest \
+            npm run db:migrate
+
       - name: Stop and remove old container
         run: sudo docker rm -f rafiq-backend-container || true
 
