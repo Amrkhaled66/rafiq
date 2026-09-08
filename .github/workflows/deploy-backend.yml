@@ -45,6 +45,7 @@ jobs:
       - name: Apply database migrations
         run: |
           sudo docker run --rm \
+            --network host \
             --env-file /opt/rafiq/backend.env \
             amrse912553/rafiq-backend:latest \
             npm run db:migrate
@@ -55,10 +56,11 @@ jobs:
       - name: Run new container
         run: |
           sudo docker run -d \
-            -p 4002:3002 \
+            --network host \
             --name rafiq-backend-container \
             --restart unless-stopped \
             --env-file /opt/rafiq/backend.env \
+            --env PORT=4002 \
             amrse912553/rafiq-backend:latest
 
       - name: Clean Docker system
