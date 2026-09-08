@@ -1,9 +1,8 @@
 "use client";
 
-import { useEffect, useState, type ReactNode, Activity } from "react";
-import NewLeadModal from "./NewLeadModel";
-import { useLeadSubmission } from "../../hooks/useLeadSubmission";
+import { useEffect, type ReactNode } from "react";
 import Button from "./Button";
+import { useLeadModal } from "./LeadModalProvider";
 
 type LeadModalTriggerProps = {
   children: ReactNode;
@@ -15,42 +14,30 @@ type LeadModalTriggerProps = {
 export default function LeadModalTrigger({
   children,
   containerClassName,
-  buttonClassName,
+  buttonClassName = "",
   autoOpenDelayMs,
 }: LeadModalTriggerProps) {
-  const [showModal, setShowModal] = useState(false);
-  const { submitLead } = useLeadSubmission();
+  const { openLeadModal, openLeadModalOnce } = useLeadModal();
 
   useEffect(() => {
     if (!autoOpenDelayMs) return;
-    if (!showModal) {
 
-      const timer = window.setTimeout(() => {
-        setShowModal(true);
-      }, autoOpenDelayMs);
+    const timer = window.setTimeout(() => {
+      openLeadModalOnce();
+    }, autoOpenDelayMs);
 
-      return () => window.clearTimeout(timer);
-    }
-  }, [autoOpenDelayMs]);
+    return () => window.clearTimeout(timer);
+  }, [autoOpenDelayMs, openLeadModalOnce]);
 
   return (
-    <>
-      <div className={containerClassName}>
-        <Button
-          type="button"
-          onClick={() => setShowModal(true)}
-          className={`rounded-full! border w-full border-brand-primary bg-brand-primary px-6 py-3 font-bold text-white transition ${buttonClassName}`}
-        >
-          {children}
-        </Button>
-      </div>
-      <Activity mode={showModal ? "visible" : "hidden"}>
-        <NewLeadModal
-          isOpen={showModal}
-          onClose={() => setShowModal(false)}
-          onSubmit={submitLead}
-        />
-      </Activity>
-    </>
+    <div className={containerClassName}>
+      <Button
+        type="button"
+        onClick={openLeadModal}
+        className={`rounded-full! border w-full border-brand-primary bg-brand-primary px-6 py-3 font-bold text-white transition ${buttonClassName}`}
+      >
+        {children}
+      </Button>
+    </div>
   );
 }

@@ -20,13 +20,18 @@ export const useNewLeadForm = ({ isOpen, onSubmit }: UseNewLeadFormParams) => {
   const [submitError, setSubmitError] = useState("");
 
   useEffect(() => {
-    if (!isOpen) {
+    if (!isOpen && isDone) {
       setName("");
       setPhone("");
       setErrors({});
-      setIsSubmitting(false);
       setIsDone(false);
       setSubmitError("");
+    }
+  }, [isOpen, isDone]);
+
+  useEffect(() => {
+    if (!isOpen) {
+      setIsSubmitting(false);
     }
   }, [isOpen]);
 

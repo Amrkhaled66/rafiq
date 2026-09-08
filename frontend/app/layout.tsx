@@ -6,6 +6,7 @@ import { Suspense } from "react";
 
 import MetaPixelEvents from "@/src/components/shared/MetaPixelEvents";
 import Footer from "@/src/components/layout/Footer";
+import { LeadModalProvider } from "@/src/components/shared/LeadModalProvider";
 
 const pixelId = 941134205710592;
 
@@ -108,9 +109,11 @@ export default function RootLayout({
       className={`${ibmPlexSansArabic.variable} ${cairo.variable} h-full antialiased`}
     >
       <body className="min-h-full overflow-x-hidden bg-white text-black">
-        {children}
+        <LeadModalProvider>
+          {children}
 
-        <Footer />
+          <Footer />
+        </LeadModalProvider>
         {/* Google Analytics */}
         <Script
           async
