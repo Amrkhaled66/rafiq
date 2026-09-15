@@ -278,6 +278,7 @@ export class PlansService {
       dto,
       planId,
     );
+    await this.assertTaskIdsBelongToPlan(planId, tasks);
 
     const updated = await this.plansRepository.updateStudentPlan({
       planId,
@@ -360,6 +361,7 @@ export class PlansService {
     }
 
     const tasks = dto.tasks.map((t) => ({
+      id: 'id' in t ? t.id : undefined,
       title: t.title.trim(),
       note: t.note?.trim() || null,
       subject: t.subject,
@@ -388,6 +390,31 @@ export class PlansService {
     );
 
     return tasks;
+  }
+
+  private async assertTaskIdsBelongToPlan(
+    planId: number,
+    tasks: Array<{ id?: number }>,
+  ) {
+    const submittedIds = tasks.flatMap((task) =>
+      task.id === undefined ? [] : [task.id],
+    );
+
+    if (new Set(submittedIds).size !== submittedIds.length) {
+      throw new BadRequestException('A task may only appear once in a plan');
+    }
+
+    if (submittedIds.length === 0) {
+      return;
+    }
+
+    const planTaskIds = new Set(
+      (await this.plansRepository.listPlanTasks(planId)).map((task) => task.id),
+    );
+
+    if (submittedIds.some((taskId) => !planTaskIds.has(taskId))) {
+      throw new BadRequestException('One or more tasks do not belong to this plan');
+    }
   }
 
   private async assertNoOverlap(

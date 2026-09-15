@@ -7,6 +7,7 @@ import {
   getStudentPlans,
   type CreateStudentPlanPayload,
   type ListStudentPlansParams,
+  type UpdateStudentPlanPayload,
   updateStudentPlan,
 } from "@/features/admin/plans/services/plansService";
 
@@ -65,7 +66,7 @@ export function useUpdateStudentPlanMutation(
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (payload: CreateStudentPlanPayload) =>
+    mutationFn: (payload: UpdateStudentPlanPayload) =>
       updateStudentPlan(studentId, planId, payload),
     onSuccess: async () => {
       await Promise.all([

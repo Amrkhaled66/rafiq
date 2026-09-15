@@ -45,7 +45,11 @@ const initialState: State = {
   visibleDaysCount: 0,
 };
 
-function buildDays(fromDate: string, toDate: string): Pick<State, "days" | "visibleDaysCount"> {
+function buildDays(
+  fromDate: string,
+  toDate: string,
+  existingDays: PlanDay[] = [],
+): Pick<State, "days" | "visibleDaysCount"> {
   if (!fromDate || !toDate) {
     return { days: [], visibleDaysCount: 0 };
   }
@@ -66,13 +70,15 @@ function buildDays(fromDate: string, toDate: string): Pick<State, "days" | "visi
   const end = new Date(to);
   end.setHours(0, 0, 0, 0);
 
+  const tasksByDate = new Map(
+    existingDays.map((day) => [day.date, day.tasks]),
+  );
   const nextDays: PlanDay[] = [];
   while (cursor <= end) {
     const iso = formatDateLocal(cursor);
     nextDays.push({
       date: iso,
-      // Start with no tasks; user adds tasks explicitly.
-      tasks: [],
+      tasks: tasksByDate.get(iso) ?? [],
     });
     cursor.setDate(cursor.getDate() + 1);
   }
@@ -87,12 +93,20 @@ function reducer(state: State, action: Action): State {
     }
     case "set_from": {
       const fromDate = action.value;
-      const { days, visibleDaysCount } = buildDays(fromDate, state.toDate);
+      const { days, visibleDaysCount } = buildDays(
+        fromDate,
+        state.toDate,
+        state.days,
+      );
       return { ...state, fromDate, days, visibleDaysCount };
     }
     case "set_to": {
       const toDate = action.value;
-      const { days, visibleDaysCount } = buildDays(state.fromDate, toDate);
+      const { days, visibleDaysCount } = buildDays(
+        state.fromDate,
+        toDate,
+        state.days,
+      );
       return { ...state, toDate, days, visibleDaysCount };
     }
     case "set_coach_id": {

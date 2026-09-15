@@ -1,5 +1,6 @@
 export type PlanTask = {
   id: string;
+  persistedId?: number;
   title: string;
   note?: string;
   subject: string;

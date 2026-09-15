@@ -18,6 +18,7 @@ const dateSchema = z
   }, "التاريخ غير صالح");
 
 const taskSchema = z.object({
+  id: z.number().int().positive().optional(),
   title: z.string().trim().min(1, "عنوان المهمة مطلوب").max(255),
   subject: z
     .string()
@@ -96,6 +97,7 @@ export function stringifyEditablePlanJson(input: {
       .map((day) => ({
         date: day.date,
         tasks: day.tasks.map((task) => ({
+          ...(task.persistedId ? { id: task.persistedId } : {}),
           title: task.title,
           subject: task.subject,
           ...(task.note?.trim() ? { note: task.note } : {}),
@@ -139,6 +141,7 @@ export function parseEditablePlanJson(text: string):
       date,
       tasks: (groupedDays.get(date) ?? []).map((task) => ({
         id: makeId(),
+        ...(task.id ? { persistedId: task.id } : {}),
         title: task.title,
         subject: task.subject,
         note: task.note ?? "",

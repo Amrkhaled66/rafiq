@@ -52,7 +52,8 @@ function buildEditableDays(
     groupedDays.map((day) => [
       day.date,
       day.tasks.map((task) => ({
-        id: String(task.id),
+        id: makeId(),
+        persistedId: task.id,
         title: task.title,
         note: task.note ?? "",
         subject: task.subject,
@@ -253,6 +254,7 @@ export default function NewPlanPage() {
       ...(isAdminPlanner && coachId ? { coachId } : {}),
       tasks: days.flatMap((day) =>
         day.tasks.map((task) => ({
+          ...(task.persistedId ? { id: task.persistedId } : {}),
           title: task.title.trim(),
           note: task.note?.trim() || undefined,
           subject: task.subject,

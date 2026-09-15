@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { and, desc, eq, gt, gte, lt, lte, sql } from 'drizzle-orm';
+import { and, desc, eq, gt, gte, lt, lte, notInArray, sql } from 'drizzle-orm';
 import { plans, tasks, users } from '../db';
 import { db } from '../db/db.module';
 import type { Database } from '../db/db.module';
@@ -301,6 +301,7 @@ export class PlansRepository {
     startsOn: string;
     endsOn: string;
     tasks: Array<{
+      id?: number;
       title: string;
       note: string | null;
       subject: SchoolSubjectKey;
@@ -322,15 +323,48 @@ export class PlansRepository {
         )
         .returning({ id: plans.id });
 
-      await tx.delete(tasks).where(eq(tasks.planId, input.planId));
+      const persistedTasks = input.tasks.filter(
+        (task): task is typeof task & { id: number } => task.id !== undefined,
+      );
+      const persistedTaskIds = persistedTasks.map((task) => task.id);
 
-      const taskRows = input.tasks.map((t) => ({
-        planId: input.planId,
-        title: t.title,
-        note: t.note,
-        subject: t.subject,
-        dueAt: t.dueOn,
-      }));
+      await tx
+        .delete(tasks)
+        .where(
+          and(
+            eq(tasks.planId, input.planId),
+            persistedTaskIds.length > 0
+              ? notInArray(tasks.id, persistedTaskIds)
+              : undefined,
+          ),
+        );
+
+      await Promise.all(
+        persistedTasks.map((task) =>
+          tx
+            .update(tasks)
+            .set({
+              title: task.title,
+              note: task.note,
+              subject: task.subject,
+              dueAt: task.dueOn,
+              updatedAt: new Date(),
+            })
+            .where(
+              and(eq(tasks.id, task.id), eq(tasks.planId, input.planId)),
+            ),
+        ),
+      );
+
+      const taskRows = input.tasks
+        .filter((task) => task.id === undefined)
+        .map((t) => ({
+          planId: input.planId,
+          title: t.title,
+          note: t.note,
+          subject: t.subject,
+          dueAt: t.dueOn,
+        }));
 
       if (taskRows.length > 0) {
         await tx.insert(tasks).values(taskRows);

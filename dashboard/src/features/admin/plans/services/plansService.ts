@@ -50,6 +50,13 @@ export type CreateStudentPlanPayload = {
   tasks: CreateStudentPlanTask[];
 };
 
+export type UpdateStudentPlanPayload = Omit<
+  CreateStudentPlanPayload,
+  "tasks"
+> & {
+  tasks: Array<CreateStudentPlanTask & { id?: number }>;
+};
+
 export type CreateStudentPlanResponse = {
   id: number;
 };
@@ -143,7 +150,7 @@ export async function getStudentPlanDetail(
 export async function updateStudentPlan(
   studentId: number,
   planId: number,
-  payload: CreateStudentPlanPayload,
+  payload: UpdateStudentPlanPayload,
 ): Promise<CreateStudentPlanResponse> {
   const { data } = await api.patch<CreateStudentPlanResponse>(
     `/students/${studentId}/plans/${planId}`,
