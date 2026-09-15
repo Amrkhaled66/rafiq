@@ -1,0 +1,66 @@
+name: Deploy rafiq-dashboard
+
+on:
+  push:
+    branches: ["master"]
+    paths:
+      - "dashboard/**"
+      - ".github/workflows/deploy-dashboard.yml"
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Source
+        uses: actions/checkout@v4
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build Docker image
+        env:
+          VITE_API_URL: ${{ vars.VITE_API_URL }}
+        run: |
+          test -n "$VITE_API_URL" || { echo "Set the VITE_API_URL repository variable before deploying."; exit 1; }
+          docker build -f dashboard/Dockerfile \
+            --build-arg VITE_API_URL \
+            -t amrse912553/rafiq-dashboard:latest ./dashboard
+
+      - name: Push Docker image
+        run: docker push amrse912553/rafiq-dashboard:latest
+
+  deploy:
+    needs: build
+    runs-on: self-hosted
+
+    steps:
+      - name: Login to Docker Hub
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+        run: |
+          printf '%s' "$DOCKER_PASSWORD" | sudo docker login \
+            -u "$DOCKER_USERNAME" \
+            --password-stdin
+
+      - name: Pull latest image
+        run: sudo docker pull amrse912553/rafiq-dashboard:latest
+
+      - name: Stop and remove old container
+        run: sudo docker rm -f rafiq-dashboard-container || true
+
+      - name: Run new container
+        run: |
+          sudo docker run -d \
+            -p 4003:80 \
+            --name rafiq-dashboard-container \
+            --restart unless-stopped \
+            amrse912553/rafiq-dashboard:latest
+
+      - name: Clean Docker system
+        run: sudo docker system prune -af
