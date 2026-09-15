@@ -1,24 +1,11 @@
 import { Icon } from "@iconify/react";
 
 import PageHeader from "@/features/admin/shared/components/PageHeader";
-import { useAuth } from "@/shared/context/authContext";
-import { can } from "@/shared/auth/can";
-import { useDashboardHomeQueries } from "../queries/homeQueries";
-import OperationalStats from "../components/OperationalStats";
-import ActionInbox from "../components/ActionInbox";
-import QuickActions from "../components/QuickActions";
-import RecentActivity from "../components/RecentActivity";
 
 export default function DashboardHomePage() {
-  const { authData } = useAuth();
-  const canReadSubscriptions = can(authData.user, "subscriptions", "read");
-
-  const q = useDashboardHomeQueries({ isSuperAdmin: canReadSubscriptions });
-
   return (
     <section className="space-y-6">
       <PageHeader
-        icon="material-symbols:grid-view-rounded"
         title="الصفحة الرئيسية"
         subtitle="يا الف اهلا وسهلا."
         action={

@@ -1,6 +1,5 @@
 import type { ReactNode } from "react";
 import Button from "@/shared/components/Button";
-import { Icon } from "@iconify/react";
 
 type PageHeaderProps = {
   title: string;
@@ -19,7 +18,6 @@ export default function PageHeader({
   onAction,
   actionIcon,
   action,
-  icon,
 }: PageHeaderProps) {
   return (
     <section className="from-brand-primary/80 via-brand-primary/50 to-brand-primary/20 relative overflow-hidden rounded-xl bg-linear-to-l px-8 py-7 shadow-lg">
@@ -30,15 +28,6 @@ export default function PageHeader({
 
       <div className="relative flex flex-col items-start justify-between gap-5 text-right md:flex-row">
         <div className="flex items-center gap-4">
-          {/* {icon ? (
-            <div
-              aria-hidden="true"
-              className="flex size-18 shrink-0 items-center justify-center rounded-3xl bg-white/20 text-white backdrop-blur"
-            >
-              <Icon icon={icon} className="size-10" />
-            </div>
-          ) : null} */}
-
           <div className="space-y-2">
             <h1 className="text-2xl font-black text-white md:text-3xl">
               {title}
