@@ -36,6 +36,7 @@ export function formatDateArShort2DigitDay(value: string) {
 }
 
 export function formatTimeAr(value: string) {
+  if (value.length === 0) return "-"
   return new Intl.DateTimeFormat("ar-EG", {
     hour: "numeric",
     minute: "2-digit",
