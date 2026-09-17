@@ -60,7 +60,7 @@ describe('TaskSessionsService', () => {
       accumulatedSeconds: 0,
       durationSeconds: 0,
       lastStartedAt: new Date('2026-07-07T10:06:30.000Z'),
-      expectedEndAt: new Date('2026-07-07T10:07:30.000Z'),
+      expectedEndAt: new Date('2026-07-07T10:31:30.000Z'),
     });
 
     const result = await service.startTaskSession(30, 20);
@@ -72,10 +72,10 @@ describe('TaskSessionsService', () => {
       studentId: 30,
       taskId: 20,
       startedAt: new Date('2026-07-07T10:06:30.000Z'),
-      expectedEndAt: new Date('2026-07-07T10:07:30.000Z'),
+      expectedEndAt: new Date('2026-07-07T10:31:30.000Z'),
     });
     expect(result.status).toBe('running');
-    expect(result.expectedEndAt).toEqual(new Date('2026-07-07T10:07:30.000Z'));
+    expect(result.expectedEndAt).toEqual(new Date('2026-07-07T10:31:30.000Z'));
   });
 
   it('rejects starting a new session when the same task already has an active session', async () => {
@@ -203,22 +203,28 @@ describe('TaskSessionsService', () => {
 
     const result = await service.resumeTaskSession(
       baseSession.id,
-      '2026-07-07T10:07:17.000Z',
+      '2026-07-07T10:31:20.000Z',
     );
 
     expect(repository.updateTaskSession).toHaveBeenCalledWith(
       expect.objectContaining({
         status: 'running',
         accumulatedSeconds: 10,
-        lastStartedAt: new Date('2026-07-07T10:06:27.000Z'),
-        expectedEndAt: new Date('2026-07-07T10:07:17.000Z'),
+        lastStartedAt: new Date('2026-07-07T10:06:30.000Z'),
+        expectedEndAt: new Date('2026-07-07T10:31:20.000Z'),
       }),
     );
     expect(result.status).toBe('running');
   });
 
-  it('completes only running sessions', async () => {
-    repository.findTaskSessionById.mockResolvedValue(baseSession);
+  it('completes running sessions after the focus duration ends', async () => {
+    repository.findTaskSessionById.mockResolvedValue({
+      ...baseSession,
+      accumulatedSeconds: 0,
+      durationSeconds: 1500,
+      lastStartedAt: new Date('2026-07-07T09:41:30.000Z'),
+      expectedEndAt: new Date('2026-07-07T10:06:30.000Z'),
+    });
     repository.updateTaskSession.mockImplementation(async (input) => ({
       ...baseSession,
       ...input,
@@ -230,13 +236,29 @@ describe('TaskSessionsService', () => {
     expect(repository.updateTaskSession).toHaveBeenCalledWith(
       expect.objectContaining({
         status: 'completed',
-        accumulatedSeconds: 60,
-        endedAt: new Date('2026-07-07T10:01:00.000Z'),
+        accumulatedSeconds: 1500,
+        endedAt: new Date('2026-07-07T10:06:30.000Z'),
         lastStartedAt: null,
         expectedEndAt: null,
       }),
     );
     expect(result.status).toBe('completed');
+  });
+
+  it('rejects completing a session before the focus duration ends', async () => {
+    repository.findTaskSessionById.mockResolvedValue({
+      ...baseSession,
+      accumulatedSeconds: 0,
+      durationSeconds: 1020,
+      lastStartedAt: new Date('2026-07-07T09:49:30.000Z'),
+      expectedEndAt: new Date('2026-07-07T10:14:30.000Z'),
+    });
+
+    await expect(
+      service.completeTaskSession(baseSession.id),
+    ).rejects.toBeInstanceOf(ConflictException);
+
+    expect(repository.updateTaskSession).not.toHaveBeenCalled();
   });
 
   it('returns an already completed session without updating it again', async () => {

@@ -57,6 +57,8 @@ export type PlanTaskSessionStatsRow = {
   pausedSessions: number;
   completedSessions: number;
   cancelledSessions: number;
+  firstSessionStartedAt: Date | null;
+  lastSessionStartedAt: Date | null;
 };
 
 @Injectable()
@@ -263,6 +265,8 @@ export class TaskSessionsRepository {
         pausedSessions: sql<number>`count(${taskSessions.id}) filter (where ${taskSessions.status} = 'paused')`,
         completedSessions: sql<number>`count(${taskSessions.id}) filter (where ${taskSessions.status} = 'completed')`,
         cancelledSessions: sql<number>`count(${taskSessions.id}) filter (where ${taskSessions.status} = 'cancelled')`,
+        firstSessionStartedAt: sql<Date | null>`min(${taskSessions.startedAt})`,
+        lastSessionStartedAt: sql<Date | null>`max(${taskSessions.startedAt})`,
       })
       .from(taskSessions)
       .innerJoin(tasks, eq(taskSessions.taskId, tasks.id))
@@ -282,6 +286,8 @@ export class TaskSessionsRepository {
       pausedSessions: Number(row.pausedSessions ?? 0),
       completedSessions: Number(row.completedSessions ?? 0),
       cancelledSessions: Number(row.cancelledSessions ?? 0),
+      firstSessionStartedAt: row.firstSessionStartedAt,
+      lastSessionStartedAt: row.lastSessionStartedAt,
     }));
   }
 

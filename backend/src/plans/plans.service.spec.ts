@@ -122,6 +122,8 @@ describe('PlansService pagination', () => {
         pausedSessions: 1,
         completedSessions: 1,
         cancelledSessions: 1,
+        firstSessionStartedAt: new Date('2026-08-17T08:00:00.000Z'),
+        lastSessionStartedAt: new Date('2026-08-17T09:30:00.000Z'),
       },
     ]);
     listStudentOccurrencesInRange.mockResolvedValue([
@@ -152,6 +154,8 @@ describe('PlansService pagination', () => {
       pausedSessions: 1,
       completedSessions: 1,
       cancelledSessions: 1,
+      firstSessionStartedAt: new Date('2026-08-17T08:00:00.000Z'),
+      lastSessionStartedAt: new Date('2026-08-17T09:30:00.000Z'),
     });
     expect(response.days[0].tasks[1].sessionStats).toEqual({
       totalFocusSeconds: 0,
@@ -160,6 +164,8 @@ describe('PlansService pagination', () => {
       pausedSessions: 0,
       completedSessions: 0,
       cancelledSessions: 0,
+      firstSessionStartedAt: null,
+      lastSessionStartedAt: null,
     });
     expect(response.stats.totalLessons).toBe(1);
     expect(response.lessonDays).toEqual([

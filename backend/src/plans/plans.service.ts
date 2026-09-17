@@ -14,16 +14,21 @@ import type { AuthenticatedUser } from '../authorization/types/authenticated-use
 import { StudentsRepository } from '../students/students.repository';
 import { CoachesRepository } from '../coaches/coaches.repository';
 import { UpdateStudentPlanDto } from './dto/update-student-plan.dto';
-import { TaskSessionsRepository } from '../task-sessions/task-sessions.repository';
+import {
+  TaskSessionsRepository,
+  type PlanTaskSessionStatsRow,
+} from '../task-sessions/task-sessions.repository';
 import { LessonOccurrencesService } from '../lesson-occurrences/lesson-occurrences.service';
 
-const EMPTY_TASK_SESSION_STATS = {
+const EMPTY_TASK_SESSION_STATS: Omit<PlanTaskSessionStatsRow, 'taskId'> = {
   totalFocusSeconds: 0,
   totalSessions: 0,
   runningSessions: 0,
   pausedSessions: 0,
   completedSessions: 0,
   cancelledSessions: 0,
+  firstSessionStartedAt: null,
+  lastSessionStartedAt: null,
 };
 
 @Injectable()

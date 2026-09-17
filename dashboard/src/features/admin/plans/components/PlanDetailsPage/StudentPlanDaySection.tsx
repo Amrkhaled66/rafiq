@@ -14,7 +14,7 @@ import ProgressCell from "@/features/admin/shared/components/ProgressCell";
 import Button from "@/shared/components/Button";
 import Table from "@/shared/components/Table";
 import { SCHOOL_SUBJECT_LABELS } from "@/shared/const/subjects";
-import { formatDateArShort } from "@/shared/utils/dates";
+import { formatDateArShort, formatTimeAr } from "@/shared/utils/dates";
 
 const SESSION_STATUS_BREAKDOWN: Array<{
   status: SessionStatus;
@@ -144,6 +144,20 @@ export default function StudentPlanDaySection({
         name: "عدد الجلسات",
         selector: (row) => row.sessionStats.totalSessions,
         width: "110px",
+        center: true,
+      },
+      {
+        name: "أول جلسة",
+        selector: (row) =>
+          formatTimeAr(row.sessionStats.firstSessionStartedAt || ""),
+        width: "150px",
+        center: true,
+      },
+      {
+        name: "آخر جلسة",
+        selector: (row) =>
+          formatTimeAr(row.sessionStats.lastSessionStartedAt || ""),
+        width: "150px",
         center: true,
       },
       {

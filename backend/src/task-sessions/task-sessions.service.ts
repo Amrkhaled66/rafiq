@@ -220,6 +220,19 @@ export class TaskSessionsService {
     }
 
     const receivedAt = new Date();
+    const accumulatedSeconds = this.resolveAccumulatedSeconds(
+      session,
+      receivedAt,
+    );
+
+    if (accumulatedSeconds < TASK_FOCUS_DURATION_SECONDS) {
+      throw new ConflictException({
+        message: 'Session cannot be completed before the focus duration ends',
+        currentFocusSeconds: accumulatedSeconds,
+        requiredFocusSeconds: TASK_FOCUS_DURATION_SECONDS,
+      });
+    }
+
     const completionAt =
       session.expectedEndAt && session.expectedEndAt <= receivedAt
         ? session.expectedEndAt

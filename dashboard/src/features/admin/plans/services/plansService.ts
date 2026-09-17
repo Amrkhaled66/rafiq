@@ -77,6 +77,8 @@ export type StudentPlanTaskSessionStats = {
   pausedSessions: number;
   completedSessions: number;
   cancelledSessions: number;
+  firstSessionStartedAt: string | null;
+  lastSessionStartedAt: string | null;
 };
 
 export type CompletedStudentPlanTask = Omit<
