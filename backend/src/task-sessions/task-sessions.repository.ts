@@ -61,6 +61,12 @@ export type PlanTaskSessionStatsRow = {
   lastSessionStartedAt: Date | null;
 };
 
+export type StudentDailyStudyTimeRow = {
+  date: string;
+  totalStudySeconds: number;
+  sessionsCount: number;
+};
+
 @Injectable()
 export class TaskSessionsRepository {
   constructor(@Inject(db) private readonly database: Database) {}
@@ -288,6 +294,38 @@ export class TaskSessionsRepository {
       cancelledSessions: Number(row.cancelledSessions ?? 0),
       firstSessionStartedAt: row.firstSessionStartedAt,
       lastSessionStartedAt: row.lastSessionStartedAt,
+    }));
+  }
+
+  async getStudentDailyStudyTime(input: {
+    studentId: number;
+    from: string;
+    to: string;
+  }): Promise<StudentDailyStudyTimeRow[]> {
+    const cairoDateSql = sql<string>`to_char(${taskSessions.startedAt} at time zone 'Africa/Cairo', 'YYYY-MM-DD')`;
+
+    const rows = await this.database
+      .select({
+        date: cairoDateSql,
+        totalStudySeconds: sql<number>`coalesce(sum(${this.durationSecondsSql()}), 0)`,
+        sessionsCount: count(taskSessions.id),
+      })
+      .from(taskSessions)
+      .where(
+        and(
+          eq(taskSessions.studentId, input.studentId),
+          inArray(taskSessions.status, ['completed', 'running', 'paused']),
+          gte(cairoDateSql, input.from),
+          lte(cairoDateSql, input.to),
+        ),
+      )
+      .groupBy(cairoDateSql)
+      .orderBy(cairoDateSql);
+
+    return rows.map((row) => ({
+      date: row.date,
+      totalStudySeconds: Number(row.totalStudySeconds ?? 0),
+      sessionsCount: Number(row.sessionsCount ?? 0),
     }));
   }
 

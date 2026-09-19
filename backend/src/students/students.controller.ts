@@ -19,6 +19,7 @@ import { CreateStudentDto } from './dto/create-student.dto';
 import { CreateStudentCoachAssignmentDto } from './dto/create-student-coach-assignment.dto';
 import { ListStudentsQueryDto } from './dto/list-students-query.dto';
 import { SearchStudentQueryDto } from './dto/search-student-query.dto';
+import { StudentStudyTimeQueryDto } from './dto/student-study-time-query.dto';
 import { UpdateStudentDto } from './dto/update-student.dto';
 import { StudentsService } from './students.service';
 
@@ -46,6 +47,15 @@ export class StudentsController {
   @RequirePolicy('students.read')
   getStudentOverview(@Param('id', ParseIntPipe) id: number) {
     return this.studentsService.getStudentOverview(id);
+  }
+
+  @Get(':id/analytics/study-time')
+  @RequirePolicy('students.read')
+  getStudentStudyTimeAnalytics(
+    @Param('id', ParseIntPipe) id: number,
+    @Query() query: StudentStudyTimeQueryDto,
+  ) {
+    return this.studentsService.getStudentStudyTimeAnalytics(id, query);
   }
 
   @Get(':id/profile')

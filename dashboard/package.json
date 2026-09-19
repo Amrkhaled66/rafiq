@@ -18,6 +18,7 @@
     "@tanstack/react-query-devtools": "^5.100.9",
     "@uiw/react-codemirror": "^4.25.11",
     "axios": "^1.16.0",
+    "chart.js": "^4.5.1",
     "clsx": "^2.1.1",
     "gsap": "^3.15.0",
     "react": "^19.2.5",

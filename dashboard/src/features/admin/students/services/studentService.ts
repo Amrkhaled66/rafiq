@@ -70,6 +70,33 @@ export type StudentOverview = {
   todayLessons: StudentOverviewLesson[];
 };
 
+export type StudentStudyTimeDailyPoint = {
+  date: string;
+  totalStudySeconds: number;
+  totalStudyMinutes: number;
+  sessionsCount: number;
+};
+
+export type StudentStudyTimeAnalytics = {
+  student: Pick<Student, "id" | "fullName">;
+  interval: {
+    from: string;
+    to: string;
+  };
+  summary: {
+    totalStudySeconds: number;
+    totalStudyMinutes: number;
+    averageDailyMinutes: number;
+    activeDays: number;
+  };
+  daily: StudentStudyTimeDailyPoint[];
+};
+
+export type StudentStudyTimeAnalyticsParams = {
+  from: string;
+  to: string;
+};
+
 export async function listStudents(
   params: ListStudentsParams = {},
 ): Promise<StudentsListResponse> {
@@ -89,6 +116,17 @@ export async function createStudent(
 
 export async function getStudentOverview(id: number): Promise<StudentOverview> {
   const { data } = await api.get<StudentOverview>(`/students/${id}/overview`);
+  return data;
+}
+
+export async function getStudentStudyTimeAnalytics(
+  id: number,
+  params: StudentStudyTimeAnalyticsParams,
+): Promise<StudentStudyTimeAnalytics> {
+  const { data } = await api.get<StudentStudyTimeAnalytics>(
+    `/students/${id}/analytics/study-time`,
+    { params },
+  );
   return data;
 }
 

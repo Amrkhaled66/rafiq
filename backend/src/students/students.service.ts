@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import type { AuthenticatedUser } from '../authorization/types/authenticated-user.type';
 import { LessonOccurrencesService } from '../lesson-occurrences/lesson-occurrences.service';
 import { TasksRepository } from '../tasks/tasks.repository';
@@ -16,6 +16,8 @@ import { MissedTasksRepository } from '../missed-tasks/missed-tasks.repository';
 import { MissedLessonsRepository } from '../missed-lessons/missed-lessons.repository';
 import { PlansRepository } from '../plans/plans.repository';
 import { LessonsRepository } from '../lessons/lessons.repository';
+import { TaskSessionsRepository } from '../task-sessions/task-sessions.repository';
+import { StudentStudyTimeQueryDto } from './dto/student-study-time-query.dto';
 
 export interface StudentOverviewStats {
   totalTasks: number;
@@ -50,6 +52,23 @@ export interface StudentOverview {
   todayLessons: StudentOverviewLesson[];
 }
 
+export interface StudentStudyTimeAnalytics {
+  student: { id: number; fullName: string };
+  interval: { from: string; to: string };
+  summary: {
+    totalStudySeconds: number;
+    totalStudyMinutes: number;
+    averageDailyMinutes: number;
+    activeDays: number;
+  };
+  daily: {
+    date: string;
+    totalStudySeconds: number;
+    totalStudyMinutes: number;
+    sessionsCount: number;
+  }[];
+}
+
 @Injectable()
 export class StudentsService {
   constructor(
@@ -61,6 +80,7 @@ export class StudentsService {
     private readonly missedLessonsRepository: MissedLessonsRepository,
     private readonly plansRepository: PlansRepository,
     private readonly lessonsRepository: LessonsRepository,
+    private readonly taskSessionsRepository: TaskSessionsRepository,
   ) {}
 
   async getStudentOverview(id: number): Promise<StudentOverview> {
@@ -119,6 +139,54 @@ export class StudentsService {
       throw new NotFoundException('Student not found');
     }
     return { id: student.id, fullName: student.fullName, phone: student.phone };
+  }
+
+  async getStudentStudyTimeAnalytics(
+    id: number,
+    query: StudentStudyTimeQueryDto,
+  ): Promise<StudentStudyTimeAnalytics> {
+    const student = await this.findStudentByIdOrThrow(id);
+
+    if (query.to < query.from) {
+      throw new BadRequestException('to must be >= from');
+    }
+
+    const intervalDays = this.countIntervalDays(query.from, query.to);
+
+    if (intervalDays > 90) {
+      throw new BadRequestException('date range cannot exceed 90 days');
+    }
+
+    const rows = await this.taskSessionsRepository.getStudentDailyStudyTime({
+      studentId: id,
+      from: query.from,
+      to: query.to,
+    });
+    const daily = rows.map((row) => ({
+      date: row.date,
+      totalStudySeconds: row.totalStudySeconds,
+      totalStudyMinutes: Math.round(row.totalStudySeconds / 60),
+      sessionsCount: row.sessionsCount,
+    }));
+    const totalStudySeconds = rows.reduce(
+      (sum, row) => sum + row.totalStudySeconds,
+      0,
+    );
+    const totalStudyMinutes = Math.round(totalStudySeconds / 60);
+    const activeDays = rows.filter((row) => row.totalStudySeconds > 0).length;
+
+    return {
+      student: { id: student.id, fullName: student.fullName },
+      interval: { from: query.from, to: query.to },
+      summary: {
+        totalStudySeconds,
+        totalStudyMinutes,
+        averageDailyMinutes:
+          intervalDays > 0 ? Math.round(totalStudyMinutes / intervalDays) : 0,
+        activeDays,
+      },
+      daily,
+    };
   }
 
   async getStudentProfile(id: number) {
@@ -296,5 +364,16 @@ export class StudentsService {
         timeZone: 'Africa/Cairo',
       }),
     );
+  }
+
+  private countIntervalDays(from: string, to: string) {
+    const fromTime = new Date(`${from}T00:00:00.000Z`).getTime();
+    const toTime = new Date(`${to}T00:00:00.000Z`).getTime();
+
+    if (Number.isNaN(fromTime) || Number.isNaN(toTime)) {
+      throw new BadRequestException('Invalid date range');
+    }
+
+    return Math.floor((toTime - fromTime) / 86_400_000) + 1;
   }
 }

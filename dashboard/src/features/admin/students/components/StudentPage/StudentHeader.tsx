@@ -91,14 +91,16 @@ export default function StudentHeader({
           </div>
         </div>
 
-        <div className="grid grid-cols-3 place-items-end gap-3 lg:min-w-60">
-          {canManageCoaches ? (
+        <div className="grid grid-cols-3 place-items-end gap-3 lg:min-w-72">
+          {canManageCoaches && (
             <ManageStudentCoachesModal studentId={student.id} />
-          ) : (
-            <Button variant="outline" className="w-full text-sm" disabled>
+          )}
+
+          <Link to="analytics" className="w-full">
+            <Button variant="outline" className="w-full text-sm">
               تحليلات الأداء
             </Button>
-          )}
+          </Link>
 
           <Link to="plans" className="w-full">
             <Button variant="outline" className="w-full text-sm">

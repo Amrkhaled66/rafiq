@@ -8,6 +8,7 @@ import { MissedLessonsModule } from '../missed-lessons/missed-lessons.module';
 import { MissedTasksModule } from '../missed-tasks/missed-tasks.module';
 import { PlansModule } from '../plans/plans.module';
 import { TasksModule } from '../tasks/tasks.module';
+import { TaskSessionsModule } from '../task-sessions/task-sessions.module';
 import { UsersModule } from '../users/users.module';
 import { StudentsController } from './students.controller';
 import { StudentsRepository } from './students.repository';
@@ -19,6 +20,7 @@ import { StudentsService } from './students.service';
     AuthorizationModule,
     DbModule,
     forwardRef(() => TasksModule),
+    TaskSessionsModule,
     LessonOccurrencesModule,
     forwardRef(() => LessonsModule),
     MissedTasksModule,

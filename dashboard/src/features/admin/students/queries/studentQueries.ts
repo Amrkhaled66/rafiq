@@ -9,17 +9,21 @@ import {
   assignCoachToStudent,
   removeCoachFromStudent,
   getStudentOverview,
+  getStudentStudyTimeAnalytics,
   listStudents,
   updateStudent,
   watchLessonOccurrence,
   unwatchLessonOccurrence,
   type ListStudentsParams,
+  type StudentStudyTimeAnalyticsParams,
 } from "@/features/admin/students/services/studentService";
 import type { UpdateStudentFormValues } from "@/features/admin/students/schema/updateStudentSchema";
 
 export const studentsQueryKey = ["admin-students"] as const;
 export const studentOverviewQueryKey = ["admin-student-overview"] as const;
 export const studentCoachesQueryKey = ["admin-student-coaches"] as const;
+export const studentStudyTimeAnalyticsQueryKey =
+  ["admin-student-study-time-analytics"] as const;
 
 export function useStudentsQuery(params: ListStudentsParams = {}) {
   return useQuery({
@@ -33,6 +37,23 @@ export function useStudentOverviewQuery(id: number) {
     queryKey: [...studentOverviewQueryKey, id],
     queryFn: () => getStudentOverview(id),
     enabled: Number.isFinite(id) && id > 0,
+  });
+}
+
+export function useStudentStudyTimeAnalyticsQuery(
+  id: number,
+  params: StudentStudyTimeAnalyticsParams,
+  enabled = true,
+) {
+  return useQuery({
+    queryKey: [...studentStudyTimeAnalyticsQueryKey, id, params],
+    queryFn: () => getStudentStudyTimeAnalytics(id, params),
+    enabled:
+      enabled &&
+      Number.isFinite(id) &&
+      id > 0 &&
+      params.from.length > 0 &&
+      params.to.length > 0,
   });
 }
 
