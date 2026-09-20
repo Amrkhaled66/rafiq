@@ -4,13 +4,15 @@ import {
   count,
   desc,
   eq,
+  gte,
   ilike,
   isNotNull,
   isNull,
+  lte,
   sql,
   type SQL,
 } from 'drizzle-orm';
-import { coachAssignments, studentProfiles, users } from '../db';
+import { coachAssignments, plans, studentProfiles, tasks, users } from '../db';
 import { db } from '../db/db.module';
 import type { Database } from '../db/db.module';
 import type { AppRole } from '../authorization/types/authenticated-user.type';
@@ -43,6 +45,22 @@ export type AssignedCoachRow = {
   id: number;
   fullName: string;
   phone: string;
+};
+
+export type StudentTaskCompletionTrendRow = {
+  date: string;
+  totalTasks: number;
+  completedTasks: number;
+  missedTasks: number;
+};
+
+export type StudentSubjectPerformanceRow = {
+  subject: string;
+  totalTasks: number;
+  completedTasks: number;
+  missedTasks: number;
+  inProgressTasks: number;
+  pendingTasks: number;
 };
 
 @Injectable()
@@ -95,6 +113,74 @@ export class StudentsRepository {
       .orderBy(desc(coachAssignments.assignedAt));
 
     return rows;
+  }
+
+  async getStudentTaskCompletionTrend(input: {
+    studentId: number;
+    from: string;
+    to: string;
+  }): Promise<StudentTaskCompletionTrendRow[]> {
+    const rows = await this.database
+      .select({
+        date: tasks.dueAt,
+        totalTasks: count(tasks.id),
+        completedTasks: sql<number>`count(${tasks.id}) filter (where ${tasks.status} = 'done')`,
+        missedTasks: sql<number>`count(${tasks.id}) filter (where ${tasks.status} = 'missed')`,
+      })
+      .from(tasks)
+      .innerJoin(plans, eq(tasks.planId, plans.id))
+      .where(
+        and(
+          eq(plans.studentId, input.studentId),
+          gte(tasks.dueAt, input.from),
+          lte(tasks.dueAt, input.to),
+        ),
+      )
+      .groupBy(tasks.dueAt)
+      .orderBy(tasks.dueAt);
+
+    return rows.map((row) => ({
+      date: row.date,
+      totalTasks: Number(row.totalTasks ?? 0),
+      completedTasks: Number(row.completedTasks ?? 0),
+      missedTasks: Number(row.missedTasks ?? 0),
+    }));
+  }
+
+  async getStudentSubjectPerformance(input: {
+    studentId: number;
+    from: string;
+    to: string;
+  }): Promise<StudentSubjectPerformanceRow[]> {
+    const rows = await this.database
+      .select({
+        subject: tasks.subject,
+        totalTasks: count(tasks.id),
+        completedTasks: sql<number>`count(${tasks.id}) filter (where ${tasks.status} = 'done')`,
+        missedTasks: sql<number>`count(${tasks.id}) filter (where ${tasks.status} = 'missed')`,
+        inProgressTasks: sql<number>`count(${tasks.id}) filter (where ${tasks.status} = 'in_progress')`,
+        pendingTasks: sql<number>`count(${tasks.id}) filter (where ${tasks.status} = 'pending')`,
+      })
+      .from(tasks)
+      .innerJoin(plans, eq(tasks.planId, plans.id))
+      .where(
+        and(
+          eq(plans.studentId, input.studentId),
+          gte(tasks.dueAt, input.from),
+          lte(tasks.dueAt, input.to),
+        ),
+      )
+      .groupBy(tasks.subject)
+      .orderBy(tasks.subject);
+
+    return rows.map((row) => ({
+      subject: row.subject,
+      totalTasks: Number(row.totalTasks ?? 0),
+      completedTasks: Number(row.completedTasks ?? 0),
+      missedTasks: Number(row.missedTasks ?? 0),
+      inProgressTasks: Number(row.inProgressTasks ?? 0),
+      pendingTasks: Number(row.pendingTasks ?? 0),
+    }));
   }
 
   async isCoachAssignedToStudent(

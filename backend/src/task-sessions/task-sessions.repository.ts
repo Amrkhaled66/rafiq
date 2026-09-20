@@ -67,6 +67,12 @@ export type StudentDailyStudyTimeRow = {
   sessionsCount: number;
 };
 
+export type StudentStudyTimeBySubjectRow = {
+  subject: string;
+  totalStudySeconds: number;
+  sessionsCount: number;
+};
+
 @Injectable()
 export class TaskSessionsRepository {
   constructor(@Inject(db) private readonly database: Database) {}
@@ -324,6 +330,39 @@ export class TaskSessionsRepository {
 
     return rows.map((row) => ({
       date: row.date,
+      totalStudySeconds: Number(row.totalStudySeconds ?? 0),
+      sessionsCount: Number(row.sessionsCount ?? 0),
+    }));
+  }
+
+  async getStudentStudyTimeBySubject(input: {
+    studentId: number;
+    from: string;
+    to: string;
+  }): Promise<StudentStudyTimeBySubjectRow[]> {
+    const cairoDateSql = sql<string>`to_char(${taskSessions.startedAt} at time zone 'Africa/Cairo', 'YYYY-MM-DD')`;
+
+    const rows = await this.database
+      .select({
+        subject: tasks.subject,
+        totalStudySeconds: sql<number>`coalesce(sum(${this.durationSecondsSql()}), 0)`,
+        sessionsCount: count(taskSessions.id),
+      })
+      .from(taskSessions)
+      .innerJoin(tasks, eq(taskSessions.taskId, tasks.id))
+      .where(
+        and(
+          eq(taskSessions.studentId, input.studentId),
+          inArray(taskSessions.status, ['completed', 'running', 'paused']),
+          gte(cairoDateSql, input.from),
+          lte(cairoDateSql, input.to),
+        ),
+      )
+      .groupBy(tasks.subject)
+      .orderBy(tasks.subject);
+
+    return rows.map((row) => ({
+      subject: row.subject,
       totalStudySeconds: Number(row.totalStudySeconds ?? 0),
       sessionsCount: Number(row.sessionsCount ?? 0),
     }));

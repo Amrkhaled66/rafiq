@@ -77,6 +77,31 @@ export type StudentStudyTimeDailyPoint = {
   sessionsCount: number;
 };
 
+export type StudentTaskCompletionTrendPoint = {
+  date: string;
+  totalTasks: number;
+  completedTasks: number;
+  missedTasks: number;
+  completionRate: number;
+};
+
+export type StudentSubjectPerformancePoint = {
+  subject: string;
+  totalTasks: number;
+  completedTasks: number;
+  missedTasks: number;
+  inProgressTasks: number;
+  pendingTasks: number;
+  completionRate: number;
+};
+
+export type StudentStudyTimeBySubjectPoint = {
+  subject: string;
+  totalStudySeconds: number;
+  totalStudyMinutes: number;
+  sessionsCount: number;
+};
+
 export type StudentStudyTimeAnalytics = {
   student: Pick<Student, "id" | "fullName">;
   interval: {
@@ -90,6 +115,9 @@ export type StudentStudyTimeAnalytics = {
     activeDays: number;
   };
   daily: StudentStudyTimeDailyPoint[];
+  taskCompletionTrend: StudentTaskCompletionTrendPoint[];
+  subjectPerformance: StudentSubjectPerformancePoint[];
+  studyTimeBySubject: StudentStudyTimeBySubjectPoint[];
 };
 
 export type StudentStudyTimeAnalyticsParams = {

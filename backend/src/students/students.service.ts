@@ -67,6 +67,28 @@ export interface StudentStudyTimeAnalytics {
     totalStudyMinutes: number;
     sessionsCount: number;
   }[];
+  taskCompletionTrend: {
+    date: string;
+    totalTasks: number;
+    completedTasks: number;
+    missedTasks: number;
+    completionRate: number;
+  }[];
+  subjectPerformance: {
+    subject: string;
+    totalTasks: number;
+    completedTasks: number;
+    missedTasks: number;
+    inProgressTasks: number;
+    pendingTasks: number;
+    completionRate: number;
+  }[];
+  studyTimeBySubject: {
+    subject: string;
+    totalStudySeconds: number;
+    totalStudyMinutes: number;
+    sessionsCount: number;
+  }[];
 }
 
 @Injectable()
@@ -157,13 +179,51 @@ export class StudentsService {
       throw new BadRequestException('date range cannot exceed 90 days');
     }
 
-    const rows = await this.taskSessionsRepository.getStudentDailyStudyTime({
-      studentId: id,
-      from: query.from,
-      to: query.to,
-    });
+    const [rows, taskCompletionRows, subjectRows, studyTimeBySubjectRows] =
+      await Promise.all([
+        this.taskSessionsRepository.getStudentDailyStudyTime({
+          studentId: id,
+          from: query.from,
+          to: query.to,
+        }),
+        this.studentsRepository.getStudentTaskCompletionTrend({
+          studentId: id,
+          from: query.from,
+          to: query.to,
+        }),
+        this.studentsRepository.getStudentSubjectPerformance({
+          studentId: id,
+          from: query.from,
+          to: query.to,
+        }),
+        this.taskSessionsRepository.getStudentStudyTimeBySubject({
+          studentId: id,
+          from: query.from,
+          to: query.to,
+        }),
+      ]);
     const daily = rows.map((row) => ({
       date: row.date,
+      totalStudySeconds: row.totalStudySeconds,
+      totalStudyMinutes: Math.round(row.totalStudySeconds / 60),
+      sessionsCount: row.sessionsCount,
+    }));
+    const taskCompletionTrend = taskCompletionRows.map((row) => ({
+      ...row,
+      completionRate:
+        row.totalTasks > 0
+          ? Math.round((row.completedTasks / row.totalTasks) * 100)
+          : 0,
+    }));
+    const subjectPerformance = subjectRows.map((row) => ({
+      ...row,
+      completionRate:
+        row.totalTasks > 0
+          ? Math.round((row.completedTasks / row.totalTasks) * 100)
+          : 0,
+    }));
+    const studyTimeBySubject = studyTimeBySubjectRows.map((row) => ({
+      subject: row.subject,
       totalStudySeconds: row.totalStudySeconds,
       totalStudyMinutes: Math.round(row.totalStudySeconds / 60),
       sessionsCount: row.sessionsCount,
@@ -186,6 +246,9 @@ export class StudentsService {
         activeDays,
       },
       daily,
+      taskCompletionTrend,
+      subjectPerformance,
+      studyTimeBySubject,
     };
   }
 

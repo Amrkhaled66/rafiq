@@ -1,8 +1,13 @@
 import { BadRequestException } from '@nestjs/common';
 import { StudentsService } from './students.service';
-import type { StudentsRepository } from './students.repository';
+import type {
+  StudentSubjectPerformanceRow,
+  StudentTaskCompletionTrendRow,
+  StudentsRepository,
+} from './students.repository';
 import type {
   StudentDailyStudyTimeRow,
+  StudentStudyTimeBySubjectRow,
   TaskSessionsRepository,
 } from '../task-sessions/task-sessions.repository';
 
@@ -20,12 +25,28 @@ describe('StudentsService analytics', () => {
     deletedAt: null,
   } as never;
 
-  function createService(rows: StudentDailyStudyTimeRow[] = []) {
+  function createService(
+    input: {
+      daily?: StudentDailyStudyTimeRow[];
+      taskCompletionTrend?: StudentTaskCompletionTrendRow[];
+      subjectPerformance?: StudentSubjectPerformanceRow[];
+      studyTimeBySubject?: StudentStudyTimeBySubjectRow[];
+    } = {},
+  ) {
     const studentsRepository = {
       findByUserId: jest.fn().mockResolvedValue(student),
+      getStudentTaskCompletionTrend: jest
+        .fn()
+        .mockResolvedValue(input.taskCompletionTrend ?? []),
+      getStudentSubjectPerformance: jest
+        .fn()
+        .mockResolvedValue(input.subjectPerformance ?? []),
     } as unknown as jest.Mocked<StudentsRepository>;
     const taskSessionsRepository = {
-      getStudentDailyStudyTime: jest.fn().mockResolvedValue(rows),
+      getStudentDailyStudyTime: jest.fn().mockResolvedValue(input.daily ?? []),
+      getStudentStudyTimeBySubject: jest
+        .fn()
+        .mockResolvedValue(input.studyTimeBySubject ?? []),
     } as unknown as jest.Mocked<TaskSessionsRepository>;
 
     const service = new StudentsService(
@@ -44,10 +65,33 @@ describe('StudentsService analytics', () => {
   }
 
   it('returns study-time summary for the selected interval', async () => {
-    const { service, taskSessionsRepository } = createService([
-      { date: '2026-09-17', totalStudySeconds: 3600, sessionsCount: 2 },
-      { date: '2026-09-19', totalStudySeconds: 1800, sessionsCount: 1 },
-    ]);
+    const { service, taskSessionsRepository } = createService({
+      daily: [
+        { date: '2026-09-17', totalStudySeconds: 3600, sessionsCount: 2 },
+        { date: '2026-09-19', totalStudySeconds: 1800, sessionsCount: 1 },
+      ],
+      taskCompletionTrend: [
+        {
+          date: '2026-09-17',
+          totalTasks: 4,
+          completedTasks: 3,
+          missedTasks: 1,
+        },
+      ],
+      subjectPerformance: [
+        {
+          subject: 'math',
+          totalTasks: 5,
+          completedTasks: 4,
+          missedTasks: 1,
+          inProgressTasks: 0,
+          pendingTasks: 0,
+        },
+      ],
+      studyTimeBySubject: [
+        { subject: 'math', totalStudySeconds: 5400, sessionsCount: 3 },
+      ],
+    });
 
     await expect(
       service.getStudentStudyTimeAnalytics(12, {
@@ -75,6 +119,34 @@ describe('StudentsService analytics', () => {
           totalStudySeconds: 1800,
           totalStudyMinutes: 30,
           sessionsCount: 1,
+        },
+      ],
+      taskCompletionTrend: [
+        {
+          date: '2026-09-17',
+          totalTasks: 4,
+          completedTasks: 3,
+          missedTasks: 1,
+          completionRate: 75,
+        },
+      ],
+      subjectPerformance: [
+        {
+          subject: 'math',
+          totalTasks: 5,
+          completedTasks: 4,
+          missedTasks: 1,
+          inProgressTasks: 0,
+          pendingTasks: 0,
+          completionRate: 80,
+        },
+      ],
+      studyTimeBySubject: [
+        {
+          subject: 'math',
+          totalStudySeconds: 5400,
+          totalStudyMinutes: 90,
+          sessionsCount: 3,
         },
       ],
     });
