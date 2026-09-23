@@ -5,14 +5,15 @@ import {
   useDeleteStudentLessonMutation,
   useUpdateStudentLessonMutation,
 } from "@/features/admin/lessons/queries/lessonQueries";
-import type { Lesson } from "@/features/admin/lessons/services/lessonService";
 import type { LessonFormValues } from "@/features/admin/lessons/schema/lessonSchema";
+import type { Lesson } from "@/features/admin/lessons/services/lessonService";
 import { appToast } from "@/shared/lib/toast";
 import { showApiErrorToast } from "@/shared/utils/showApiErrorToast";
 
 export function useStudentLessonsActions(studentId: number) {
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [editingLesson, setEditingLesson] = useState<Lesson | null>(null);
+  const [lessonToDelete, setLessonToDelete] = useState<Lesson | null>(null);
 
   const createLessonMutation = useCreateStudentLessonMutation(studentId);
   const deleteLessonMutation = useDeleteStudentLessonMutation(studentId);
@@ -37,6 +38,15 @@ export function useStudentLessonsActions(studentId: number) {
   function closeEditModal() {
     setEditingLesson(null);
     updateLessonMutation.reset();
+  }
+
+  function closeDeleteModal() {
+    if (deleteLessonMutation.isPending) {
+      return;
+    }
+
+    setLessonToDelete(null);
+    deleteLessonMutation.reset();
   }
 
   function handleCreate(values: LessonFormValues) {
@@ -68,14 +78,17 @@ export function useStudentLessonsActions(studentId: number) {
   }
 
   function handleDelete(lesson: Lesson) {
-    const confirmed = window.confirm(`هل تريد حذف الدرس "${lesson.name}"؟`);
+    setLessonToDelete(lesson);
+  }
 
-    if (!confirmed) {
+  function confirmDelete() {
+    if (!lessonToDelete) {
       return;
     }
 
-    deleteLessonMutation.mutate(lesson.id, {
+    deleteLessonMutation.mutate(lessonToDelete.id, {
       onSuccess: () => {
+        setLessonToDelete(null);
         appToast.success("تم حذف الدرس بنجاح.");
       },
       onError: (error) => {
@@ -87,14 +100,18 @@ export function useStudentLessonsActions(studentId: number) {
   return {
     isCreateOpen,
     editingLesson,
+    lessonToDelete,
     openCreateModal,
     closeCreateModal,
     openEditModal,
     closeEditModal,
+    closeDeleteModal,
     handleCreate,
     handleUpdate,
     handleDelete,
+    confirmDelete,
     isCreating: createLessonMutation.isPending,
     isUpdating: updateLessonMutation.isPending,
+    isDeleting: deleteLessonMutation.isPending,
   };
 }

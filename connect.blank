@@ -1,0 +1,1 @@
+ssh -i "jb-2.pem" ubuntu@ec2-16-170-175-68.eu-north-1.compute.amazonaws.com

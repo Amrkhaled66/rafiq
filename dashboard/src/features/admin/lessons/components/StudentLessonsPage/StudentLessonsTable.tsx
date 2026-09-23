@@ -11,6 +11,7 @@ import { LESSON_WEEKDAY_LABELS } from "@/shared/const/weekdays";
 type StudentLessonsTableProps = {
   lessons: Lesson[];
   isLoading?: boolean;
+  isDeleting?: boolean;
   onEditLesson: (lesson: Lesson) => void;
   onDeleteLesson: (lesson: Lesson) => void;
 };
@@ -18,6 +19,7 @@ type StudentLessonsTableProps = {
 export default function StudentLessonsTable({
   lessons,
   isLoading = false,
+  isDeleting = false,
   onEditLesson,
   onDeleteLesson,
 }: StudentLessonsTableProps) {
@@ -51,6 +53,7 @@ export default function StudentLessonsTable({
               variant="ghost"
               className="px-2 py-1.5 text-red-600"
               onClick={() => onDeleteLesson(row)}
+              disabled={isDeleting}
             >
               <Icon icon="solar:trash-bin-trash-linear" className="size-4" />
             </Button>
@@ -61,7 +64,7 @@ export default function StudentLessonsTable({
         button: true,
       },
     ],
-    [onDeleteLesson, onEditLesson],
+    [isDeleting, onDeleteLesson, onEditLesson],
   );
 
   return (

@@ -66,7 +66,7 @@ export default function SubscriptionsPage() {
         title="الاشتراكات"
         subtitle="إدارة اشتراكات الطلاب وإسناد الباقات المناسبة لكل طالب."
         action={
-          <div className="flex flex-col gap-3 md:flex-row">
+          <div className="flex gap-3 flex-row">
             <Button
               variant="outline"
               className="inline-flex items-center gap-2 text-sm"

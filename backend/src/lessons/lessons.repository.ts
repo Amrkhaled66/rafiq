@@ -1,8 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { and, desc, eq } from 'drizzle-orm';
+import { and, desc, eq, inArray } from 'drizzle-orm';
 import { db } from '../db/db.module';
 import type { Database } from '../db/db.module';
-import { lessonOccurrences, lessons } from '../db';
+import { lessonOccurrences, lessons, missedLessonResolutions } from '../db';
 
 type LessonRow = typeof lessons.$inferSelect;
 
@@ -113,11 +113,35 @@ export class LessonsRepository {
     lessonId: number,
     studentId: number,
   ): Promise<boolean> {
-    const deleted = await this.database
-      .delete(lessons)
-      .where(and(eq(lessons.id, lessonId), eq(lessons.studentId, studentId)))
-      .returning({ id: lessons.id });
+    return this.database.transaction(async (transaction) => {
+      const occurrences = await transaction
+        .select({ id: lessonOccurrences.id })
+        .from(lessonOccurrences)
+        .where(eq(lessonOccurrences.lessonId, lessonId));
 
-    return deleted.length > 0;
+      if (occurrences.length) {
+        const occurrenceIds = occurrences.map((occurrence) => occurrence.id);
+        const chunkSize = 500;
+
+        for (let index = 0; index < occurrenceIds.length; index += chunkSize) {
+          const chunk = occurrenceIds.slice(index, index + chunkSize);
+
+          await transaction
+            .delete(missedLessonResolutions)
+            .where(inArray(missedLessonResolutions.occurrenceId, chunk));
+        }
+
+        await transaction
+          .delete(lessonOccurrences)
+          .where(eq(lessonOccurrences.lessonId, lessonId));
+      }
+
+      const deleted = await transaction
+        .delete(lessons)
+        .where(and(eq(lessons.id, lessonId), eq(lessons.studentId, studentId)))
+        .returning({ id: lessons.id });
+
+      return deleted.length > 0;
+    });
   }
 }

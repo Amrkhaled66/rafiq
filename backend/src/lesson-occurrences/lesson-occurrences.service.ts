@@ -134,6 +134,20 @@ export class LessonOccurrencesService {
     );
   }
 
+  async listStudentOccurrencesForAdmin(input: {
+    studentId: number;
+    from: string;
+    to: string;
+  }) {
+    if (input.from > input.to) {
+      throw new BadRequestException('From date must be before to date');
+    }
+
+    return this.lessonOccurrencesRepository.listStudentOccurrencesWithLessonInRange(
+      input,
+    );
+  }
+
   async watchOccurrence(studentId: number, occurrenceId: number) {
     const occurrence = await this.findOccurrenceOrThrow(
       studentId,
@@ -189,6 +203,62 @@ export class LessonOccurrencesService {
     });
 
     return { ok: true as const, status: nextStatus };
+  }
+
+  async updateOccurrenceDate(
+    studentId: number,
+    occurrenceId: number,
+    scheduledForDate: string,
+  ) {
+    const occurrence = await this.findOccurrenceOrThrow(
+      studentId,
+      occurrenceId,
+    );
+
+    this.assertOccurrenceCanBeChanged(occurrence);
+
+    const duplicate =
+      await this.lessonOccurrencesRepository.findByLessonAndDate(
+        occurrence.lessonId,
+        studentId,
+        scheduledForDate,
+      );
+
+    if (duplicate && duplicate.id !== occurrence.id) {
+      throw new BadRequestException(
+        'Lesson already has an occurrence on this date',
+      );
+    }
+
+    const today = getCairoDateString();
+    const status = scheduledForDate < today ? 'missed' : 'scheduled';
+    const updated = await this.lessonOccurrencesRepository.updateOccurrenceDate(
+      {
+        occurrenceId,
+        scheduledForDate,
+        scheduledWeekday: getIsoDateWeekday(scheduledForDate),
+        status,
+      },
+    );
+
+    if (!updated) {
+      throw new NotFoundException('Lesson occurrence not found');
+    }
+
+    return updated;
+  }
+
+  async deleteOccurrence(studentId: number, occurrenceId: number) {
+    const occurrence = await this.findOccurrenceOrThrow(
+      studentId,
+      occurrenceId,
+    );
+
+    this.assertOccurrenceCanBeChanged(occurrence);
+
+    await this.lessonOccurrencesRepository.deleteOccurrence(occurrenceId);
+
+    return { ok: true as const };
   }
 
   async watchLessonForDate(
@@ -263,5 +333,24 @@ export class LessonOccurrencesService {
     }
 
     return occurrence;
+  }
+
+  private assertOccurrenceCanBeChanged(
+    occurrence: Awaited<
+      ReturnType<LessonOccurrencesRepository['findByIdAndStudent']>
+    >,
+  ) {
+    if (!occurrence) {
+      throw new NotFoundException('Lesson occurrence not found');
+    }
+
+    if (
+      occurrence.status === 'watched_on_time' ||
+      occurrence.status === 'watched_late'
+    ) {
+      throw new BadRequestException(
+        'Watched lesson occurrences cannot be changed',
+      );
+    }
   }
 }

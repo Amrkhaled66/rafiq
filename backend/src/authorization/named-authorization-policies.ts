@@ -119,6 +119,22 @@ export const namedAuthorizationPolicies: NamedAuthorizationPolicy[] = [
     ],
   },
   {
+    name: 'lesson_occurrences.list_by_student',
+    lookup: { key: 'studentId', kind: 'studentId', source: 'params' },
+    requirements: [
+      requireAnyRole(['coach', 'super_admin']),
+      requireStudentResourceAccess('student_profile'),
+    ],
+  },
+  {
+    name: 'lesson_occurrences.manage_by_student',
+    lookup: { key: 'studentId', kind: 'studentId', source: 'params' },
+    requirements: [
+      requireAnyRole(['coach', 'super_admin']),
+      requireStudentResourceAccess('student_profile'),
+    ],
+  },
+  {
     name: 'home.read_by_student',
     lookup: { key: 'studentId', kind: 'studentId', source: 'params' },
     requirements: [

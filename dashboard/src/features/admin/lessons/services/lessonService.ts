@@ -19,6 +19,24 @@ export type Lesson = {
   updatedAt: string;
 };
 
+export type LessonOccurrenceStatus =
+  | "scheduled"
+  | "watched_on_time"
+  | "missed"
+  | "watched_late";
+
+export type LessonOccurrence = {
+  id: number;
+  lessonId: number;
+  lessonName: string;
+  currentLessonName: string;
+  subject: string;
+  scheduledForDate: string;
+  scheduledWeekday: LessonWeekday;
+  status: LessonOccurrenceStatus;
+  watchedOn: string | null;
+};
+
 export type CreateLessonPayload = {
   name: string;
   subject: string;
@@ -61,6 +79,39 @@ export async function deleteStudentLesson(
 ): Promise<{ ok: true }> {
   const { data } = await api.delete<{ ok: true }>(
     `/students/${studentId}/lessons/${lessonId}`,
+  );
+  return data;
+}
+
+export async function listStudentLessonOccurrences(
+  studentId: number,
+  params: { from: string; to: string },
+): Promise<LessonOccurrence[]> {
+  const { data } = await api.get<LessonOccurrence[]>(
+    `/students/${studentId}/lesson-occurrences`,
+    { params },
+  );
+  return data;
+}
+
+export async function updateStudentLessonOccurrence(
+  studentId: number,
+  occurrenceId: number,
+  payload: { scheduledForDate: string },
+): Promise<LessonOccurrence> {
+  const { data } = await api.patch<LessonOccurrence>(
+    `/students/${studentId}/lesson-occurrences/${occurrenceId}`,
+    payload,
+  );
+  return data;
+}
+
+export async function deleteStudentLessonOccurrence(
+  studentId: number,
+  occurrenceId: number,
+): Promise<{ ok: true }> {
+  const { data } = await api.delete<{ ok: true }>(
+    `/students/${studentId}/lesson-occurrences/${occurrenceId}`,
   );
   return data;
 }

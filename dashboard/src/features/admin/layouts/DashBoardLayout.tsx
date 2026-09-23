@@ -94,13 +94,13 @@ export default function DashBoardLayout() {
         logoSrc={logo}
       />
 
-      <main className="bg-background   space-y relative min-w-0 flex-1 p-4 md:p-6 lg:p-8">
-        <div className="mb-4 flex lg:hidden">
+      <main className="bg-background  space-y relative min-w-0 flex-1  md:p-6 lg:p-8">
+        <div className="mb-4 fixed bg-white p-3 z-50 w-full flex lg:hidden">
           <button type="button" onClick={() => setIsSidebarOpen(true)}>
             <Icon icon="material-symbols:menu-rounded" className="size-9" />
           </button>
         </div>
-        <div className="w-full" >
+        <div className="w-full px-4 pt-16 lg:p-0" >
           <Outlet />
         </div>
       </main>

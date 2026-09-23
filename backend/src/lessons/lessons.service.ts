@@ -145,18 +145,6 @@ export class LessonsService {
     await this.findStudentOrThrow(studentId);
     await this.findLessonOrThrow(lessonId, studentId);
 
-    const hasHistory =
-      await this.lessonOccurrencesService.hasHistoricalOccurrences(lessonId);
-
-    if (hasHistory) {
-      throw new BadRequestException(
-        'Lesson cannot be deleted because it has historical occurrences',
-      );
-    }
-
-    await this.lessonOccurrencesService.deleteFutureScheduledOccurrences(
-      lessonId,
-    );
     await this.lessonsRepository.deleteLessonById(lessonId, studentId);
 
     return { ok: true as const };

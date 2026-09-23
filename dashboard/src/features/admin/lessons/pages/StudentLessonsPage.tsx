@@ -1,6 +1,7 @@
 import { useMemo } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
+import DeleteLessonConfirmModal from "@/features/admin/lessons/components/StudentLessonsPage/DeleteLessonConfirmModal";
 import LessonFormModal from "@/features/admin/lessons/components/StudentLessonsPage/LessonFormModal";
 import StudentLessonsHeader from "@/features/admin/lessons/components/StudentLessonsPage/StudentLessonsHeader";
 import StudentLessonsStatsSection from "@/features/admin/lessons/components/StudentLessonsPage/StudentLessonsStatsSection";
@@ -28,6 +29,7 @@ function getLessonDistanceFromToday(weekday: LessonWeekday) {
 
 export default function StudentLessonsPage() {
   const { id } = useParams();
+  const navigate = useNavigate();
   const studentId = Number(id);
 
   const lessonsQuery = useStudentLessonsQuery(studentId);
@@ -85,7 +87,10 @@ export default function StudentLessonsPage() {
 
   return (
     <div className="space-y-6">
-      <StudentLessonsHeader onAddLesson={lessonsActions.openCreateModal} />
+      <StudentLessonsHeader
+        onAddLesson={lessonsActions.openCreateModal}
+        onManageOccurrences={() => navigate("occurrences")}
+      />
 
       <StudentLessonsStatsSection
         nextLessonLabel={nextLessonLabel}
@@ -96,6 +101,7 @@ export default function StudentLessonsPage() {
       <StudentLessonsTable
         lessons={lessons}
         isLoading={lessonsQuery.isFetching}
+        isDeleting={lessonsActions.isDeleting}
         onEditLesson={lessonsActions.openEditModal}
         onDeleteLesson={lessonsActions.handleDelete}
       />
@@ -118,6 +124,13 @@ export default function StudentLessonsPage() {
         submitLabel="حفظ التعديلات"
         lesson={lessonsActions.editingLesson}
       />
+      <DeleteLessonConfirmModal
+        lesson={lessonsActions.lessonToDelete}
+        onClose={lessonsActions.closeDeleteModal}
+        onConfirm={lessonsActions.confirmDelete}
+        isDeleting={lessonsActions.isDeleting}
+      />
+
     </div>
   );
 }

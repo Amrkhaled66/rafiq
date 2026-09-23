@@ -1,6 +1,11 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { and, eq, gt, gte, inArray, isNull, lt, lte, or } from 'drizzle-orm';
-import { lessonOccurrences, lessons, subscriptions } from '../db';
+import {
+  lessonOccurrences,
+  lessons,
+  missedLessonResolutions,
+  subscriptions,
+} from '../db';
 import { db } from '../db/db.module';
 import type { Database } from '../db/db.module';
 
@@ -11,6 +16,7 @@ export type LessonOccurrenceStatus =
   | 'watched_late';
 
 export type NewLessonOccurrence = typeof lessonOccurrences.$inferInsert;
+export type LessonOccurrenceRow = typeof lessonOccurrences.$inferSelect;
 
 export type LessonForOccurrenceGeneration = {
   id: number;
@@ -166,6 +172,35 @@ export class LessonOccurrencesRepository {
       .orderBy(lessonOccurrences.scheduledForDate, lessonOccurrences.id);
   }
 
+  listStudentOccurrencesWithLessonInRange(input: {
+    studentId: number;
+    from: string;
+    to: string;
+  }) {
+    return this.database
+      .select({
+        id: lessonOccurrences.id,
+        lessonId: lessonOccurrences.lessonId,
+        lessonName: lessonOccurrences.lessonName,
+        currentLessonName: lessons.name,
+        subject: lessonOccurrences.subject,
+        scheduledForDate: lessonOccurrences.scheduledForDate,
+        scheduledWeekday: lessonOccurrences.scheduledWeekday,
+        status: lessonOccurrences.status,
+        watchedOn: lessonOccurrences.watchedOn,
+      })
+      .from(lessonOccurrences)
+      .innerJoin(lessons, eq(lessonOccurrences.lessonId, lessons.id))
+      .where(
+        and(
+          eq(lessonOccurrences.studentId, input.studentId),
+          gte(lessonOccurrences.scheduledForDate, input.from),
+          lte(lessonOccurrences.scheduledForDate, input.to),
+        ),
+      )
+      .orderBy(lessonOccurrences.scheduledForDate, lessonOccurrences.id);
+  }
+
   findByIdAndStudent(occurrenceId: number, studentId: number) {
     return this.database.query.lessonOccurrences.findFirst({
       where: and(
@@ -216,6 +251,48 @@ export class LessonOccurrencesRepository {
         updatedAt: new Date(),
       })
       .where(eq(lessonOccurrences.id, input.occurrenceId));
+  }
+
+  async updateOccurrenceDate(input: {
+    occurrenceId: number;
+    scheduledForDate: string;
+    scheduledWeekday: NewLessonOccurrence['scheduledWeekday'];
+    status: LessonOccurrenceStatus;
+  }): Promise<LessonOccurrenceRow | undefined> {
+    return this.database.transaction(async (transaction) => {
+      await transaction
+        .delete(missedLessonResolutions)
+        .where(eq(missedLessonResolutions.occurrenceId, input.occurrenceId));
+
+      const [updated] = await transaction
+        .update(lessonOccurrences)
+        .set({
+          scheduledForDate: input.scheduledForDate,
+          scheduledWeekday: input.scheduledWeekday,
+          status: input.status,
+          watchedOn: null,
+          updatedAt: new Date(),
+        })
+        .where(eq(lessonOccurrences.id, input.occurrenceId))
+        .returning();
+
+      return updated;
+    });
+  }
+
+  async deleteOccurrence(occurrenceId: number): Promise<boolean> {
+    return this.database.transaction(async (transaction) => {
+      await transaction
+        .delete(missedLessonResolutions)
+        .where(eq(missedLessonResolutions.occurrenceId, occurrenceId));
+
+      const deleted = await transaction
+        .delete(lessonOccurrences)
+        .where(eq(lessonOccurrences.id, occurrenceId))
+        .returning({ id: lessonOccurrences.id });
+
+      return deleted.length > 0;
+    });
   }
 
   async resetFutureOccurrences(lessonId: number, today: string) {
